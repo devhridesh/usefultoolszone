@@ -16,22 +16,28 @@ export default function useVideoCompressor() {
   const workerRef = useRef(null);
   const wakeLockRef = useRef(null);
 
-  // 🎯 Dynamic Multi-Request Core Engine for Mobile Devices
-  const acquireWakeLock = async () => {
-    if ('wakeLock' in navigator) {
-      try {
-        // Purane lock lease ko clear karke fresh handle request bhejenge taaki mobile system refresh hota rahe
-        if (wakeLockRef.current) {
-          await wakeLockRef.current.release().catch(() => null);
-          wakeLockRef.current = null;
-        }
-        wakeLockRef.current = await navigator.wakeLock.request('screen');
-        console.log("Wake Lock Refreshed and Pinned Successfully! 📱");
-      } catch (err) {
-        console.error("Mobile security wake lock bypass alert:", err);
-      }
+ // 🎯 Safe Dynamic Multi-Request Core Engine
+const acquireWakeLock = async () => {
+  if ('wakeLock' in navigator) {
+    // 🛡️ Safety Check: Request sirf tabhi bhejein jab tab visible ho
+    if (document.visibilityState !== 'visible') {
+      console.log("Wake Lock skipped: Page not visible.");
+      return;
     }
-  };
+
+    try {
+      if (wakeLockRef.current) {
+        await wakeLockRef.current.release().catch(() => null);
+        wakeLockRef.current = null;
+      }
+      wakeLockRef.current = await navigator.wakeLock.request('screen');
+      console.log("Wake Lock Refreshed and Pinned Successfully! 📱");
+    } catch (err) {
+      // ⚠️ Error ko handle kar rahe hain, site crash nahi hogi
+      console.error("Mobile security wake lock bypass alert (Normal behavior):", err);
+    }
+  }
+};
 
   const releaseWakeLock = async () => {
     if (wakeLockRef.current) {
