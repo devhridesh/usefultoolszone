@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Free Video Compressor Online - 100% Private & Fast | ClipShrink",
+  title: "Free Video Compressor Online - 100% Private & Fast | Useful Tools Zone",
   description: "Compress MP4, WebM, MOV, and MKV videos locally in your browser without uploading to any server. Secure, fast, and 100% internet data saving video shrinking utility.",
   keywords: [
     "video compressor",
