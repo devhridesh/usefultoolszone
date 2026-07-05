@@ -2,36 +2,33 @@ import GlassCard from '../../../components/ui/GlassCard.jsx'
 import ThemeSwitcher from '../../../components/ui/ThemeSwitcher.jsx'
 import CompressorContainer from '../../../components/CompressorContainer.jsx'
 import Navbar from '../../../components/Navbar.jsx'
-import React from 'react';
-import Link from 'next/link'; // ✅ Next.js का स्पेशल लिंक इंपोर्ट किया
+import React from 'react'
+import Link from 'next/link'
 
 export default function CompressPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between p-4 md:p-8 pt-24 bg-slate-50 dark:bg-[#08080c] transition-colors duration-300 selection:bg-blue-500 selection:text-white">
-      
+    <div className="min-h-screen flex flex-col items-center justify-start bg-slate-50 dark:bg-[#060609]">
       {/* Dynamic Navbar Layer */}
       <div className="w-full fixed top-0 left-0 right-0 z-50">
         <Navbar />
       </div>
 
-      {/* ADVERTISEMENT TOP BANNER */}
-      <div className="w-full max-w-2xl text-center text-[9px] font-bold tracking-widest text-slate-400/80 mb-6 uppercase">
-        Advertisement
-        <div className="w-full min-h-[90px] bg-white dark:bg-[#12121a] rounded-xl flex items-center justify-center mt-1.5 border border-slate-200/60 dark:border-white/[0.04] text-xs text-slate-400 font-medium transition-all shadow-sm">
-          <span className="animate-pulse">[Responsive Auto-Ads Zone]</span>
-        </div>
-      </div>
+      {/* Spacer for Fixed Navbar */}
+      <div className="h-20 w-full"></div>
 
-{/* Main Content Area */}
-      <div className="w-full max-w-2xl flex-1 flex flex-col items-center justify-center space-y-6 my-auto">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
+      {/* Main Content Area */}
+      <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col items-center justify-center space-y-6 my-auto px-4">
+        
+        {/* Header Section (Psychologically optimized typography) */}
+        <div className="text-center space-y-4 max-w-2xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
             Compress Videos Locally <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
               Looks Exactly Like Original
             </span>
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
+          
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
             Your videos never leave your device. Fast, secure, and client-side modern encoding that works entirely in your browser memory.
             <span className="block mt-2 font-bold text-slate-900 dark:text-slate-200">
               Saves 100% of your internet bandwidth with zero server data usage!
@@ -39,7 +36,7 @@ export default function CompressPage() {
           </p>
 
           {/* 📉 Premium Data-Saver Trust Badges */}
-          <div className="flex flex-wrap justify-center gap-2 pt-2 text-[10px] font-extrabold uppercase tracking-wider">
+          <div className="flex flex-wrap justify-center gap-2 pt-1 text-[10px] font-extrabold uppercase tracking-wider">
             <span className="px-2.5 py-1 bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 rounded-full border border-green-100 dark:border-green-900/30 flex items-center gap-1 shadow-sm">
               🌐 100% Internet Data Saved
             </span>
@@ -50,58 +47,92 @@ export default function CompressPage() {
               🚀 True Offline Compression
             </span>
           </div>
+
+          {/* ⚡ TOP TRIGGER LINK (Instant Landing Visibility on Mobile) */}
+          <div className="pt-2">
+            <p className="text-xs text-slate-500">
+              Compression running slow?{" "}
+              <a
+                href="#speed-tips-section"
+                className="text-blue-600 dark:text-blue-400 font-semibold underline hover:text-blue-700 dark:hover:text-blue-300 transition-all inline-block animate-pulse"
+              >
+                Read our 1-minute speed optimization tips ⚡
+              </a>
+            </p>
+          </div>
         </div>
 
-      {/* Dynamic Compressor Core Box (With Premium SaaS Glow Effect) */}
-      <div className="relative group transition-all duration-500 hover:-translate-y-1.5 rounded-2xl">
-        {/* यह वाली लाइन पीछे से चमक (Glow) पैदा करेगी */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-lg opacity-0 group-hover:opacity-25 transition duration-500"></div>
-        
-        <GlassCard className="relative w-full p-6 z-10 ring-1 ring-slate-200/50 dark:ring-white/5 shadow-xl">
-          <CompressorContainer />
-        </GlassCard>
+        {/* 💻 📱 MASTER GRID: Layout for maximum Ad viewability on PC */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start mt-4">
+          
+          {/* LEFT SIDE PC AD - Only visible on Large Screens (PC) */}
+          <div className="hidden lg:block lg:col-span-3 h-[600px] sticky top-24 bg-slate-50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex items-center justify-center text-center">
+            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+              [ PC SIDEBAR AD 1 <br/> 300x600 ]
+            </span>
+          </div>
+
+          {/* CENTER - The Core Compressor Box */}
+          <div className="col-span-1 lg:col-span-6 w-full max-w-2xl mx-auto">
+            <div className="relative group transition-all duration-500 hover:-translate-y-1 rounded-2xl w-full">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-lg opacity-0 group-hover:opacity-25 transition duration-500"></div>
+              
+              <GlassCard className="relative w-full p-6 z-10 ring-1 ring-slate-200/50 dark:ring-white/5 shadow-xl">
+                <CompressorContainer initialSize="10" />
+              </GlassCard>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE PC AD - Only visible on Large Screens (PC) */}
+          <div className="hidden lg:block lg:col-span-3 h-[600px] sticky top-24 bg-slate-50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex items-center justify-center text-center">
+            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+              [ PC SIDEBAR AD 2 <br/> 300x600 ]
+            </span>
+          </div>
+
+        </div>
       </div>
-      </div>
-{/* --------------------------------------------------------- */}
+
+      {/* --------------------------------------------------------- */}
       {/* 🎛️ PART 1: FORMAT & CODEC CAPABILITIES GRID */}
       {/* --------------------------------------------------------- */}
-<section className="w-full max-w-4xl mt-12 bg-white dark:bg-[#0c0c12] rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)]">
+      <section className="w-full max-w-3xl mx-auto mt-12 bg-white dark:bg-[#0c0c12] rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-4">
         <div className="border-b border-slate-100 dark:border-white/5 pb-4 mb-6">
           <h2 className="text-xl font-black text-slate-950 dark:text-white flex items-center gap-2">
             Supported Video Formats & Codecs
           </h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-<div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
+          <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
             <span className="text-sm font-black text-blue-500 block mb-1">.MP4</span>
             <span className="text-[11px] text-gray-500 block">H.264 / MPEG-4 Baseline, Main & High Profiles for Universal Web Playback</span>
           </div>
-<div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
+          <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
             <span className="text-sm font-black text-indigo-500 block mb-1">.WEBM</span>
             <span className="text-[11px] text-gray-500 block">VP8 / VP9 Native Web Stream Optimization for HTML5 Browsers</span>
           </div>
-<div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
+          <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
             <span className="text-sm font-black text-purple-500 block mb-1">.MOV</span>
             <span className="text-[11px] text-gray-500 block">Apple QuickTime Dynamic Codec Wrappers (Ideal for iOS & Mac)</span>
           </div>
-<div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
+          <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-100 dark:border-white/[0.02] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md cursor-default">
             <span className="text-sm font-black text-pink-500 block mb-1">.MKV</span>
             <span className="text-[11px] text-gray-500 block">Matroska Multimedia Containers for High-Quality Multi-track Audio/Video</span>
           </div>
         </div>
       </section>
 
-{/* 🚀 MID-PAGE AD ZONE (The Waiting Ad) */}
-      <div className="w-full max-w-4xl mx-auto mt-10 py-6 bg-slate-100 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl text-center flex items-center justify-center min-h-[120px] shadow-sm">
+      {/* 🚀 MID-PAGE AD ZONE (The Waiting Ad) */}
+      <div className="w-full max-w-3xl mx-auto mt-10 py-6 bg-slate-100 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl text-center flex items-center justify-center min-h-[120px] shadow-sm">
         <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase animate-pulse">
           [ Mid-Article Auto-Ads Zone ]
         </span>
       </div>
 
       {/* --------------------------------------------------------- */}
-      {/* 📚 PART 2: 500+ WORDS SEO & ADSENSE CONTENT BLOCK */}
+      {/* 📚 PART 2: 500+ WORDS SEO & Content Block (Adjusted Width) */}
       {/* --------------------------------------------------------- */}
-<section className="w-full max-w-4xl mt-8 bg-white dark:bg-[#0c0c12] rounded-2xl p-6 md:p-10 space-y-12 text-sm leading-loose text-slate-500 dark:text-gray-400 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)]">        
+      <section className="w-full max-w-3xl mx-auto mt-8 bg-white dark:bg-[#0c0c12] rounded-2xl p-6 md:p-10 space-y-12 text-sm leading-relaxed text-slate-500 dark:text-gray-400 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-4">        
         <article className="space-y-4">
           <h2 className="text-2xl font-black text-slate-950 dark:text-white tracking-tight">
             How to Compress Videos Online Without Losing Quality?
@@ -138,16 +169,14 @@ export default function CompressPage() {
           </p>
         </article>
 
-        {/* --------------------------------------------------------- */}
         {/* ❓ PART 3: FAQ SECTION (AdSense Loves This) */}
-        {/* --------------------------------------------------------- */}
         <div className="border-t border-slate-100 dark:border-white/5 pt-8 mt-8 space-y-4">
           <h2 className="text-xl font-black text-slate-950 dark:text-white tracking-tight mb-6">
             Frequently Asked Questions
           </h2>
           
           <div className="space-y-3">
-<details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
+            <details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
               <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">
                 <span>Is it safe to compress private videos here?</span>
                 <span className="text-blue-500 transition group-open:rotate-180">▼</span>
@@ -157,7 +186,7 @@ export default function CompressPage() {
               </p>
             </details>
 
-<details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
+            <details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
               <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">
                 <span>Are there any file size limits or hidden fees?</span>
                 <span className="text-blue-500 transition group-open:rotate-180">▼</span>
@@ -166,8 +195,8 @@ export default function CompressPage() {
                 The service is completely free to use. Because the compression relies on your device's hardware rather than our cloud servers, you can compress files as large as your device's memory can handle without any paywalls.
               </p>
             </details>
-<details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
 
+            <details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
               <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">
                 <span>Which video format should I choose for social media?</span>
                 <span className="text-blue-500 transition group-open:rotate-180">▼</span>
@@ -178,21 +207,68 @@ export default function CompressPage() {
             </details>
           </div>
         </div>
-
       </section>
 
-{/* 🚀 BOTTOM AD ZONE (The Exit Ad) */}
-      <div className="w-full max-w-4xl mx-auto mb-10 py-6 bg-slate-100 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl text-center flex items-center justify-center min-h-[120px] shadow-sm">
+      {/* --------------------------------------------------------- */}
+      {/* ⚡ PART 3.5: SPEED OPTIMIZATION & CACHE INFO (Simple English) */}
+      {/* --------------------------------------------------------- */}
+      <div id="speed-tips-section" className="w-full max-w-xl mx-auto mt-12 mb-12 p-6 bg-white dark:bg-[#0c0c12] rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm scroll-mt-24 px-4">
+        
+        <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+          ⚡ How to Compress Videos Faster?
+        </h3>
+
+        <div className="space-y-4 text-left">
+          <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200">1. Use Google Chrome or Microsoft Edge</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">These browsers make video compression 2x faster than Safari or Firefox.</p>
+          </div>
+
+          <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200">2. Turn ON Hardware Acceleration in PC or Laptop</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Go to Browser Settings → System → Turn on "Use graphics acceleration when available". This gives heavy power to the tool.</p>
+          </div>
+
+          <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200">3. Close Other Tabs & Apps</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Close extra tabs (like YouTube, Facebook, or Games) before starting. This gives full machine speed to your video processing.</p>
+          </div>
+
+          <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
+            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200">4. Connect Charger & Turn Off Battery Saver</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">If using a laptop or phone, plug in your charger. Low battery mode slows down the processing speed.</p>
+          </div>
+
+          <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl">
+            <h4 className="text-sm font-bold text-amber-800 dark:text-amber-400">⚠️ Important: Do Not Clear Browser Cache</h4>
+            <p className="text-xs text-amber-700 dark:text-amber-500 mt-1">The core compression engine is safely stored in your browser memory for offline use. If you clear cache/history, it will download again next time.</p>
+          </div>
+        </div>
+
+        {/* Return to Top Button & Ad Unit inside the box */}
+        <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col items-center gap-4">
+          <div className="text-[10px] text-slate-400 tracking-wider">[ MID-ARTICLE AUTO-ADS ZONE ]</div>
+          <a
+            href="#"
+            className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 text-white dark:text-black font-medium text-xs rounded-xl shadow-sm transition-all flex items-center gap-1 inline-block text-center"
+          >
+            ⬆️ Return to Compression
+          </a>
+        </div>
+      </div>
+
+      {/* 🚀 BOTTOM AD ZONE (The Exit Ad) */}
+      <div className="w-full max-w-3xl mx-auto mb-10 py-6 bg-slate-100 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl text-center flex items-center justify-center min-h-[120px] shadow-sm">
         <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase animate-pulse">
           [ Bottom Auto-Ads Zone ]
         </span>
       </div>
 
-   {/* --------------------------------------------------------- */}
+      {/* --------------------------------------------------------- */}
       {/* 🏢 PART 4: PREMIUM FOOTER (Legal & Trust Links) */}
       {/* --------------------------------------------------------- */}
-      <footer className="w-full border-t border-slate-200 dark:border-white/10 bg-white dark:bg-[#060609] mt-10">
-        <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <footer className="w-full border-t border-slate-200 dark:border-white/10 bg-white dark:bg-[#060609] mt-10 px-4">
+        <div className="max-w-6xl mx-auto py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           
           {/* Brand Copyright */}
           <div className="text-center md:text-left">
@@ -216,6 +292,7 @@ export default function CompressPage() {
           
         </div>
       </footer>
+
       {/* 🤖 GOOGLE STRUCTURED DATA SCHEMA (AdSense & SEO Booster) */}
       <script
         type="application/ld+json"
@@ -236,7 +313,7 @@ export default function CompressPage() {
                   "name": "Is it safe to compress private videos here?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, it is 100% safe. Our tool runs locally in your browser via WebAssembly. Your video is never uploaded to any server, ensuring absolute privacy."
+                    "name": "Yes, it is 100% safe. Our tool runs locally in your browser via WebAssembly. Your video is never uploaded to any server, ensuring absolute privacy."
                   }
                 },
                 {
@@ -244,7 +321,7 @@ export default function CompressPage() {
                   "name": "Are there any file size limits or hidden fees?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "The service is completely free to use. Because the compression relies on your device's hardware rather than cloud infrastructure, you can process files without constraints."
+                    "name": "The service is completely free to use. Because the compression relies on your device's hardware rather than cloud infrastructure, you can process files without constraints."
                   }
                 }
               ]
