@@ -21,7 +21,7 @@ export default function AboutUs() {
         </div>
 
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          Welcome to <strong>ClipShrink</strong>, a premier destination for next-generation web utilities. We are a small team of passionate developers who believe that the internet should be fast, free, and above all, **private**.
+          Welcome to <strong>Useful Tools Zone</strong>, a premier destination for next-generation web utilities. We are a small team of passionate developers who believe that the internet should be fast, free, and above all, **private**.
         </p>
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">Why did we build this?</h3>
@@ -31,7 +31,7 @@ export default function AboutUs() {
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">Our Future Vision</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          While we are starting with our breakthrough video compression tool, ClipShrink is rapidly evolving into a comprehensive **Multi-Tool Utility Hub**. In the coming months, we will launch high-speed audio converters, secure PDF kits, and advanced image layout controllers—all built on our trusted serverless, zero-data-collection philosophy.
+          While we are starting with our breakthrough video compression tool, Useful Tools Zone is rapidly evolving into a comprehensive **Multi-Tool Utility Hub**. In the coming months, we will launch high-speed audio converters, secure PDF kits, and advanced image layout controllers—all built on our trusted serverless, zero-data-collection philosophy.
         </p>
 
         <div className="pt-4 border-t border-gray-100 dark:border-gray-800/60 text-center">

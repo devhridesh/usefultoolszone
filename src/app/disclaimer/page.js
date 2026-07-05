@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 export default function Disclaimer() {
   useEffect(() => {
-    document.title = "Disclaimer - ClipShrink Utility Hub";
+    document.title = "Disclaimer - Useful Tools Zone";
   }, []);
 
   const handleBack = () => {
@@ -21,7 +21,7 @@ export default function Disclaimer() {
         </div>
 
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400 italic">
-          Please read this disclaimer carefully before using any service provided by ClipShrink.
+          Please read this disclaimer carefully before using any service provided by Useful Tools Zone.
         </p>
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">1. As-Is Service Provision</h3>
@@ -31,12 +31,12 @@ export default function Disclaimer() {
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">2. No Liability for File Handling</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          Because ClipShrink processes all videos locally within your browser sandbox, we do not have access to your data. We are not responsible or liable for any accidental loss of original files, browser crashes during processing, or unexpected device shutdowns caused by intensive hardware encoding tasks. Users are highly recommended to keep backups of their original media.
+          Because Useful Tools Zone processes all videos locally within your browser sandbox, we do not have access to your data. We are not responsible or liable for any accidental loss of original files, browser crashes during processing, or unexpected device shutdowns caused by intensive hardware encoding tasks. Users are highly recommended to keep backups of their original media.
         </p>
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">3. Advertising Content</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          This website displays advertisements from third-party networks like Google AdSense. ClipShrink does not explicitly endorse or guarantee the products, claims, or services offered in these automated advertisement blocks.
+          This website displays advertisements from third-party networks like Google AdSense. Useful Tools Zone does not explicitly endorse or guarantee the products, claims, or services offered in these automated advertisement blocks.
         </p>
 
         <div className="pt-4 border-t border-gray-100 dark:border-gray-800/60 text-center">

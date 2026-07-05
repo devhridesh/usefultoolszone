@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 export default function PrivacyPolicyPage() {
   useEffect(() => {
-    document.title = "Privacy Policy - ClipShrink Utility Hub";
+    document.title = "Privacy Policy - Useful Tools Zone";
   }, []);
 
   // Foolproof Page Redirect Handler
@@ -26,7 +26,7 @@ export default function PrivacyPolicyPage() {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-blue-500">1. Our 100% Local Video Processing Promise</h2>
           <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-            At ClipShrink, we care deeply about your privacy. Unlike other online websites, <strong>we never upload your videos to any server or the internet</strong>. The entire video compression process happens completely inside your own web browser. Your data never leaves your device.
+            At <strong>Useful Tools Zone</strong> , we care deeply about your privacy. Unlike other online websites, <strong>we never upload your videos to any server or the internet</strong>. The entire video compression process happens completely inside your own web browser. Your data never leaves your device.
           </p>
         </section>
 

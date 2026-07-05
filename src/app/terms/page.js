@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 export default function TermsAndConditions() {
   useEffect(() => {
-    document.title = "Terms & Conditions - ClipShrink Utility Hub";
+    document.title = "Terms & Conditions - Useful Tools Zone";
   }, []);
 
   const handleBack = () => {
@@ -21,7 +21,7 @@ export default function TermsAndConditions() {
         </div>
 
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          By accessing and utilizing the ClipShrink platform, you accept and agree to comply with the following operational terms and service regulations.
+          By accessing and utilizing the Useful Tools Zone platform, you accept and agree to comply with the following operational terms and service regulations.
         </p>
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">1. Permitted Use</h3>
@@ -31,7 +31,7 @@ export default function TermsAndConditions() {
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">2. Intellectual Property</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          The user interface layout, design aesthetics, branding assets, custom React wrappers, and codebase of ClipShrink are the exclusive property of our brand. Copying or clones of this layout for commercial redistribution without consent is strictly prohibited.
+          The user interface layout, design aesthetics, branding assets, custom React wrappers, and codebase of Useful Tools Zone are the exclusive property of our brand. Copying or clones of this layout for commercial redistribution without consent is strictly prohibited.
         </p>
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">3. Service Modifications</h3>

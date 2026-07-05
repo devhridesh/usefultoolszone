@@ -17,7 +17,7 @@ export default function Navbar() {
               <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2.5 py-1 rounded-lg text-sm font-bold shadow-sm">
                 CS
               </span>
-              ClipShrink <span className="text-xs text-blue-500 font-semibold hidden sm:inline">Utility Hub</span>
+              Useful Tools Zone <span className="text-xs text-blue-500 font-semibold hidden sm:inline"></span>
             </a>
           </div>
 

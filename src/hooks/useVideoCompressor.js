@@ -4,11 +4,9 @@ import { useState, useRef, useEffect } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
-// ग्लोबल वैरिएबल्स: ये पूरे सेशन में इंजन को सिर्फ एक बार डाउनलोड होने देंगे
-// ग्लोबल वैरिएबल्स: ये पूरे सेशन में इंजन को सिर्फ एक बार डाउनलोड होने देंगे
 let globalFFmpeg = null;
 let globalFFmpegLoaded = false;
-let globalFFmpegLoading = false; // डबल क्लिक लॉक रोकने के लिए कवच
+let globalFFmpegLoading = false; 
 
 export default function useVideoCompressor() {
   const [isCompressing, setIsCompressing] = useState(false);
@@ -16,13 +14,59 @@ export default function useVideoCompressor() {
   const [statusText, setStatusText] = useState('');
   const [compressedBlob, setCompressedBlob] = useState(null);
   const workerRef = useRef(null);
+  const wakeLockRef = useRef(null);
+
+  // 🎯 Dynamic Multi-Request Core Engine for Mobile Devices
+  const acquireWakeLock = async () => {
+    if ('wakeLock' in navigator) {
+      try {
+        // Purane lock lease ko clear karke fresh handle request bhejenge taaki mobile system refresh hota rahe
+        if (wakeLockRef.current) {
+          await wakeLockRef.current.release().catch(() => null);
+          wakeLockRef.current = null;
+        }
+        wakeLockRef.current = await navigator.wakeLock.request('screen');
+        console.log("Wake Lock Refreshed and Pinned Successfully! 📱");
+      } catch (err) {
+        console.error("Mobile security wake lock bypass alert:", err);
+      }
+    }
+  };
+
+  const releaseWakeLock = async () => {
+    if (wakeLockRef.current) {
+      try {
+        await wakeLockRef.current.release();
+        wakeLockRef.current = null;
+        console.log("Wake Lock Released Safely! 🔓");
+      } catch (err) {
+        console.error("Wake Lock Release Error:", err);
+      }
+    }
+  };
 
   useEffect(() => {
-    // 1. Check browser codec support first
+    if (!isCompressing) {
+      releaseWakeLock();
+    }
+  }, [isCompressing]);
+
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible' && isCompressing) {
+        await acquireWakeLock();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isCompressing]);
+
+  useEffect(() => {
     const supportsWebCodecs = typeof VideoEncoder !== 'undefined' && typeof MediaStreamTrackProcessor !== 'undefined';
     
     if (supportsWebCodecs) {
-      // 2. Cache-Busting URL: Forces Chrome to destroy old thread and load fresh worker instantly
       workerRef.current = new Worker('/ffmpeg-worker.js?t=' + Date.now(), { type: 'module' });
       
       workerRef.current.onmessage = (e) => {
@@ -64,46 +108,37 @@ export default function useVideoCompressor() {
     });
   };
 
-const compressVideo = async (file, requestedSizeMB) => {
-
+  const compressVideo = async (file, requestedSizeMB) => {
     const targetSizeMB = Math.max(1, requestedSizeMB - 1); 
 
     setIsCompressing(true);
     setProgress(0);
     setCompressedBlob(null);
 
-    // Screen active rakhne ke liye variable
-    let wakeLock = null;
+    // 🎯 Loop Engine Layer: Har thodi der me wake lock request fire karne wala interval anchor
+    let dynamicWakeInterval = null;
 
     try {
-      // Mobile screen ko compression ke dauran chalu rakhne ke liye
-      if ('wakeLock' in navigator) {
-        wakeLock = await navigator.wakeLock.request('screen').catch(() => null);
-      }
+      // 1. Initial trigger active kiya user-click synchronization ke sath
+      await acquireWakeLock();
+
+      // 2. Multi-Request Loop: Compression period ke dauran har 5 second me continuous refresh request bhejega
+      dynamicWakeInterval = setInterval(async () => {
+        await acquireWakeLock();
+      }, 5000);
 
       const { durationSeconds, width, height } = await getVideoMetadata(file);
-      const supportsWebCodecs = typeof VideoEncoder !== 'undefined' && typeof MediaStreamTrackProcessor !== 'undefined';
-      // DYNAMIC ROUTING: Hardware GPU is blocked only for tight squeezes (< 22MB)
-const forceSoftware = false;
-const useHardwareMode = false; // Bypass broken hardware worker and force precision software engine
+      const useHardwareMode = false; 
       
-if (useHardwareMode) {
-        // ========================================================
-        // PLAN A: HARDWARE MODE (Automatically scales for 22MB, 25MB, 26MB, 30MB, etc.)
-        // ========================================================
+      if (useHardwareMode) {
         setStatusText('Extracting frames (Hardware Mode)...');
-        
         const video = document.createElement('video');
         video.src = URL.createObjectURL(file);
         video.muted = true;
         video.playsInline = true;
 
         video.onloadedmetadata = async () => {
-          
-           
           let dynamicMultiplier = 0.95;
-          
-          // Clamp it to prevent extreme values (stays between 0.90 and 1.15)
           dynamicMultiplier = Math.max(0.90, Math.min(dynamicMultiplier, 1.15));
 
           const targetBits = (targetSizeMB * dynamicMultiplier) * 1024 * 1024 * 8;
@@ -130,6 +165,11 @@ if (useHardwareMode) {
             frameCount++;
             const calculatedProgress = Math.min(Math.round((frameCount / expectedTotalFrames) * 95), 99);
 
+            // Periodically ping during dense hardware frames processing loop
+            if (frameCount % 30 === 0) {
+              await acquireWakeLock();
+            }
+
             workerRef.current.postMessage({
               type: 'FRAME',
               frame,
@@ -140,26 +180,15 @@ if (useHardwareMode) {
           workerRef.current.postMessage({ type: 'FINISH' });
         };
       } else {
-
-       
-  
-     // ========================================================
-        // PLAN B: CDN PRECISION ENGINE (Online High Stability Mode with Pro UX Messages)
-        // ========================================================
-        
-        // 1. Single Global Instance (ताकि मल्टीपल क्लिक्स थ्रेड लॉक न करें)
         if (!globalFFmpeg) {
           globalFFmpeg = new FFmpeg();
         }
         const ffmpeg = globalFFmpeg;
-        
         const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd'; 
         
-        // 2. Load Core with dynamic retention messages (First Launch vs Instant Cached Launch)
         if (!globalFFmpegLoaded) {
           if (!globalFFmpegLoading) {
             globalFFmpegLoading = true;
-            // Keval fresh/first-time user ko hi ye downloading message dikhega
             setStatusText("Downloading & Optimizing Precision Core Engine... (First launch takes a few seconds to configure setup, subsequent uses will be instant!) ⚙️");
             try {
               await ffmpeg.load({
@@ -167,8 +196,6 @@ if (useHardwareMode) {
                 wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
               });
               globalFFmpegLoaded = true;
-              
-              // Success notice with sufficient reading time buffer (2.5 seconds hold)
               setStatusText("Core engine has been downloaded for next quick compression! 🚀");
               await new Promise(r => setTimeout(r, 2500));
             } catch (error) {
@@ -179,25 +206,25 @@ if (useHardwareMode) {
             }
           }
         } else {
-          // Returning users ko direct message bina script download wait ke
           setStatusText("Launching Cached Core Engine... Super Fast Mode Active! ⚡");
           await new Promise(r => setTimeout(r, 1200));
         }
 
-        // Wait Lock: Agar engine backend me ready ho raha hai toh code ko safe hold rakhega
         while (globalFFmpegLoading) {
           await new Promise(r => setTimeout(r, 200));
         }
 
-        // 3. Pro UX Progress Watcher (Clean isolated grammar style layout)
-     // 3. Pro UX Progress Watcher (Pure Clean Sentences - No mixed numbers)
         ffmpeg.off('progress'); 
         ffmpeg.on('progress', ({ progress: p }) => {
-          setTimeout(() => {
+          setTimeout(async () => {
             const pct = Math.round(p * 100);
-            setProgress(pct); // यह बैकएंड में प्रोग्रेस बार को चलाता रहेगा
+            setProgress(pct); 
             
-            // अब टेक्स्ट बिल्कुल साफ रहेगा, कोई ग्रामर नहीं टूटेगी
+            // 🎯 Progress-Driven Multiple Requests: Compression ratios ke hisab se har 4% par fresh token override fire hoga
+            if (pct % 4 === 0) {
+              await acquireWakeLock();
+            }
+            
             if (pct < 15) {
               setStatusText("Initializing frames... Video encoding is a heavy CPU process, hang tight! 🧠");
             } else if (pct >= 15 && pct < 45) {
@@ -211,25 +238,22 @@ if (useHardwareMode) {
         });
 
         await ffmpeg.writeFile('input.mp4', await fetchFile(file));
-        // 2. TRUE DYNAMIC RESOLUTION SCALING (Bitrate & Duration Driven - No Hardcoded File Sizes!)
         let scaleArgs = [];
         const isVertical = height > width;
         const maxDimension = isVertical ? height : width;
 
-        // Video Length (Duration) aur Target ke hisab se exact per-second Bitrate capability nikali
         const estimatedKbps = Math.round((requestedSizeMB * 0.92 * 8 * 1024) / durationSeconds);
-        
         let targetMaxDimension = 1920; 
         let audioBitrate = '128k';
 
         if (estimatedKbps < 900) {
-          targetMaxDimension = 854;   // Ultra low bitrate -> 480p (Quality aur size dono control me)
+          targetMaxDimension = 854;   
           audioBitrate = '48k';
         } else if (estimatedKbps < 2400) {
-          targetMaxDimension = 1280;  // Medium bitrate -> 720p HD (WhatsApp/Email standard)
+          targetMaxDimension = 1280;  
           audioBitrate = '64k';
         } else {
-          targetMaxDimension = 1920;  // High bitrate -> 1080p Full HD (Khaayi hui line wapas aa gayi!)
+          targetMaxDimension = 1920;  
           audioBitrate = '128k';
         }
         
@@ -241,15 +265,16 @@ if (useHardwareMode) {
           }
         }
 
-        // 3. FULLY PROPORTIONAL DYNAMIC FEEDBACK LOOP (Zero Hardcoded MB Margins!)
-        const targetSizeMB = requestedSizeMB * 0.93; // Target humesha requested cap ka 93% rahega (Fully Proportional)
+        const targetSizeMB = requestedSizeMB * 0.93; 
         let currentBitrateMultiplier = 1.0;
-        let success = false;
         let finalData = null;
 
         for (let attempt = 1; attempt <= 2; attempt++) {
           setStatusText(`Compressing video: Cycle ${attempt}/2...`);
           
+          // Cycle transitions ke beech me bhi ek baar screen lock push karenge
+          await acquireWakeLock();
+
           try {
             await ffmpeg.deleteFile('output.mp4');
           } catch (e) {}
@@ -274,19 +299,14 @@ if (useHardwareMode) {
           const data = await ffmpeg.readFile('output.mp4');
           const actualSizeMB = data.length / (1024 * 1024);
 
-          console.log(`[CYCLE ${attempt} END] Actual: ${actualSizeMB}MB, Requested Limit: ${requestedSizeMB}MB`);
-
-          // Pure Percentage Guard: File strictly limit ke niche ho aur kam-se-kam 86% target achieve kare
           if (actualSizeMB < requestedSizeMB && actualSizeMB >= requestedSizeMB * 0.86) {
             finalData = data;
-            success = true;
             break;
           }
 
           if (attempt === 1) {
             finalData = data;
           } else if (attempt === 2) {
-            // Absolute Boundary Shield: Cycle 2 ke baad har haal me wahi chunega jo limit ke strictly niche ho
             if (actualSizeMB < requestedSizeMB) {
               finalData = data;
             } else {
@@ -296,40 +316,30 @@ if (useHardwareMode) {
             break;
           }
 
-          // Smart Proportional Feedback Loop: Bina kisi hardcoded margin ke automatic adjustment
           const correctionRatio = targetSizeMB / actualSizeMB;
           if (actualSizeMB >= requestedSizeMB) {
-            currentBitrateMultiplier *= correctionRatio * 0.92; // overshoot hone par 8% safety drop
+            currentBitrateMultiplier *= correctionRatio * 0.92; 
           } else {
             currentBitrateMultiplier *= correctionRatio;
           }
         }
-//yaha tak change karna hai...
 
-const outputData = finalData || await ffmpeg.readFile('output.mp4');
+        const outputData = finalData || await ffmpeg.readFile('output.mp4');
         setCompressedBlob(new Blob([outputData], { type: 'video/mp4' }));
         setStatusText('Done!');
         setProgress(100);
-
-        // 1. Success hone par screen wake lock ko release karein
-        if (wakeLock) {
-          await wakeLock.release().catch(() => null);
-          wakeLock = null;
-        }
-        setIsCompressing(false);
-      } // यह 'else' ब्लॉक को बंद करता है
+      }
     } catch (err) {
       console.error("Compression Execution Error:", err);
       setStatusText("Compression failed!");
-
-      // 2. Error aane par bhi screen wake lock release karein taaki battery waste na ho
-      if (wakeLock) {
-        await wakeLock.release().catch(() => null);
-        wakeLock = null;
+    } finally {
+      // 🔓 Cleanup Setup: Interval ko destroy karenge aur final lease handle release karenge
+      if (dynamicWakeInterval) {
+        clearInterval(dynamicWakeInterval);
       }
       setIsCompressing(false);
     }
   };
 
-  return { compressVideo, isCompressing, progress, statusText, compressedBlob };
+  return { compressVideo, isCompressing, progress, statusText, compressedBlob, acquireWakeLock };
 }
