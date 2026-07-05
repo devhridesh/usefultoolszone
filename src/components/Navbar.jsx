@@ -15,7 +15,7 @@ export default function Navbar() {
           <div className="flex-shrink-0 flex items-center">
             <a href="/compress" className="text-lg font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
               <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2.5 py-1 rounded-lg text-sm font-bold shadow-sm">
-                CS
+                UTZ
               </span>
               Useful Tools Zone <span className="text-xs text-blue-500 font-semibold hidden sm:inline"></span>
             </a>

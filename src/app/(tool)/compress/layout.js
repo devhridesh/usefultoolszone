@@ -10,7 +10,7 @@ export const metadata = {
     "data saver video compressor"
   ],
   alternates: {
-    canonical: "https://clipshrink.com/compress", // जब आप डोमेन लाइव करें, तो इसे अपडेट कर सकते हैं
+    canonical: "https://usefultoolszone.com/", // जब आप डोमेन लाइव करें, तो इसे अपडेट कर सकते हैं
   }
 };
 
