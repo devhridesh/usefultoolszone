@@ -4,6 +4,7 @@ export async function generateMetadata({ params }) {
   const p = await params;
   const size = p?.size || '';
   
+  // Logic: साइज नंबर निकालना या प्लेटफॉर्म के हिसाब से फिक्स करना
   let targetSize = size.replace(/[^0-9]/g, '');
   if (size === 'whatsapp') targetSize = "16";
   if (size === 'gmail') targetSize = "25";
@@ -23,6 +24,7 @@ export default async function Page({ params }) {
 
   if (!size) return <div>Page not found</div>;
 
+  // Logic: targetSize और Platform label तैयार करना
   let targetSize = size.replace(/[^0-9]/g, '');
   let platformLabel = "Video"; 
 
@@ -34,5 +36,6 @@ export default async function Page({ params }) {
     platformLabel = "Gmail";
   }
 
+  // अब हम 'platform' prop भेज रहे हैं, जो H1 टैग को बदल देगा
   return <CompressorPageContent initialSize={targetSize} platform={platformLabel} />;
 }
