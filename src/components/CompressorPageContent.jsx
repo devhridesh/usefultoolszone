@@ -24,13 +24,26 @@ export default function CompressPage({ initialSize }) {
         
         {/* Header Section (Psychologically optimized typography) */}
         <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-            Compress Videos Locally <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-              Looks Exactly Like Original
-            </span>
-          </h1>
-          
+        // H1 टैग को ऐसे लिखें (Conditional Rendering):
+<h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+  {platform ? (
+    // अगर कोई प्लेटफॉर्म (WhatsApp/Gmail) है तो यह दिखाएं
+    <>
+      Compress for {platform} <br/>
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+        Target Size: {initialSize} MB
+      </span>
+    </>
+  ) : (
+    // अगर कोई प्लेटफॉर्म नहीं है (Homepage), तो पुरानी हेडिंग दिखाएं
+    <>
+      Compress Videos Locally <br/>
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+        Looks Exactly Like Original
+      </span>
+    </>
+  )}
+</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
             Your videos never leave your device. Fast, secure, and client-side modern encoding that works entirely in your browser memory.
             <span className="block mt-2 font-bold text-slate-900 dark:text-slate-200">
@@ -298,7 +311,7 @@ export default function CompressPage({ initialSize }) {
 
      
 
-      {/* 🤖 GOOGLE STRUCTURED DATA SCHEMA (Combined SoftwareApplication & FAQ) */}
+    {/* 🤖 GOOGLE STRUCTURED DATA SCHEMA (Combined SoftwareApplication & FAQ) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -306,7 +319,7 @@ export default function CompressPage({ initialSize }) {
             {
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              "name": initialSize ? `Compress Video to ${initialSize}MB Online` : "Video Compressor - Useful Tools Zone",
+              "name": initialSize ? `Compress Video to ${initialSize}MB for ${platform || 'Online'}` : "Video Compressor - Useful Tools Zone",
               "url": "https://usefultoolszone.com/",
               "operatingSystem": "All",
               "applicationCategory": "MultimediaApplication",
@@ -342,7 +355,6 @@ export default function CompressPage({ initialSize }) {
           ])
         }}
       />
-
     </div>
   );
 }
