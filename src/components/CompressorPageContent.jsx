@@ -296,19 +296,29 @@ export default function CompressPage({ initialSize }) {
         </div>
       </footer>
 
-      {/* 🤖 GOOGLE STRUCTURED DATA SCHEMA (AdSense & SEO Booster) */}
+     
+
+      {/* 🤖 GOOGLE STRUCTURED DATA SCHEMA (Combined SoftwareApplication & FAQ) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "Useful Tools Zone",
-            "url": "https://usefultoolszone.com/",
-            "applicationCategory": "MultimediaApplication",
-            "operatingSystem": "All",
-            "browserRequirements": "Requires HTML5 and WebAssembly support.",
-            "mainEntity": {
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": initialSize ? `Compress Video to ${initialSize}MB Online` : "Video Compressor - Useful Tools Zone",
+              "url": "https://usefultoolszone.com/",
+              "operatingSystem": "All",
+              "applicationCategory": "MultimediaApplication",
+              "browserRequirements": "Requires HTML5 and WebAssembly support.",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              }
+            },
+            {
+              "@context": "https://schema.org",
               "@type": "FAQPage",
               "mainEntity": [
                 {
@@ -329,7 +339,7 @@ export default function CompressPage({ initialSize }) {
                 }
               ]
             }
-          })
+          ])
         }}
       />
 
