@@ -112,7 +112,7 @@ export default function CompressorContainer({ initialSize }) {
                 className="px-3 py-1.5 bg-white dark:bg-gray-950 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
               >
                 <option value="">Select a Preset</option>
-                <option value="15">WhatsApp Status (15 MB)</option>
+                <option value="15">WhatsApp Status/Message (15 MB)</option>
                 <option value="24">Gmail Attachment (24 MB)</option>
               </select>
             </div>
