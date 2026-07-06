@@ -7,8 +7,7 @@ import React from 'react'
 import Link from 'next/link'
 
 // ✅ इसे ऐसे अपडेट करो:
-export default function CompressPage({ initialSize }) {
- 
+export default function CompressPage({ initialSize, platform }) { 
     return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-slate-50 dark:bg-[#060609]">
       {/* Dynamic Navbar Layer */}
