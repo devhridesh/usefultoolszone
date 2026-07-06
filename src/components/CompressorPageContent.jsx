@@ -23,7 +23,7 @@ export default function CompressPage({ initialSize, platform }) {
         
         {/* Header Section (Psychologically optimized typography) */}
         <div className="text-center space-y-4 max-w-2xl mx-auto">
-        // H1 टैग को ऐसे लिखें (Conditional Rendering):
+      
 <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
   {platform ? (
     // अगर कोई प्लेटफॉर्म (WhatsApp/Gmail) है तो यह दिखाएं
