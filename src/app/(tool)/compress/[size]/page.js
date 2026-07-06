@@ -13,10 +13,15 @@ export async function generateMetadata({ params }) {
     },
   };
 }
-
-export default async function SizePage({ params }) {
+// app/compress/[size]/page.js mein ye update karein
+export async function SizePage({ params }) {
   const { size } = await params;
-  const targetSize = size.replace(/[^0-9]/g, '');
-
+  
+  // Agar 'whatsapp' ya 'gmail' keyword ho to default limit set karein
+  let targetSize = size.replace(/[^0-9]/g, '');
+  
+  if (size === 'whatsapp') targetSize = "16"; // WhatsApp limit
+  if (size === 'gmail') targetSize = "25";    // Gmail limit
+  
   return <CompressorPageContent initialSize={targetSize} />;
 }
