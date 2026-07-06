@@ -111,6 +111,21 @@ export default function CompressPage({ initialSize, platform }) {
       {/* --------------------------------------------------------- */}
       {/* 🎛️ PART 1: FORMAT & CODEC CAPABILITIES GRID */}
       {/* --------------------------------------------------------- */}
+     {/* SEO INTERNAL LINKING GRID */}
+<div className="w-full max-w-3xl mx-auto mt-10 grid grid-cols-2 md:grid-cols-4 gap-3 px-4">
+    {['10mb', '20mb', '40mb', '50mb'].map((size) => (
+        <Link key={size} href={`/compress/${size}`} className="text-center p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all text-sm font-semibold text-gray-700 dark:text-gray-300 shadow-sm">
+            Compress {size.toUpperCase()}
+        </Link>
+    ))}
+    <Link href="/compress/whatsapp" className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 hover:border-green-500 transition-all text-sm font-semibold text-green-700 dark:text-green-300 shadow-sm">
+        WhatsApp (16MB)
+    </Link>
+    <Link href="/compress/gmail" className="text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 hover:border-red-500 transition-all text-sm font-semibold text-red-700 dark:text-red-300 shadow-sm">
+        Gmail (25MB)
+    </Link>
+</div>
+     
       <section className="w-full max-w-3xl mx-auto mt-12 bg-white dark:bg-[#0c0c12] rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] px-4">
         <div className="border-b border-slate-100 dark:border-white/5 pb-4 mb-6">
           <h2 className="text-xl font-black text-slate-950 dark:text-white flex items-center gap-2">
