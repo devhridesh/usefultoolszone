@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
 
   // Foolproof Page Redirect Handler
   const handleBack = () => {
-    window.location.href = '/compress';
+    window.location.href = '/';
   };
 
   return (

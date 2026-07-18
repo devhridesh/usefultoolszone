@@ -31,3 +31,32 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-slate-400 dark:bg-neutral-700;
 }
+
+/* 🚫 ULTIMATE GOOGLE TRANSLATE BANNER BUSTER */
+iframe.goog-te-banner-frame,
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+iframe[id*="goog"],
+iframe[class*="goog-te"],
+.skiptranslate iframe {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+/* 📐 गूगल द्वारा html/body पर जबरन थोपे गए मार्जिन और टॉप पैडिंग को रीसेट करने के लिए */
+html, body {
+  top: 0 !important;
+  position: static !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* 🛡️ अनुवादित टेक्स्ट पर आने वाले अजीब हाइलाइट और बॉर्डर को साफ़ करने के लिए */
+font {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

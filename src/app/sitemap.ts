@@ -1,56 +1,100 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // जो साइज़ आप सपोर्ट करते हैं उनकी लिस्ट
-  const compressSizes = ['20mb', '40mb', '50mb'];
-  const platforms = ['whatsapp', 'gmail'];
+  const baseUrl = 'https://usefultoolszone.com/';
+  
+  // कंप्रेसर मैट्रिक्स एरेज़
+  const compressSizes = ['10mb', '20mb', '40mb', '50mb'];
+  const compressPlatforms = [
+    'whatsapp', 'gmail', 'tiktok', 'instagram', 'youtube-shorts', 'wechat', 'line', 'discord', 'pinterest'
+  ];
 
-  // डायनामिक पेजेस के लिए मैप (Programmatic SEO)
-  const compressRoutes = [
+  // वीडियो स्प्लिटर मैट्रिक्स एरेज़ (जो आपके ड्रॉपडाउन में लाइव हैं)
+  const splitterPlatforms = [
+    'whatsapp', 'instagram', 'youtube-shorts', 'tiktok', 'telegram', 'line', 'wechat', 'pinterest'
+  ];
+
+  // 1. COMPRESSOR DYNAMIC SUB-ROUTES LOOP (Updated to /compressor/)
+  const compressorRoutes = [
     ...compressSizes.map((size) => ({
-      url: `https://usefultoolszone.com/compress/${size}`,
+      url: `${baseUrl}compressor/${size}`,
       lastModified: new Date(),
       priority: 0.8,
+      alternates: {
+        languages: {
+          es: `${baseUrl}compressor/${size}?lang=es`,
+          pt: `${baseUrl}compressor/${size}?lang=pt`,
+          hi: `${baseUrl}compressor/${size}?lang=hi`,
+        },
+      },
     })),
-    ...platforms.map((platform) => ({
-      url: `https://usefultoolszone.com/compress/${platform}`,
+    ...compressPlatforms.map((platform) => ({
+      url: `${baseUrl}compressor/${platform}`,
       lastModified: new Date(),
       priority: 0.9,
+      alternates: {
+        languages: {
+          es: `${baseUrl}compressor/${platform}?lang=es`,
+          pt: `${baseUrl}compressor/${platform}?lang=pt`,
+          hi: `${baseUrl}compressor/${platform}?lang=hi`,
+        },
+      },
     })),
   ];
 
-  // स्टैटिक पेजेस
+  // 2. VIDEO SPLITTER DYNAMIC SUB-ROUTES LOOP (New Advanced Architecture)
+  const splitterRoutes = splitterPlatforms.map((platform) => ({
+    url: `${baseUrl}video-splitter/${platform}`,
+    lastModified: new Date(),
+    priority: 0.9,
+    alternates: {
+      languages: {
+        es: `${baseUrl}video-splitter/${platform}?lang=es`,
+        pt: `${baseUrl}video-splitter/${platform}?lang=pt`,
+        hi: `${baseUrl}video-splitter/${platform}?lang=hi`,
+      },
+    },
+  }));
+
+  // 3. CORE STATIC PAGES
   return [
     {
-      url: 'https://usefultoolszone.com/',
+      url: `${baseUrl}`,
       lastModified: new Date(),
       priority: 1.0,
+      alternates: { languages: { es: `${baseUrl}?lang=es`, pt: `${baseUrl}?lang=pt`, hi: `${baseUrl}?lang=hi` } },
     },
     {
-      url: 'https://usefultoolszone.com/compress',
-      lastModified: new Date(),
-      priority: 0.9,
-    },
-    {
-      url: 'https://usefultoolszone.com/about',
+      url: `${baseUrl}about`,
       lastModified: new Date(),
       priority: 0.7,
+      alternates: { languages: { es: `${baseUrl}about?lang=es`, pt: `${baseUrl}about?lang=pt`, hi: `${baseUrl}about?lang=hi` } },
     },
     {
-      url: 'https://usefultoolszone.com/privacy-policy',
+      url: `${baseUrl}privacy-policy`,
       lastModified: new Date(),
       priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}privacy-policy?lang=es`, pt: `${baseUrl}privacy-policy?lang=pt`, hi: `${baseUrl}privacy-policy?lang=hi` } },
     },
     {
-      url: 'https://usefultoolszone.com/disclaimer',
+      url: `${baseUrl}terms`,
       lastModified: new Date(),
       priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}terms?lang=es`, pt: `${baseUrl}terms?lang=pt`, hi: `${baseUrl}terms?lang=hi` } },
     },
     {
-      url: 'https://usefultoolszone.com/contact',
+      url: `${baseUrl}disclaimer`,
       lastModified: new Date(),
       priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}disclaimer?lang=es`, pt: `${baseUrl}disclaimer?lang=pt`, hi: `${baseUrl}disclaimer?lang=hi` } },
     },
-    ...compressRoutes,
+    {
+      url: `${baseUrl}contact`,
+      lastModified: new Date(),
+      priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
+    },
+    ...compressorRoutes,
+    ...splitterRoutes, // स्प्लिटर के नए लिंक्स भी अब गूगल क्रॉलर्स को एक साथ मिल जाएंगे
   ];
 }

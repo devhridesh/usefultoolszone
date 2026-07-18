@@ -1,14 +1,22 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // 🚀 1. सही राउटर हुक इम्पॉर्ट किया
 
 export default function AboutUs() {
+  const router = useRouter(); // 🚀 2. हुक को इनिशियलाइज किया (इससे एडिटर में कलर डिम नहीं होगा)
+
   useEffect(() => {
-    document.title = "About Us - ClipShrink Utility Hub";
+    document.title = "About Us - Useful Tools Zone"; // ✅ नए ब्रांड नाम के अनुसार टाइटल अपडेट किया
   }, []);
 
+  // 🚀 3. पुराने window.location.href को बदलकर सेफ बैक नेविगेशन लॉजिक लगाया
   const handleBack = () => {
-    window.location.href = '/compress';
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back(); // ठीक पिछले पेज पर वापस जाने के लिए जहाँ से यूजर आया था
+    } else {
+      router.push('/'); // सेफ बैकअप: सीधे मास्टर होमपेज पर भेजने के लिए
+    }
   };
 
   return (
