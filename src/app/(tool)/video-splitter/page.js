@@ -650,12 +650,12 @@ function VideoSplitterContent({ forcedPlatform }) {
                 </div>
 
                 {/* 📤 Bulk Share Button (Matches Gradient) */}
-                <button
-                  onClick={handleShareAll}
-                  className="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
-                >
-                  <Icons.Share /> Share All Parts on {config.name}
-                </button>
+          <button
+  onClick={handleShareAll}
+  className="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+>
+  <Icons.Share /> 1-Click Share All Parts on {config.name}
+</button>
                 {/* 📜 Parts List with Big Video Tiles */}
                 <div className="space-y-8">
                   {results.map((res, i) => (
@@ -724,21 +724,22 @@ function VideoSplitterContent({ forcedPlatform }) {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-3 w-full sm:w-auto">
-                          <button
-                            onClick={() => handleShareSingle(res.file)}
-                            className="flex-1 sm:flex-none px-6 py-3 bg-emerald-500 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-lg shadow-emerald-500/20"
-                          >
-                            <Icons.Share /> Share on {config.name}
-                          </button>
-                          <a
-                            href={res.url}
-                            download={res.name}
-                            className="flex-1 sm:flex-none px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-2"
-                          >
-                            <Icons.Download /> Download
-                          </a>
-                        </div>
+               {/* 🚫 यह आपका वर्तमान कोड है जो फ़ाइल में मिलेगा */}
+<div className="flex items-center gap-3 w-full sm:w-auto">
+  <button
+    onClick={() => handleShareSingle(res.file)}
+    className="flex-1 sm:flex-none px-6 py-3 bg-emerald-500 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-lg shadow-emerald-500/20"
+  >
+    <Icons.Share /> Share on {config.name}
+  </button>
+  <a
+    href={res.url}
+    download={res.name}
+    className="flex-1 sm:flex-none px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-2"
+  >
+    <Icons.Download /> Download
+  </a>
+</div>
                       </div>
                     </div>
                   ))}
