@@ -6,6 +6,14 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import Navbar from '../components/Navbar'; // 🚀 ग्लोबल नेविगेशन बार इंपोर्ट किया
 import Footer from '../components/Footer'; // 🚀 ग्लोबल फुटर इंपोर्ट किया
 import Script from 'next/script';
+
+// 🎯 टेक्स्ट से बना इनलाइन SVG Favicon (Useful Tools Zone के लिए)
+export const metadata = {
+  icons: {
+    icon: `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%233b82f6%22/><text x=%2250%%22 y=%2255%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22sans-serif%22 font-weight=%22900%22 font-size=%2212%22>UTZ</text></svg>`,
+  },
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -16,12 +24,12 @@ export default function RootLayout({ children }) {
           {/* 1. यूनिवर्सल नेविगेशन: अब यह सभी 05 पेजों पर हैमबर्गर एक्टिव रखेगा */}
           <Navbar />
           
-      {/* 🌐 ग्लोबल ट्रांसलेशन बार: इसे यहाँ Suspense के साथ जोड़ दिया गया है ताकि 50ms ऑटो-क्लिक इंजन पूरे ऐप पर काम करे */}
+          {/* 🌐 ग्लोबल ट्रांसलेशन बार: इसे यहाँ Suspense के साथ जोड़ दिया गया है ताकि 50ms ऑटो-क्लिक इंजन पूरे ऐप पर काम करे */}
           <Suspense fallback={<div className="h-9 w-full bg-white dark:bg-[#0c0c12] animate-pulse"></div>}>
             <GlobalTranslationBar />
           </Suspense>
           
-          {/* 2. कंटेंट एरिया: फिक्स्ड नेवबार से टकराने से बचाने के लिए pt-16 (पैडिंग) दी है */}
+          {/* 2. कंटेंट AREA: फिक्स्ड नेवबार से टकराने से बचाने के लिए pt-16 (पैडिंग) दी है */}
           <div className="flex-1 flex flex-col pt-16">
             {children}
           </div>
