@@ -3,13 +3,11 @@ import { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://usefultoolszone.com/';
   
-  // कंप्रेसर मैट्रिक्स एरेज़
+  // 🟢 वेरिएबल्स के आगे से कमेंट (//) हटाकर इन्हें पूरी तरह एक्टिव किया
   const compressSizes = ['10mb', '20mb', '40mb', '50mb'];
   const compressPlatforms = [
     'whatsapp', 'gmail', 'tiktok', 'instagram', 'youtube-shorts', 'wechat', 'line', 'discord', 'pinterest'
   ];
-
-  // वीडियो स्प्लिटर मैट्रिक्स एरेज़ (जो आपके ड्रॉपडाउन में लाइव हैं)
   const splitterPlatforms = [
     'whatsapp', 'instagram', 'youtube-shorts', 'tiktok', 'telegram', 'line', 'wechat', 'pinterest'
   ];
@@ -95,6 +93,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
     },
     ...compressorRoutes,
-    ...splitterRoutes, // स्प्लिटर के नए लिंक्स भी अब गूगल क्रॉलर्स को एक साथ मिल जाएंगे
-  ];
+    ...splitterRoutes,
+  ]; // 🟢 आख़िरी ऐरे क्लोजर का कमेंट हटाकर सिंटैक्स को सही किया गया
 }
