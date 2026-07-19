@@ -5,52 +5,50 @@ import Link from "next/link"; // ⚡ नो-फ्लिकर राउटि�
 import GlassCard from "@/components/ui/GlassCard";
 import AdBanner from "@/components/ui/AdBanner";
 
-
-
 // 🔗 Compressor Page Link Configuration (Isey kal ko badal kar '/compressor' bhi kar sakte hain)
 const COMPRESS_LINK = "/compress";
 const PLATFORM_CONFIG = {
-  whatsapp: { 
+  whatsapp: {
     name: "WhatsApp Status", // 👈 'WhatsApp' से बदलकर 'WhatsApp Status' किया
     presets: [30, 60, 90],
     h1: "Smart Video Splitter for WhatsApp Status & Stories",
     // बाकी का इंट्रो और FAQ डेटा वैसा ही रहेगा...
   },
-  instagram: { 
+  instagram: {
     name: "Instagram Reels", // 👈 'Instagram' से बदलकर 'Instagram Reels' किया
     presets: [60, 90],
     h1: "High-Fidelity Video Cutter for Instagram Reels & Stories",
   },
-  youtube: { 
+  youtube: {
     name: "YouTube Shorts", // 👈 'YouTube' से बदलकर 'YouTube Shorts' किया
     presets: [60, 30],
     h1: "Professional Video Splitter for YouTube Shorts & Videos",
   },
-  tiktok: { 
+  tiktok: {
     name: "TikTok Video", // 👈 'TikTok' से बदलकर 'TikTok Video' किया
     presets: [60, 180],
     h1: "Zero-Loss Video Segmenter for TikTok Uploads",
   },
-  telegram: { 
+  telegram: {
     name: "Telegram Slicer", // 👈 'Telegram' से बदलकर 'Telegram Slicer' किया
     presets: [60],
     h1: "Fast Local Video Slicer for Telegram Channels",
   },
-  line: { 
+  line: {
     name: "LINE App Video", // 👈 'LINE' से बदलकर 'LINE App Video' किया
-    presets: [60], 
-    h1: "LINE App Video Segmenter", 
+    presets: [60],
+    h1: "LINE App Video Segmenter",
   },
-  wechat: { 
+  wechat: {
     name: "WeChat Moments", // 👈 'WeChat' से बदलकर 'WeChat Moments' किया
-    presets: [60], 
-    h1: "WeChat Moments Video Cutter", 
+    presets: [60],
+    h1: "WeChat Moments Video Cutter",
   },
-  pinterest: { 
+  pinterest: {
     name: "Pinterest Pins", // 👈 'Pinterest' से बदलकर 'Pinterest Pins' किया
-    presets: [60], 
-    h1: "Pinterest Video Idea Pin Splitter", 
-  }
+    presets: [60],
+    h1: "Pinterest Video Idea Pin Splitter",
+  },
 };
 
 // 🎨 HD SVG Icons Component
@@ -588,7 +586,6 @@ function VideoSplitterContent({ forcedPlatform }) {
               Split long videos into perfect parts without breaking flow.
             </p>
           </div>
-
           <GlassCard className="p-6 md:p-10 space-y-8 bg-white dark:bg-slate-900 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 rounded-2xl">
             {/* 📁 Upload State */}
             {results.length === 0 && !isProcessing && (
@@ -650,12 +647,12 @@ function VideoSplitterContent({ forcedPlatform }) {
                 </div>
 
                 {/* 📤 Bulk Share Button (Matches Gradient) */}
-          <button
-  onClick={handleShareAll}
-  className="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
->
-  <Icons.Share /> 1-Click Share All Parts on {config.name}
-</button>
+                <button
+                  onClick={handleShareAll}
+                  className="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+                >
+                  <Icons.Share /> 1-Click Share All Parts on {config.name}
+                </button>
                 {/* 📜 Parts List with Big Video Tiles */}
                 <div className="space-y-8">
                   {results.map((res, i) => (
@@ -724,22 +721,22 @@ function VideoSplitterContent({ forcedPlatform }) {
                           </span>
                         </div>
 
-               {/* 🚫 यह आपका वर्तमान कोड है जो फ़ाइल में मिलेगा */}
-<div className="flex items-center gap-3 w-full sm:w-auto">
-  <button
-    onClick={() => handleShareSingle(res.file)}
-    className="flex-1 sm:flex-none px-6 py-3 bg-emerald-500 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-lg shadow-emerald-500/20"
-  >
-    <Icons.Share /> Share on {config.name}
-  </button>
-  <a
-    href={res.url}
-    download={res.name}
-    className="flex-1 sm:flex-none px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-2"
-  >
-    <Icons.Download /> Download
-  </a>
-</div>
+                        {/* 🟢 अपडेटेड मोबाइल-रिस्पॉन्सिव बटन ब्लॉक */}
+                        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                          <button
+                            onClick={() => handleShareSingle(res.file)}
+                            className="w-full sm:w-auto flex-1 sm:flex-none px-6 py-3 bg-emerald-500 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-lg shadow-emerald-500/20"
+                          >
+                            <Icons.Share /> Share on {config.name}
+                          </button>
+                          <a
+                            href={res.url}
+                            download={res.name}
+                            className="w-full sm:w-auto flex-1 sm:flex-none px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-2"
+                          >
+                            <Icons.Download /> Download
+                          </a>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -833,41 +830,43 @@ function VideoSplitterContent({ forcedPlatform }) {
                         <div className="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
                       </div>
                     </div>
-{/* 🧠 Psychological Trust & Value Message */}
-              <div className="text-center space-y-1">
-                <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
-                  <span className="text-indigo-600 dark:text-indigo-400">
-                    Great things take a little time!
-                  </span>{" "}
-                  💡
-                </p>
-                <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
-                  We are running a heavy precision algorithm directly on
-                  your device to ensure zero quality loss and 100%
-                  privacy. Please do not close this tab.
-                </p>
-              </div>
-            </div>
-          )}
+                    {/* 🧠 Psychological Trust & Value Message */}
+                    <div className="text-center space-y-1">
+                      <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                        <span className="text-indigo-600 dark:text-indigo-400">
+                          Great things take a little time!
+                        </span>{" "}
+                        💡
+                      </p>
+                      <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
+                        We are running a heavy precision algorithm directly on
+                        your device to ensure zero quality loss and 100%
+                        privacy. Please do not close this tab.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
-          {/* 3. Target Platform Dropdown */}
-          <div className="space-y-3">
-            <label className="text-xs font-bold text-slate-500">
-              Target Platform
-            </label>
-            <select
-              /* 🔄 पुराना ?for= वाला यूआरएल हटाकर इसे 100% शुद्ध पाथ बेस्ड राउटिंग पर लॉक किया */
-              onChange={(e) => router.push(`/video-splitter/${e.target.value}`)}
-              value={platformKey}
-              className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer"
-            >
-              {Object.keys(PLATFORM_CONFIG).map((key) => (
-                <option key={key} value={key}>
-                  {PLATFORM_CONFIG[key].name}
-                </option>
-              ))}
-            </select>
-          </div>
+                {/* 3. Target Platform Dropdown */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-500">
+                    Target Platform
+                  </label>
+                  <select
+                    /* 🔄 पुराना ?for= वाला यूआरएल हटाकर इसे 100% शुद्ध पाथ बेस्ड राउटिंग पर लॉक किया */
+                    onChange={(e) =>
+                      router.push(`/video-splitter/${e.target.value}`)
+                    }
+                    value={platformKey}
+                    className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all cursor-pointer"
+                  >
+                    {Object.keys(PLATFORM_CONFIG).map((key) => (
+                      <option key={key} value={key}>
+                        {PLATFORM_CONFIG[key].name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 {/* 🚀 4. Start Splitting Button */}
                 <button
@@ -892,9 +891,6 @@ function VideoSplitterContent({ forcedPlatform }) {
               </div>
             )}
           </GlassCard>
-
-
-
           {/* 🔗 VERIFIED INTERNAL LINKING MATRIX GRID FOR SPLITTER (Compressor Tool Replica) */}
           <div className="w-full max-w-4xl mx-auto mt-6 px-1">
             <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 tracking-wide block mb-3 uppercase text-left">
@@ -902,14 +898,54 @@ function VideoSplitterContent({ forcedPlatform }) {
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {[
-                { slug: "whatsapp", label: "WhatsApp Status", className: "bg-green-50/40 dark:bg-green-950/10 border-green-200 dark:border-green-900/50 text-green-600 dark:text-green-400 font-bold hover:border-green-500" },
-                { slug: "instagram", label: "Instagram Reels", className: "bg-pink-50/40 dark:bg-pink-950/10 border-pink-200 dark:border-pink-900/50 text-pink-600 dark:text-pink-400 font-bold hover:border-pink-500" },
-                { slug: "youtube", label: "YouTube Shorts", className: "bg-red-50/40 dark:bg-red-950/10 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 font-bold hover:border-red-500" },
-                { slug: "tiktok", label: "TikTok Video", className: "bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-gray-900 dark:text-white font-bold hover:border-black dark:hover:border-white" },
-                { slug: "telegram", label: "Telegram Slicer", className: "bg-indigo-50/40 dark:bg-indigo-950/10 border-indigo-200 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold hover:border-indigo-500" },
-                { slug: "line", label: "LINE App Video", className: "bg-lime-50/40 dark:bg-lime-950/10 border-lime-200 dark:border-lime-900/50 text-lime-600 dark:text-lime-400 font-bold hover:border-lime-500" },
-                { slug: "wechat", label: "WeChat Moments", className: "bg-emerald-50/40 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400 font-bold hover:border-emerald-500" },
-                { slug: "pinterest", label: "Pinterest Pins", className: "bg-rose-50/40 dark:bg-rose-950/10 border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 font-bold hover:border-rose-500" }
+                {
+                  slug: "whatsapp",
+                  label: "WhatsApp Status",
+                  className:
+                    "bg-green-50/40 dark:bg-green-950/10 border-green-200 dark:border-green-900/50 text-green-600 dark:text-green-400 font-bold hover:border-green-500",
+                },
+                {
+                  slug: "instagram",
+                  label: "Instagram Reels",
+                  className:
+                    "bg-pink-50/40 dark:bg-pink-950/10 border-pink-200 dark:border-pink-900/50 text-pink-600 dark:text-pink-400 font-bold hover:border-pink-500",
+                },
+                {
+                  slug: "youtube",
+                  label: "YouTube Shorts",
+                  className:
+                    "bg-red-50/40 dark:bg-red-950/10 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 font-bold hover:border-red-500",
+                },
+                {
+                  slug: "tiktok",
+                  label: "TikTok Video",
+                  className:
+                    "bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-gray-900 dark:text-white font-bold hover:border-black dark:hover:border-white",
+                },
+                {
+                  slug: "telegram",
+                  label: "Telegram Slicer",
+                  className:
+                    "bg-indigo-50/40 dark:bg-indigo-950/10 border-indigo-200 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold hover:border-indigo-500",
+                },
+                {
+                  slug: "line",
+                  label: "LINE App Video",
+                  className:
+                    "bg-lime-50/40 dark:bg-lime-950/10 border-lime-200 dark:border-lime-900/50 text-lime-600 dark:text-lime-400 font-bold hover:border-lime-500",
+                },
+                {
+                  slug: "wechat",
+                  label: "WeChat Moments",
+                  className:
+                    "bg-emerald-50/40 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400 font-bold hover:border-emerald-500",
+                },
+                {
+                  slug: "pinterest",
+                  label: "Pinterest Pins",
+                  className:
+                    "bg-rose-50/40 dark:bg-rose-950/10 border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 font-bold hover:border-rose-500",
+                },
               ].map((item) => (
                 <Link
                   key={item.slug}
@@ -921,9 +957,7 @@ function VideoSplitterContent({ forcedPlatform }) {
               ))}
             </div>
           </div>
-
           <div className="h-6 w-full"></div> {/* छोटा विजुअल गैप */}
-
           {/* 🚀 PROGRAMMATIC SEO KNOWLEDGE HUBS (AdSense Bot Safe Architecture) */}
           <div className="w-full max-w-4xl mx-auto mt-16 px-4 sm:px-6 notranslate">
             {/* 📊 Technical Specification Grid Matrix */}
@@ -1026,7 +1060,6 @@ function VideoSplitterContent({ forcedPlatform }) {
               </div>
             </div>
           </div>
-
           <div className="w-full h-20 bg-slate-50 dark:bg-white/5 border border-dashed border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-400 text-xs rounded-xl">
             Bottom Ad Space
           </div>
@@ -1039,9 +1072,6 @@ function VideoSplitterContent({ forcedPlatform }) {
     </div>
   );
 }
-
-
-
 
 export default function VideoSplitter({ forcedPlatform }) {
   return (
