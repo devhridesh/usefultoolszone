@@ -146,6 +146,33 @@ function VideoSplitterContent({ forcedPlatform }) {
 
   const ffmpegRef = useRef(null);
 
+  const wakeLockRef = useRef(null);
+
+  // ☀️ स्क्रीन को चालू रखने का फंक्शन (PC और Mobile दोनों के लिए)
+  const requestWakeLock = async () => {
+    try {
+      if ("wakeLock" in navigator) {
+        wakeLockRef.current = await navigator.wakeLock.request("screen");
+        console.log("Wake Lock active: Screen will stay awake.");
+      }
+    } catch (err) {
+      console.warn("Wake Lock request failed:", err);
+    }
+  };
+
+  // 🌙 स्क्रीन को वापस नॉर्मल स्लीप मोड में डालने का फंक्शन
+  const releaseWakeLock = async () => {
+    try {
+      if (wakeLockRef.current) {
+        await wakeLockRef.current.release();
+        wakeLockRef.current = null;
+        console.log("Wake Lock released: Normal sleep mode restored.");
+      }
+    } catch (err) {
+      console.error("Wake Lock release failed:", err);
+    }
+  };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFileError(""); // Nayi file aane par purani error saaf karein
@@ -203,6 +230,7 @@ function VideoSplitterContent({ forcedPlatform }) {
   const handleSplit = async () => {
     if (!file) return;
     setIsProcessing(true);
+    await requestWakeLock();
     setProgress(0);
     setResults([]);
 
@@ -512,6 +540,9 @@ function VideoSplitterContent({ forcedPlatform }) {
 
         setResults(mappedResults);
         setIsProcessing(false);
+        {
+          /* 🟢 बदलाव के बाद कोड ऐसा हो जाएगा */
+        }
       } catch (fallbackError) {
         console.error("🔴 Hard Failure:", fallbackError);
         setFileError(
@@ -521,9 +552,9 @@ function VideoSplitterContent({ forcedPlatform }) {
       }
     } finally {
       window.Worker = OriginalWorker;
+      await releaseWakeLock(); // 🟢 काम खत्म, स्क्रीन को वापस आज़ाद करें
     }
   };
-
   // 📤 Dynamic Share All Logic
   const handleShareAll = async () => {
     const filesToShare = results.map((r) => r.file);
