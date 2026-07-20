@@ -2,14 +2,22 @@ import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://usefultoolszone.com/';
+<<<<<<< HEAD
 
   // 📈 Video Compressor Parameters Matrix Array
+=======
+  
+  // 🟢 वेरिएबल्स के आगे से कमेंट (//) हटाकर इन्हें पूरी तरह एक्टिव किया
+>>>>>>> 6119fc4c07175b8aa189a631dcf093483d1365dc
   const compressSizes = ['10mb', '20mb', '40mb', '50mb'];
   const compressPlatforms = [
     'whatsapp', 'gmail', 'tiktok', 'instagram', 'youtube-shorts', 'wechat', 'line', 'discord', 'pinterest'
   ];
+<<<<<<< HEAD
 
   // ✂️ Video Splitter Optimization Targets Array
+=======
+>>>>>>> 6119fc4c07175b8aa189a631dcf093483d1365dc
   const splitterPlatforms = [
     'whatsapp', 'instagram', 'youtube-shorts', 'tiktok', 'telegram', 'line', 'wechat', 'pinterest'
   ];
@@ -106,6 +114,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...compressorRoutes,
     ...splitterRoutes,
+<<<<<<< HEAD
     ...pdfRoutes, // Seamless injection of all 14 programmatic optimization paths
   ];
+=======
+  ]; // 🟢 आख़िरी ऐरे क्लोजर का कमेंट हटाकर सिंटैक्स को सही किया गया
+>>>>>>> 6119fc4c07175b8aa189a631dcf093483d1365dc
 }

@@ -12,9 +12,7 @@ export default function CompressorContainer({ initialSize, platform }) {
     statusText,
     compressedBlob,
     isStuck,
-    setIsStuck,
     isTechnicalFreeze,
-    setIsTechnicalFreeze,
   } = useVideoCompressor();
 
   const [targetSize, setTargetSize] = useState(initialSize || "10");
