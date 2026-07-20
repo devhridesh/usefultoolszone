@@ -19,18 +19,40 @@ export const metadata = {
   },
 };
 
+export default async function MasterHomepage({ searchParams }) {
+  // Parsing structural incoming URL parameters safely for crawlable tab filters
+  const params = await searchParams;
+  const activeTab = params?.tab || "all";
 
-export default function MasterHomepage() {
-  // आपके सभी टूल्स की डायनेमिक लिस्ट
+  // Dynamic UI Header content dictionary based on selected tab state
+  const headerContent = {
+    all: {
+      sub: "Next-Gen Serverless Utilities at One Place Locally",
+      desc: "Professional grade media optimization tools executing 100% client-side inside a secure isolated sandbox."
+    },
+    video: {
+      sub: "Compress & Split Videos at One Place Locally",
+      desc: "High-performance browser client encoders to optimize and slash video footprints with zero data leakage."
+    },
+    pdf: {
+      sub: "Merge Images & Compress PDF at One Place Locally",
+      desc: "Convert multiple document sheets and graphic logs into clean, highly compressed PDF files instantly."
+    }
+  };
+
+  const currentHeader = headerContent[activeTab] || headerContent.all;
+
+  // आपके सभी टूल्स की लिस्ट
   const tools = [
     {
       title: "Compress Videos Locally",
-      description: "Reduce video size instantly with zero quality loss. Works 100% offline inside your browser sandbox for absolute privacy.",
+      description: "Compress video size instantly with zero quality loss. Works 100% offline inside your browser sandbox for absolute privacy.",
       link: "/compressor",
       badge: "100% Private",
       badgeColor: "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400",
       btnText: "Launch Compressor",
-      icon: "📉"
+      icon: "📉",
+      category: "video"
     },
     {
       title: "Smart Video Splitter",
@@ -39,18 +61,32 @@ export default function MasterHomepage() {
       badge: "Zero Voice Cuts",
       badgeColor: "bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400",
       btnText: "Launch Splitter",
-      icon: "✂️"
+      icon: "✂️",
+      category: "video"
+    },
+    {
+      title: "Merge Images & Compress PDF",
+      description: "Convert and compress multiple graphic layouts into a highly optimized PDF document instantly at One Place Locally.",
+      link: "/merge-images-compress-pdf-at-one-place", // 🌐 Updated SEO Action URL
+      badge: "Serverless Engine",
+      badgeColor: "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400",
+      btnText: "Launch Converter",
+      icon: "📄",
+      category: "pdf"
     }
   ];
 
+  const filteredTools = tools.filter(
+    (tool) => activeTab === "all" || tool.category === activeTab
+  );
+
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-start bg-slate-50 dark:bg-[#060609] pt-24 pb-12">
+    <div className="w-full min-h-screen flex flex-col items-center justify-start bg-slate-50/60 dark:bg-[#060609] pt-24 pb-12">
       
-   
-      {/* 🏢 2. ENTERPRISE 3-COLUMN RESPONSIVE LAYOUT */}
+      {/* 🏢 ENTERPRISE 3-COLUMN RESPONSIVE LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full max-w-7xl mx-auto items-start px-4 flex-1">
         
-        {/* 🗺️ LEFT SIDE PC AD: डेस्कटॉप पर खाली जगह घेरता है, मोबाइल पर खुद हाइड हो जाता है */}
+        {/* 🗺️ LEFT SIDE PC AD */}
         <div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex-col items-center justify-center text-center p-2 shadow-sm">
           <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">[ PC SIDEBAR AD 1 <br /> Skyscraper ]</span>
           <div className="mt-4 w-full">
@@ -59,56 +95,84 @@ export default function MasterHomepage() {
         </div>
 
         {/* 🎯 CENTER MAIN CONTENT MODULE */}
-        <main className="col-span-1 lg:col-span-8 w-full flex flex-col items-center justify-start">
-          
-          {/* हेडर सेक्शन */}
-          <div className="text-center space-y-4 max-w-2xl mx-auto mb-12">
-            <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+        <main className="col-span-1 lg:col-span-8 w-full flex flex-col items-center justify-start space-y-8">
+       {/* हेडर सेक्शन - Dynamic and Context Aware Heading */}
+          <div className="text-center space-y-3 max-w-2xl mx-auto mb-2 animate-fadeIn">
+            <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               Useful Tools Zone <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                Next-Gen Serverless Utilities
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold text-2xl sm:text-3xl block mt-1.5">
+                {currentHeader.sub}
               </span>
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-              Professional grade media optimization tools that execute 100% client-side. 
-              <span className="block mt-1 font-bold text-slate-800 dark:text-slate-200">
-                Your data never leaves your device. No uploads, no limits.
-              </span>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl mx-auto font-medium">
+              {currentHeader.desc}
             </p>
+            
+            {/* 🌟 PREMIUM PILL HIGH-LIGHTING BADGES (Exact Clone of Tool Toggles) */}
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-3 select-none">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/40 shadow-sm transition-all duration-200">
+                <span>🔒</span> Your data never leaves your device
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/70 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/40 shadow-sm transition-all duration-200">
+                <span>🛡️</span> No uploads, no limits
+              </span>
+            </div>
           </div>
 
-          {/* टूल्स लिस्टिंग ग्रिड */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full items-stretch mb-16">
-            {tools.map((tool, index) => (
-              <div key={index} className="relative group transition-all duration-500 hover:-translate-y-1 rounded-3xl flex">
-                {/* होवर करने पर आने वाला ग्लो इफ़ेक्ट */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-3xl blur opacity-0 group-hover:opacity-15 transition duration-500"></div>
+          {/* 🔘 TRUSTED TAB FILTER BAR */}
+          <div className="w-full flex justify-start sm:justify-center items-center gap-2 border-b border-slate-200 dark:border-white/5 pb-2.5 overflow-x-auto no-scrollbar scroll-smooth">
+            {[
+              { id: "all", label: "All Tools" },
+              { id: "video", label: "Video Utilities" },
+              { id: "pdf", label: "PDF Utilities" }
+            ].map((tab) => (
+              <Link
+                key={tab.id}
+                href={`?tab=${tab.id}`}
+                scroll={false}
+                className={`px-5 py-2 text-[10px] sm:text-xs font-bold rounded-xl tracking-wider uppercase whitespace-nowrap transition-all duration-150 ${
+                  activeTab === tab.id
+                    ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm"
+                    : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 dark:bg-[#0c0c12] dark:text-slate-400 dark:border-white/5"
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* टूल्स लिस्टिंग ग्रिड - Re-injecting Neon Glow and Logo Gradient Sync */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-stretch mb-16 pt-2">
+            {filteredTools.map((tool, index) => (
+              <div key={index} className="relative group transition-all duration-300 hover:-translate-y-1 rounded-3xl flex">
                 
-                {/* GlassCard का रियूज़ */}
-                <GlassCard className="relative w-full p-6 z-10 ring-1 ring-slate-200/50 dark:ring-white/5 shadow-md flex flex-col justify-between bg-white/60 dark:bg-black/40">
+                {/* 🌟 NEON GLOW BACKDROP LAYER (Logo Color Matched) */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-15 group-hover:opacity-35 transition duration-300"></div>
+                
+                <GlassCard className="relative w-full p-5 z-10 border border-slate-200/60 dark:border-white/5 shadow-sm bg-white dark:bg-[#0c0c12] rounded-3xl flex flex-col justify-between">
                   <div className="space-y-4">
-                    {/* आइकॉन और बैज */}
                     <div className="flex items-center justify-between">
-                      <span className="text-3xl">{tool.icon}</span>
-                      <span className={`px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-full border border-slate-100 dark:border-white/5 ${tool.badgeColor}`}>
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-2xl">
+                        {tool.icon}
+                      </div>
+                      <span className={`px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md ${tool.badgeColor}`}>
                         {tool.badge}
                       </span>
                     </div>
 
-                    {/* टाइटल और डिस्क्रिप्शन */}
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                    <div className="space-y-1.5 text-left">
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                         {tool.title}
                       </h3>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
                         {tool.description}
                       </p>
                     </div>
                   </div>
 
-                  {/* एक्शन बटन */}
-                  <div className="pt-6">
-                    <Link href={tool.link} className="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold text-xs rounded-xl shadow-md transition-all active:scale-[0.98]">
+                  <div className="pt-5">
+                    {/* Brand matching dynamic gradient button layout */}
+                    <Link href={tool.link} className="block w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-center font-bold text-xs rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98]">
                       {tool.btnText}
                     </Link>
                   </div>
@@ -117,23 +181,23 @@ export default function MasterHomepage() {
             ))}
           </div>
           
-{/* 📱 ONLY MOBILE AD ZONE - FIXED */}
-<div className="block lg:hidden w-full max-w-md mx-auto mb-10 px-4 animate-fadeIn">
-  <div className="w-full min-h-[120px] bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold p-4 text-center shadow-sm select-none">
-    <span className="uppercase tracking-widest text-indigo-500/80 font-bold mb-1">
-      [ Sponsored Mobile Content Zone ]
-    </span>
-    <p className="text-[11px] text-gray-400 dark:text-gray-500 max-w-xs leading-relaxed font-medium mt-1">
-      Mobile banner script optimized. Error iframe hidden safely in local dev.
-    </p>
-  </div>
-</div>
+          {/* 📱 ONLY MOBILE AD ZONE */}
+          <div className="block lg:hidden w-full max-w-md mx-auto mb-10 px-4 animate-fadeIn">
+            <div className="w-full min-h-[120px] bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold p-4 text-center shadow-sm select-none">
+              <span className="uppercase tracking-widest text-indigo-500/80 font-bold mb-1">
+                [ Sponsored Mobile Content Zone ]
+              </span>
+              <p className="text-[11px] text-gray-400 dark:text-gray-500 max-w-xs leading-relaxed font-medium mt-1">
+                Mobile banner script optimized. Error iframe hidden safely in local dev.
+              </p>
+            </div>
+          </div>
 
-          {/* 🚀 3. HIGH-AUTHORITY E-A-T pSEO & USER SUPPORT HUB (AdSense Booster Shield) */}
+          {/* 🚀 HIGH-AUTHORITY E-A-T pSEO & USER SUPPORT HUB */}
           <div className="w-full border-t border-slate-200/60 dark:border-white/5 pt-10 notranslate text-left space-y-8 max-w-3xl">
             
             <section className="space-y-3">
-              <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">
                 Why Useful Tools Zone is Redefining Web Utilities
               </h2>
               <p className="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">
@@ -144,18 +208,18 @@ export default function MasterHomepage() {
             {/* विजुअल हाइलाइट्स ग्रिड */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-white dark:bg-[#0c0c12] border border-slate-200/60 dark:border-white/5 rounded-xl shadow-sm">
-                <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-1">🔒 100% Cryptographic Privacy</h4>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wide mb-1">🔒 100% Cryptographic Privacy</h4>
                 <p className="text-[11px] text-slate-500 dark:text-gray-400 leading-relaxed">Every optimization tool runs locally within an isolated client stack. Zero tracking hooks, zero cloud processing endpoints, absolute integrity.</p>
               </div>
               <div className="p-4 bg-white dark:bg-[#0c0c12] border border-slate-200/60 dark:border-white/5 rounded-xl shadow-sm">
-                <h4 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide mb-1">⚡ Ultra Bandwidth Allocation</h4>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wide mb-1">⚡ Ultra Bandwidth Allocation</h4>
                 <p className="text-[11px] text-slate-500 dark:text-gray-400 leading-relaxed">Since files are parsed locally, you completely eliminate server waiting loops. No data caps, no registration walls, zero bandwidth friction.</p>
               </div>
             </div>
 
             {/* यूजर हेल्प और सामान्य प्रश्न */}
             <section className="bg-white dark:bg-[#0c0c12] border border-slate-200/60 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-              <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider mb-4">Frequently Asked Questions & Support Hub</h3>
+              <h3 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-4">Frequently Asked Questions & Support Hub</h3>
               <div className="space-y-4 text-xs">
                 <div className="border-b border-slate-100 dark:border-white/5 pb-3">
                   <h4 className="font-bold text-slate-800 dark:text-gray-200 mb-1">Q: How do these serverless utilities function completely offline?</h4>
@@ -177,7 +241,7 @@ export default function MasterHomepage() {
           </div>
         </main>
 
-        {/* 🗺️ RIGHT SIDE PC AD: डेस्कटॉप पर खाली जगह घेरता है, मोबाइल पर खुद हाइड हो जाता है */}
+        {/* 🗺️ RIGHT SIDE PC AD */}
         <div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex-col items-center justify-center text-center p-2 shadow-sm">
           <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">[ PC SIDEBAR AD 2 <br /> Skyscraper ]</span>
           <div className="mt-4 w-full">

@@ -9,10 +9,18 @@ export default function Navbar() {
   const [isToolsOpen, setIsToolsOpen] = useState(false); // डेस्कटॉप टूल्स ड्रॉपडाउन स्टेट
   const dropdownRef = useRef(null);
 
-  // डेस्कटॉप ड्रॉपडाउन के लिए आपके लाइव टूल्स का डेटा सोर्स
-  const toolsList = [
-    { name: "Video Compressor", link: "/compress", icon: "📉", desc: "Reduce video size locally" },
+  const videoTools = [
+    { name: "Video Compressor", link: "/compressor", icon: "📉", desc: "Compress video size locally" },
     { name: "Smart Video Splitter", link: "/video-splitter", icon: "✂️", desc: "Split for WhatsApp & Reels" }
+  ];
+
+  const pdfTools = [
+    { 
+      name: "Merge Images & Compress PDF", 
+      link: "/merge-images-compress-pdf-at-one-place", // 🌐 404 fix: Updated to new SEO path
+      icon: "📄", 
+      desc: "Merge & compress images at One Place Locally" 
+    }
   ];
 
   // बाहर क्लिक करने पर ड्रॉपडाउन बंद करने के लिए
@@ -39,7 +47,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* राइट साइड मेनू (हमेशा विज़िबल) */}
+          {/* राइट side मेनू (हमेशा विज़िबल) */}
           <div className="flex items-center gap-4 sm:gap-6">
             
             {/* होम लिंक */}
@@ -47,37 +55,57 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* 🛠️ 'All Tools' डेस्कटॉप ड्रॉपडाउन लिस्टिंग */}
-            <div className="relative" ref={dropdownRef}>
+            {/* 🛠️ 'All Tools' डेस्कटॉप ड्रॉपडाउन लिस्टिंग (Hover group active) */}
+            <div className="relative group py-5" ref={dropdownRef}>
               <button
+                type="button"
                 onClick={() => setIsToolsOpen(!isToolsOpen)}
-                className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 hover:text-blue-500 transition-colors focus:outline-none"
+                className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 group-hover:text-blue-500 transition-colors focus:outline-none"
               >
                 All Tools
-                <span className={`text-[9px] transition-transform duration-200 ${isToolsOpen ? 'rotate-180' : ''}`}>▼</span>
+                <span className="text-[9px] transition-transform duration-200 group-hover:rotate-180 block pt-0.5">▼</span>
               </button>
 
-              {isToolsOpen && (
-                <div className="absolute right-0 mt-3 w-64 bg-white dark:bg-[#0d0d14] rounded-2xl shadow-xl ring-1 ring-slate-200/50 dark:ring-white/5 p-3 flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-gray-500 px-2.5 pb-1 border-b border-slate-100 dark:border-white/5 mb-1">
-                    Video Utilities
-                  </div>
-                  {toolsList.map((tool, idx) => (
-                    <Link
-                      key={idx}
-                      href={tool.link}
-                      onClick={() => setIsToolsOpen(false)}
-                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all group"
-                    >
-                      <span className="text-lg">{tool.icon}</span>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors">{tool.name}</div>
-                        <div className="text-[10px] text-slate-400 dark:text-gray-500 mt-0.5">{tool.desc}</div>
-                      </div>
-                    </Link>
-                  ))}
+              {/* 🎨 CSS-Hover + Toggle Alignment Container */}
+              <div className="absolute right-0 top-full hidden group-hover:flex flex-col w-64 bg-white dark:bg-[#0d0d14] rounded-2xl shadow-xl ring-1 ring-slate-200/50 dark:ring-white/5 p-3 gap-1 animate-in fade-in slide-in-from-top-2 duration-150 z-50">
+                {/* Video Section */}
+                <div className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-gray-500 px-2.5 pb-1 border-b border-slate-100 dark:border-white/5 mb-1 select-none">
+                  Video Utilities
                 </div>
-              )}
+                {videoTools.map((tool, idx) => (
+                  <Link
+                    key={`video-${idx}`}
+                    href={tool.link}
+                    onClick={() => setIsToolsOpen(false)}
+                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all original-group"
+                  >
+                    <span className="text-lg">{tool.icon}</span>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white transition-colors">{tool.name}</div>
+                      <div className="text-[10px] text-slate-400 dark:text-gray-500 mt-0.5">{tool.desc}</div>
+                    </div>
+                  </Link>
+                ))}
+
+                {/* PDF Section */}
+                <div className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-gray-500 px-2.5 pb-1 border-b border-slate-100 dark:border-white/5 mt-2 mb-1 select-none">
+                  PDF Utilities
+                </div>
+                {pdfTools.map((tool, idx) => (
+                  <Link
+                    key={`pdf-${idx}`}
+                    href={tool.link}
+                    onClick={() => setIsToolsOpen(false)}
+                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all original-group"
+                  >
+                    <span className="text-lg">{tool.icon}</span>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white transition-colors">{tool.name}</div>
+                      <div className="text-[10px] text-slate-400 dark:text-gray-500 mt-0.5">{tool.desc}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
 
             {/* Divider */}
@@ -103,7 +131,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 🚀 हैमबर्गर मेनू ड्रावर: अब यहाँ टूल्स नहीं दिखेंगे, सिर्फ साफ़-सुथरे सपोर्ट पेजों की लिस्ट होगी */}
+      {/* 🚀 हैमबर्गर मेनू ड्रावर: अब यहाँ टूल्स नहीं दिखेंगे, सिर्फ साफ़-सुथरे सपोर्ट पेजों की लिस्ट होगी */}
       {isOpen && (
         <div className="bg-white dark:bg-[#0a0a0a] border-t border-slate-200 dark:border-white/5 max-h-[85vh] overflow-y-auto animate-in slide-in-from-top duration-200">
           <div className="px-3 pt-2 pb-5 space-y-1 text-center">

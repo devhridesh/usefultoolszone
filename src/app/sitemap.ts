@@ -2,67 +2,77 @@ import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://usefultoolszone.com/';
-  
-  // कंप्रेसर मैट्रिक्स एरेज़
+
+  // 📈 Video Compressor Parameters Matrix Array
   const compressSizes = ['10mb', '20mb', '40mb', '50mb'];
   const compressPlatforms = [
     'whatsapp', 'gmail', 'tiktok', 'instagram', 'youtube-shorts', 'wechat', 'line', 'discord', 'pinterest'
   ];
 
-  // वीडियो स्प्लिटर मैट्रिक्स एरेज़ (जो आपके ड्रॉपडाउन में लाइव हैं)
+  // ✂️ Video Splitter Optimization Targets Array
   const splitterPlatforms = [
     'whatsapp', 'instagram', 'youtube-shorts', 'tiktok', 'telegram', 'line', 'wechat', 'pinterest'
   ];
 
-  // 1. COMPRESSOR DYNAMIC SUB-ROUTES LOOP (Updated to /compressor/)
+  // 📄 Niche PDF Target Presets Integration Loop
+  const pdfSlugs = [
+    'upsc-sign', 'ssc-photo', 'sarkari-doc-100kb', 'pan-card-200kb', 
+    'whatsapp-doc', 'gmail-25mb', 'compress-50kb', 'compress-100kb', 
+    'compress-200kb', 'compress-500kb', 'compress-1mb', 'compress-2mb', 
+    'compress-5mb', 'compress-10mb'
+  ];
+
+  // 🔄 Component 1: Video Compressor Loop
   const compressorRoutes = [
     ...compressSizes.map((size) => ({
       url: `${baseUrl}compressor/${size}`,
       lastModified: new Date(),
       priority: 0.8,
-      alternates: {
-        languages: {
-          es: `${baseUrl}compressor/${size}?lang=es`,
-          pt: `${baseUrl}compressor/${size}?lang=pt`,
-          hi: `${baseUrl}compressor/${size}?lang=hi`,
-        },
-      },
+      alternates: { languages: { es: `${baseUrl}compressor/${size}?lang=es`, pt: `${baseUrl}compressor/${size}?lang=pt`, hi: `${baseUrl}compressor/${size}?lang=hi` } },
     })),
     ...compressPlatforms.map((platform) => ({
       url: `${baseUrl}compressor/${platform}`,
       lastModified: new Date(),
       priority: 0.9,
-      alternates: {
-        languages: {
-          es: `${baseUrl}compressor/${platform}?lang=es`,
-          pt: `${baseUrl}compressor/${platform}?lang=pt`,
-          hi: `${baseUrl}compressor/${platform}?lang=hi`,
-        },
-      },
+      alternates: { languages: { es: `${baseUrl}compressor/${platform}?lang=es`, pt: `${baseUrl}compressor/${platform}?lang=pt`, hi: `${baseUrl}compressor/${platform}?lang=hi` } },
     })),
   ];
 
-  // 2. VIDEO SPLITTER DYNAMIC SUB-ROUTES LOOP (New Advanced Architecture)
+  // 🔄 Component 2: Video Splitter Loop
   const splitterRoutes = splitterPlatforms.map((platform) => ({
     url: `${baseUrl}video-splitter/${platform}`,
     lastModified: new Date(),
     priority: 0.9,
+    alternates: { languages: { es: `${baseUrl}video-splitter/${platform}?lang=es`, pt: `${baseUrl}video-splitter/${platform}?lang=pt`, hi: `${baseUrl}video-splitter/${platform}?lang=hi` } },
+  }));
+
+  // 🔄 Component 3: Safe Programmatic PDF Conversion Matrix Loop
+  const pdfRoutes = pdfSlugs.map((slug) => ({
+    url: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}`,
+    lastModified: new Date(),
+    priority: 0.95, // High authority priority assignment
     alternates: {
       languages: {
-        es: `${baseUrl}video-splitter/${platform}?lang=es`,
-        pt: `${baseUrl}video-splitter/${platform}?lang=pt`,
-        hi: `${baseUrl}video-splitter/${platform}?lang=hi`,
+        es: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=es`,
+        pt: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=pt`,
+        hi: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=hi`,
       },
     },
   }));
 
-  // 3. CORE STATIC PAGES
+  // 🚀 CORE STATIC MARKETING CHANNELS COMPILATION
   return [
     {
       url: `${baseUrl}`,
       lastModified: new Date(),
       priority: 1.0,
       alternates: { languages: { es: `${baseUrl}?lang=es`, pt: `${baseUrl}?lang=pt`, hi: `${baseUrl}?lang=hi` } },
+    },
+    {
+      url: `${baseUrl}merge-images-compress-pdf-at-one-place`,
+      lastModified: new Date(),
+      priority: 0.95,
+      alternates: { languages: { es: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=es`, pt: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=pt`, hi: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=hi` } },
     },
     {
       url: `${baseUrl}about`,
@@ -95,6 +105,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
     },
     ...compressorRoutes,
-    ...splitterRoutes, // स्प्लिटर के नए लिंक्स भी अब गूगल क्रॉलर्स को एक साथ मिल जाएंगे
+    ...splitterRoutes,
+    ...pdfRoutes, // Seamless injection of all 14 programmatic optimization paths
   ];
 }

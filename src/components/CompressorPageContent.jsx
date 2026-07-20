@@ -346,7 +346,7 @@ export default function CompressPage({ initialSize, platform }) {
           ].map((item) => (
             <Link
               key={item.slug}
-              href={`/compress/${item.slug}?lang=${currentLang}`}
+              href={`/compressor/${item.slug}?lang=${currentLang}`}
               className={`text-center p-3 rounded-lg transition-all text-sm shadow-sm flex items-center justify-center border ${item.className}`}
             >
               {item.label}
