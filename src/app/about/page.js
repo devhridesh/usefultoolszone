@@ -10,7 +10,7 @@ export default function AboutUs() {
     document.title = "About Us - Useful Tools Zone"; // ✅ नए ब्रांड नाम के अनुसार टाइटल अपडेट किया
   }, []);
 
-  // 🚀 3. पुराने window.location.href को बदलकर सेफ बैक नेविगेशन लॉजिक लगाया
+  // 🚀 3. पुराने window.location.href को बदलकर सेफ बैक नेвиगेशन लॉजिक लगाया
   const handleBack = () => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
       router.back(); // ठीक पिछले पेज पर वापस जाने के लिए जहाँ से यूजर आया था
@@ -25,7 +25,7 @@ export default function AboutUs() {
         
         <div className="border-b border-gray-100 dark:border-gray-800/60 pb-4 text-center md:text-left">
           <h1 className="text-3xl font-black text-slate-950 dark:text-white">About Us</h1>
-          <p className="text-xs text-blue-500 font-bold uppercase mt-1">The Story Behind Serverless Tools</p>
+          <p className="text-xs text-blue-500 font-bold uppercase mt-1">The Story Behind Next-Gen Serverless Utilities</p>
         </div>
 
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
@@ -34,12 +34,12 @@ export default function AboutUs() {
 
         <h3 className="text-md font-bold text-slate-950 dark:text-white">Why did we build this?</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          Most online video compressors force users to upload their private, personal videos to a cloud server. This is slow, eats up internet data, and risks your private moments. We saw this problem and decided to change it by introducing a **100% local processing engine** that runs directly inside your web browser.
+          Most traditional online utility suites force users to upload their private documents, personal media, and sensitive records to remote cloud servers. This workflow is slow, consumes internet bandwidth, and introduces data leakage risks. We built this platform to eliminate that compromise by providing a **100% local processing engine** that runs entirely inside your secure browser virtual sandbox.
         </p>
 
-        <h3 className="text-md font-bold text-slate-950 dark:text-white">Our Future Vision</h3>
+        <h3 className="text-md font-bold text-slate-950 dark:text-white">Our Core Infrastructure Philosophy</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          While we are starting with our breakthrough video compression tool, Useful Tools Zone is rapidly evolving into a comprehensive **Multi-Tool Utility Hub**. In the coming months, we will launch high-speed audio converters, secure PDF kits, and advanced image layout controllers—all built on our trusted serverless, zero-data-collection philosophy.
+          Useful Tools Zone operates as a highly optimized **Multi-Tool Utility Hub**. Whether you are adjusting matrix layouts, optimizing high-density documentation files, managing asset bundles, or processing high-fidelity media frameworks—everything happens strictly client-side. Built entirely around a zero-data-collection philosophy, our system guarantees that your digital footprints never leave your local device context.
         </p>
 
         <div className="pt-4 border-t border-gray-100 dark:border-gray-800/60 text-center">
