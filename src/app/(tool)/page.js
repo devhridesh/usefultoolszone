@@ -18,13 +18,12 @@ export const metadata = {
     canonical: "https://usefultoolszone.com",
   },
 };
-
 export default async function MasterHomepage({ searchParams }) {
   // Parsing structural incoming URL parameters safely for crawlable tab filters
   const params = await searchParams;
   const activeTab = params?.tab || "all";
 
-  // Dynamic UI Header content dictionary based on selected tab state
+  // Dynamic UI Header content dictionary based on selected tab state (Added Image Hub Support)
   const headerContent = {
     all: {
       sub: "Next-Gen Serverless Utilities at One Place Locally",
@@ -37,12 +36,16 @@ export default async function MasterHomepage({ searchParams }) {
     pdf: {
       sub: "Merge Images & Compress PDF at One Place Locally",
       desc: "Convert multiple document sheets and graphic logs into clean, highly compressed PDF files instantly."
+    },
+    image: {
+      sub: "Optimize, Resize & Convert Images Locally",
+      desc: "Natively transform graphic assets, scale layouts, and convert next-gen formats with zero privacy compromise."
     }
   };
 
   const currentHeader = headerContent[activeTab] || headerContent.all;
 
-  // आपके सभी टूल्स की लिस्ट
+  // आपके सभी टूल्स की ऑल-राउंडर लिस्ट
   const tools = [
     {
       title: "Compress Videos Locally",
@@ -67,12 +70,22 @@ export default async function MasterHomepage({ searchParams }) {
     {
       title: "Merge Images & Compress PDF",
       description: "Convert and compress multiple graphic layouts into a highly optimized PDF document instantly at One Place Locally.",
-      link: "/merge-images-compress-pdf-at-one-place", // 🌐 Updated SEO Action URL
+      link: "/merge-images-compress-pdf-at-one-place", 
       badge: "Serverless Engine",
       badgeColor: "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400",
       btnText: "Launch Converter",
       icon: "📄",
       category: "pdf"
+    },
+    {
+      title: "Local Image Converter & Resizer",
+      description: "Convert WebP, PNG, and JPG layouts instantly. Adjust exact dimensions or bulk compress with 100% offline security.",
+      link: "/image-resizer", 
+      badge: "Zero Server Logs",
+      badgeColor: "bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400",
+      btnText: "Launch Optimizer",
+      icon: "🖼️",
+      category: "image"
     }
   ];
 
@@ -93,7 +106,6 @@ export default async function MasterHomepage({ searchParams }) {
             <AdBanner dataAdSlot="HOMEPAGE_SIDE_LEFT" dataAdFormat="vertical" />
           </div>
         </div>
-
         {/* 🎯 CENTER MAIN CONTENT MODULE */}
         <main className="col-span-1 lg:col-span-8 w-full flex flex-col items-center justify-start space-y-8">
        {/* हेडर सेक्शन - Dynamic and Context Aware Heading */}
