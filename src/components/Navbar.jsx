@@ -7,7 +7,7 @@ import ThemeSwitcher from "./ui/ThemeSwitcher.jsx";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // हैमबर्गर ड्रावर स्टेट
   const [isToolsOpen, setIsToolsOpen] = useState(false); // डेस्कटॉप टूल्स ड्रॉपडाउन स्टेट
-  const dropdownRef = useRef(null); // अनकमेंट करके रेफरेंस एक्टिव किया
+  const dropdownRef = useRef(null);
 
   const videoTools = [
     {
@@ -27,9 +27,18 @@ export default function Navbar() {
   const pdfTools = [
     {
       name: "Merge Images & Compress PDF",
-      link: "/merge-images-compress-pdf-at-one-place", // 🌐 404 fix: Updated to new SEO path
+      link: "/merge-images-compress-pdf-at-one-place",
       icon: "📄",
       desc: "Merge & compress images at One Place Locally",
+    },
+  ];
+
+  const imageTools = [
+    {
+      name: "Batch Image Compressor",
+      link: "/image-compressor",
+      icon: "🖼️",
+      desc: "Compress images in bulk offline",
     },
   ];
 
@@ -70,7 +79,7 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* 🛠️ 'All Tools' डेस्कटॉप ड्रॉपडाउन लिस्टिंग (Hover group active) */}
+            {/* 🛠️ 'All Tools' डेस्कटॉप ड्रॉपडाउन लिस्टिंग */}
             <div className="relative group py-5" ref={dropdownRef}>
               <button
                 type="button"
@@ -83,7 +92,7 @@ export default function Navbar() {
                 </span>
               </button>
 
-              {/* 🎨 CSS-Hover + Toggle Alignment Container */}
+              {/* 🎨 Dropdown Container */}
               <div
                 className={`absolute right-0 top-full flex-col w-64 bg-white dark:bg-[#0d0d14] rounded-2xl shadow-xl ring-1 ring-slate-200/50 dark:ring-white/5 p-3 gap-1 animate-in fade-in slide-in-from-top-2 duration-150 z-50 ${
                   isToolsOpen ? "flex" : "hidden group-hover:flex"
@@ -119,6 +128,29 @@ export default function Navbar() {
                 {pdfTools.map((tool, idx) => (
                   <Link
                     key={`pdf-${idx}`}
+                    href={tool.link}
+                    onClick={() => setIsToolsOpen(false)}
+                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all original-group"
+                  >
+                    <span className="text-lg">{tool.icon}</span>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white transition-colors">
+                        {tool.name}
+                      </div>
+                      <div className="text-[10px] text-slate-400 dark:text-gray-500 mt-0.5">
+                        {tool.desc}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+
+                {/* 🖼️ Image Section (Fix Added Here) */}
+                <div className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-gray-500 px-2.5 pb-1 border-b border-slate-100 dark:border-white/5 mt-2 mb-1 select-none">
+                  Image Utilities
+                </div>
+                {imageTools.map((tool, idx) => (
+                  <Link
+                    key={`image-${idx}`}
                     href={tool.link}
                     onClick={() => setIsToolsOpen(false)}
                     className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all original-group"
@@ -183,7 +215,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 📱 MOBILE DRAWER MODULE - सिर्फ साफ़-सुथरे सपोर्ट पेजों की लिस्ट */}
+      {/* 📱 MOBILE DRAWER MODULE */}
       {isOpen && (
         <div className="bg-white dark:bg-[#0a0a0a] border-t border-slate-200 dark:border-white/5 max-h-[85vh] overflow-y-auto animate-in slide-in-from-top duration-200">
           <div className="px-3 pt-2 pb-5 space-y-1 text-center">

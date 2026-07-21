@@ -93,6 +93,17 @@ export default async function MasterHomepage({ searchParams }) {
       icon: "📄",
       category: "pdf"
     },
+
+    {
+      title: "Batch Image Compressor",
+      description: "Compress multiple images to exact KB/MB sizes offline instantly inside your browser memory sandbox.",
+      link: "/image-compressor",
+      badge: "Batch Mode",
+      badgeColor: "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400",
+      btnText: "Launch Image Compressor",
+      icon: "🖼️",
+      category: "image"
+    },
  
   ];
 
@@ -143,7 +154,8 @@ export default async function MasterHomepage({ searchParams }) {
             {[
               { id: "all", label: "All Tools" },
               { id: "video", label: "Video Utilities" },
-              { id: "pdf", label: "PDF Utilities" }
+              { id: "pdf", label: "PDF Utilities" },
+              { id: "image", label: "Image Utilities" }
             ].map((tab) => (
               <Link
                 key={tab.id}
