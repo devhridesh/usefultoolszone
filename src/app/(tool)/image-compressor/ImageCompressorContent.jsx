@@ -344,9 +344,9 @@ const compressSingleImage = (file, targetBytes, mimeFormat) => {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl blur-md opacity-25"></div>
             <GlassCard className="relative w-full p-6 bg-white/90 dark:bg-black/80 border border-slate-200 dark:border-white/10 shadow-xl rounded-3xl z-10">
               
-              {/* Settings Controls */}
+        {/* Settings Controls */}
               <div className="relative mb-6 p-4 bg-gradient-to-br from-blue-50/60 to-indigo-50/40 dark:from-indigo-950/40 border-2 border-blue-500/40 rounded-2xl shadow-sm text-left">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
                       Target File Size
@@ -363,7 +363,7 @@ const compressSingleImage = (file, targetBytes, mimeFormat) => {
                       <select
                         value={sizeUnit}
                         onChange={(e) => setSizeUnit(e.target.value)}
-                        className="px-2 py-1.5 bg-white dark:bg-gray-950 border-2 border-blue-500/30 rounded-lg text-xs font-black text-blue-600 focus:outline-none"
+                        className="px-2 py-1.5 bg-white dark:bg-gray-950 border-2 border-blue-500/30 rounded-lg text-xs font-black text-blue-600 focus:outline-none cursor-pointer"
                       >
                         <option value="KB">KB</option>
                         <option value="MB">MB</option>
@@ -378,21 +378,11 @@ const compressSingleImage = (file, targetBytes, mimeFormat) => {
                     <select
                       value={format}
                       onChange={(e) => setFormat(e.target.value)}
-                      className="w-full px-2 py-2 bg-white dark:bg-gray-950 border border-slate-200 dark:border-gray-800 rounded-lg text-xs font-bold text-gray-900 dark:text-white focus:outline-none"
+                      className="w-full px-2 py-2 bg-white dark:bg-gray-950 border border-slate-200 dark:border-gray-800 rounded-lg text-xs font-bold text-gray-900 dark:text-white focus:outline-none cursor-pointer"
                     >
                       <option value="jpeg">JPG / JPEG</option>
                       <option value="webp">WebP (Next-Gen)</option>
                     </select>
-                  </div>
-
-                  <div className="flex flex-col gap-1 sm:pt-4">
-                    <button
-                      onClick={compressBatch}
-                      disabled={!images.length || isProcessing}
-                      className="w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs rounded-xl shadow-md shadow-indigo-500/20 transition-all disabled:opacity-30 disabled:pointer-events-none"
-                    >
-                      {isProcessing ? `Compressing (${progress}%)` : "Start Batch Compression"}
-                    </button>
                   </div>
                 </div>
               </div>
@@ -433,16 +423,17 @@ const compressSingleImage = (file, targetBytes, mimeFormat) => {
                 </div>
               )}
 
-              {/* Selected Images List */}
+             {/* Selected Images List & Bottom Action Trigger */}
               {images.length > 0 && processedImages.length === 0 && (
-                <div className="space-y-4 mt-4">
+                <div className="space-y-6 mt-4 animate-fadeIn">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-[350px] overflow-y-auto p-2 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-200/60 dark:border-slate-800">
                     {images.map((img) => (
                       <div key={img.id} className="bg-white dark:bg-gray-950 p-2 rounded-xl border dark:border-slate-800 flex flex-col justify-between shadow-sm relative">
                         <img src={img.preview} alt="preview" className="h-24 w-full object-cover rounded-lg" />
                         <button
+                          type="button"
                           onClick={() => removeImage(img.id)}
-                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black"
+                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black shadow-md cursor-pointer"
                         >
                           ✕
                         </button>
@@ -450,6 +441,27 @@ const compressSingleImage = (file, targetBytes, mimeFormat) => {
                         <span className="text-[9px] font-black text-blue-600">{img.originalSize} KB</span>
                       </div>
                     ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={compressBatch}
+                    disabled={isProcessing}
+                    className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-sm rounded-xl shadow-lg shadow-indigo-500/25 transition-all duration-150 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+                  >
+                    {isProcessing ? `Compressing Batch (${progress}%)...` : `Start Batch Compression (${images.length} Selected)`}
+                  </button>
+
+                  {/* Sleek Compact Ad Space */}
+                  <div className="pt-3 border-t border-slate-200/60 dark:border-white/5">
+                    <div className="w-full min-h-[50px] py-2 px-3 bg-slate-50/80 dark:bg-gray-950/40 rounded-xl border border-dashed border-slate-200 dark:border-gray-800/80 flex items-center justify-between gap-2 select-none">
+                      <span className="text-[9px] font-black tracking-widest text-indigo-500 dark:text-indigo-400 uppercase shrink-0">
+                        [ Sponsored Ad ]
+                      </span>
+                      <span className="text-[10px] text-slate-400 dark:text-gray-500 font-medium truncate">
+                        AdSense script paused locally
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -462,8 +474,9 @@ const compressSingleImage = (file, targetBytes, mimeFormat) => {
                       Successfully Compressed ({processedImages.length} Images)
                     </h3>
                     <button
+                      type="button"
                       onClick={downloadAll}
-                      className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all"
+                      className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all cursor-pointer"
                     >
                       Download All
                     </button>
@@ -491,18 +504,21 @@ const compressSingleImage = (file, targetBytes, mimeFormat) => {
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => {
                       setImages([]);
                       setProcessedImages([]);
                     }}
-                    className="text-xs text-slate-400 underline font-medium hover:text-slate-600 dark:hover:text-white"
+                    className="text-xs text-slate-400 underline font-medium hover:text-slate-600 dark:hover:text-white cursor-pointer"
                   >
                     Compress Another Batch
                   </button>
                 </div>
               )}
+
             </GlassCard>
           </div>
+
 {/* pSEO Grid Internal Linking Matrix */}
           <div className="w-full max-w-4xl mx-auto mt-6 text-left space-y-6">
             {/* KB Target Presets Block */}
