@@ -6,16 +6,32 @@ import AdBanner from "@/components/ui/AdBanner"; // 🟢 टॉप और सा
 // 🌐 PREMIUM ROOT SEO METADATA (Google Bot Friendly Architecture)
 export const metadata = {
   title: "Useful Tools Zone | 100% Private Next-Gen Serverless Utilities",
-  description: "Access professional-grade media optimization tools executing 100% client-side. Compress and split videos locally inside your browser sandbox with absolute privacy.",
+  description: "Free 100% private client-side web utilities. Compress & split videos, merge & compress PDFs, optimize images, and access next-gen serverless tools directly inside your browser sandbox with zero uploads.",
   keywords: [
-    "free web utilities",
-    "local video compressor",
+    "useful tools zone",
+    "private local browser tools",
+    "pdf merge and compress local",
+    "video compressor offline",
     "smart video splitter online",
-    "private browser sandbox tools",
-    "zero upload media encoder"
+    "image converter resizer",
+    "zero upload media encoder",
+    "serverless privacy utility hub"
   ],
+  metadataBase: new URL("https://usefultoolszone.com"),
   alternates: {
     canonical: "https://usefultoolszone.com",
+  },
+  openGraph: {
+    title: "Useful Tools Zone | 100% Private Serverless Utility Hub",
+    description: "Free 100% private client-side web utilities. Compress & split videos, merge & compress PDFs, optimize images, and access next-gen serverless tools directly inside your browser sandbox with zero uploads.",
+    url: "https://usefultoolszone.com",
+    siteName: "Useful Tools Zone",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Useful Tools Zone | 100% Private Serverless Utility Hub",
+    description: "Free 100% private client-side web utilities. Compress & split videos, merge & compress PDFs, optimize images, and access next-gen tools natively.",
   },
 };
 export default async function MasterHomepage({ searchParams }) {
@@ -77,16 +93,7 @@ export default async function MasterHomepage({ searchParams }) {
       icon: "📄",
       category: "pdf"
     },
-    {
-      title: "Local Image Converter & Resizer",
-      description: "Convert WebP, PNG, and JPG layouts instantly. Adjust exact dimensions or bulk compress with 100% offline security.",
-      link: "/image-resizer", 
-      badge: "Zero Server Logs",
-      badgeColor: "bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400",
-      btnText: "Launch Optimizer",
-      icon: "🖼️",
-      category: "image"
-    }
+ 
   ];
 
   const filteredTools = tools.filter(
