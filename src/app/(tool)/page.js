@@ -105,6 +105,18 @@ export default async function MasterHomepage({ searchParams }) {
       category: "image"
     },
  
+    {
+        title: "YouTube Thumbnail Downloader",
+        description: "Download high-resolution YouTube thumbnails (1080p, 4K) and extract video metadata instantly. 100% free and secure.",
+        link: "/youtube-thumbnail-and-metadata-extractor",
+        badge: "HD Extract",
+        badgeColor: "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400", // Red theme for YouTube
+        btnText: "Launch Downloader",
+        icon: "📸",
+        category: "video" // Isse ye automatically "Video Utilities" tab me aayega
+      }
+
+
   ];
 
   const filteredTools = tools.filter(

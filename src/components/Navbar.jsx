@@ -22,6 +22,12 @@ export default function Navbar() {
       icon: "✂️",
       desc: "Split for WhatsApp & Reels",
     },
+    {
+      name: "YouTube Extractor",
+      link: "/youtube-thumbnail-and-metadata-extractor",
+      icon: "📸",
+      desc: "Download HD thumbnails & metadata",
+    },
   ];
 
   const pdfTools = [

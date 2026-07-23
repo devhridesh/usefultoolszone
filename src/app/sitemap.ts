@@ -104,8 +104,47 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
       alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
     },
+
+    // 🌟 3 NAYE YOUTUBE TOOLS KE URLS YAHAN HAIN
+    {
+      url: `${baseUrl}youtube-thumbnail-and-metadata-extractor`,
+      lastModified: new Date(),
+      priority: 0.9,
+      alternates: { 
+        languages: { 
+          es: `${baseUrl}youtube-thumbnail-and-metadata-extractor?lang=es`, 
+          pt: `${baseUrl}youtube-thumbnail-and-metadata-extractor?lang=pt`, 
+          hi: `${baseUrl}youtube-thumbnail-and-metadata-extractor?lang=hi` 
+        } 
+      },
+    },
+    {
+      url: `${baseUrl}youtube-thumbnail-downloader`,
+      lastModified: new Date(),
+      priority: 0.9,
+      alternates: { 
+        languages: { 
+          es: `${baseUrl}youtube-thumbnail-downloader?lang=es`, 
+          pt: `${baseUrl}youtube-thumbnail-downloader?lang=pt`, 
+          hi: `${baseUrl}youtube-thumbnail-downloader?lang=hi` 
+        } 
+      },
+    },
+    {
+      url: `${baseUrl}youtube-metadata-extractor`,
+      lastModified: new Date(),
+      priority: 0.9,
+      alternates: { 
+        languages: { 
+          es: `${baseUrl}youtube-metadata-extractor?lang=es`, 
+          pt: `${baseUrl}youtube-metadata-extractor?lang=pt`, 
+          hi: `${baseUrl}youtube-metadata-extractor?lang=hi` 
+        } 
+      },
+    },
+
     ...compressorRoutes,
     ...splitterRoutes,
-    ...pdfRoutes, // Seamless injection of all 14 programmatic optimization paths
+    ...pdfRoutes, 
   ];
 }
