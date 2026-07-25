@@ -204,13 +204,12 @@ export default function Navbar() {
             <div
               className="relative group py-5"
               ref={dropdownRef}
-            >
-              {/* DROPDOWN TOGGLE BUTTON */}
+            >{/* DROPDOWN TOGGLE BUTTON */}
               <button
                 type="button"
                 onClick={() => setIsToolsOpen(!isToolsOpen)}
                 aria-expanded={isToolsOpen}
-                className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors focus:outline-none cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors focus:outline-none cursor-pointer"
               >
                 <span>All Tools</span>
                 <span
@@ -223,7 +222,6 @@ export default function Navbar() {
                   ▼
                 </span>
               </button>
-
               {/* 3-COLUMN MEGA MENU GRID CONTAINER */}
               <div
                 className={`absolute right-0 top-full w-[90vw] sm:w-[680px] md:w-[750px] bg-white dark:bg-[#0d0d14] rounded-3xl shadow-2xl ring-1 ring-slate-200/60 dark:ring-white/10 p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-2 duration-150 z-50 ${
