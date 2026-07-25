@@ -22,6 +22,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'compress-5mb', 'compress-10mb'
   ];
 
+  // ✍️ Social Media Text Chunker pSEO Target Presets Array
+  const chunkerSlugs = [
+    'whatsapp-status-formatter',
+    'twitter-thread-generator',
+    'threads-post-generator',
+    'instagram-reels-text-hooks',
+    'linkedin-post-splitter',
+    'telegram-message-chunker'
+  ];
+
   // 🔄 Component 1: Video Compressor Loop
   const compressorRoutes = [
     ...compressSizes.map((size) => ({
@@ -50,12 +60,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pdfRoutes = pdfSlugs.map((slug) => ({
     url: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}`,
     lastModified: new Date(),
-    priority: 0.95, // High authority priority assignment
+    priority: 0.95,
     alternates: {
       languages: {
         es: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=es`,
         pt: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=pt`,
         hi: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=hi`,
+      },
+    },
+  }));
+
+  // 🔄 Component 4: Social Text Chunker & Hook Generator pSEO Matrix Loop
+  const chunkerRoutes = chunkerSlugs.map((slug) => ({
+    url: `${baseUrl}social-media-text-chunker/${slug}`,
+    lastModified: new Date(),
+    priority: 0.9,
+    alternates: {
+      languages: {
+        es: `${baseUrl}social-media-text-chunker/${slug}?lang=es`,
+        pt: `${baseUrl}social-media-text-chunker/${slug}?lang=pt`,
+        hi: `${baseUrl}social-media-text-chunker/${slug}?lang=hi`,
       },
     },
   }));
@@ -74,6 +98,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
       alternates: { languages: { es: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=es`, pt: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=pt`, hi: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=hi` } },
     },
+    
+    // ⚡ PRO LEVEL UTILITY: SOCIAL TEXT CHUNKER MAIN ROUTE
+    {
+      url: `${baseUrl}social-media-text-chunker`,
+      lastModified: new Date(),
+      priority: 0.95,
+      alternates: { 
+        languages: { 
+          es: `${baseUrl}social-media-text-chunker?lang=es`, 
+          pt: `${baseUrl}social-media-text-chunker?lang=pt`, 
+          hi: `${baseUrl}social-media-text-chunker?lang=hi` 
+        } 
+      },
+    },
+
     {
       url: `${baseUrl}about`,
       lastModified: new Date(),
@@ -105,7 +144,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
     },
 
-    // 🌟 3 NAYE YOUTUBE TOOLS KE URLS YAHAN HAIN
+    // 🌟 YOUTUBE TOOLS
     {
       url: `${baseUrl}youtube-thumbnail-and-metadata-extractor`,
       lastModified: new Date(),
@@ -143,8 +182,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
 
+    // 🔄 MATRIX SPREADS
     ...compressorRoutes,
     ...splitterRoutes,
     ...pdfRoutes, 
+    ...chunkerRoutes,
   ];
 }
