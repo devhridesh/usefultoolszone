@@ -115,10 +115,7 @@ export default function Navbar() {
   // Close dropdown on click outside or ESC key press
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsToolsOpen(false);
       }
     }
@@ -167,7 +164,6 @@ export default function Navbar() {
       {/* MAIN CONTAINER */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
           {/* ========================================== */}
           {/* LOGO ZONE                                  */}
           {/* ========================================== */}
@@ -180,9 +176,7 @@ export default function Navbar() {
               <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2.5 py-1 rounded-lg text-sm font-bold shadow-sm group-hover:scale-105 transition-transform duration-200">
                 UTZ
               </span>
-              <span className="hidden sm:inline-block">
-                Useful Tools Zone
-              </span>
+              <span className="hidden sm:inline-block">Useful Tools Zone</span>
             </Link>
           </div>
 
@@ -190,7 +184,6 @@ export default function Navbar() {
           {/* NAV ITEMS & ACTIONS                        */}
           {/* ========================================== */}
           <div className="flex items-center gap-4 sm:gap-6">
-            
             {/* HOME LINK */}
             <Link
               href="/"
@@ -201,10 +194,8 @@ export default function Navbar() {
             </Link>
 
             {/* iLovePDF-STYLE WIDE MEGA MENU DROPDOWN */}
-            <div
-              className="relative group py-5"
-              ref={dropdownRef}
-            >{/* DROPDOWN TOGGLE BUTTON */}
+            <div className="relative group py-5" ref={dropdownRef}>
+              {/* DROPDOWN TOGGLE BUTTON */}
               <button
                 type="button"
                 onClick={() => setIsToolsOpen(!isToolsOpen)}
@@ -228,11 +219,10 @@ export default function Navbar() {
                   isToolsOpen ? "grid" : "hidden group-hover:grid"
                 }`}
               >
-               {/* ------------------------------------------ */}
+                {/* ------------------------------------------ */}
                 {/* COLUMN 1: PRO LEVEL & VIDEO UTILITIES       */}
                 {/* ------------------------------------------ */}
                 <div className="space-y-5">
-                  
                   {/* ⚡ PRO LEVEL UTILITIES SECTION */}
                   <div>
                     <div className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 pb-1.5 border-b border-slate-100 dark:border-white/5 mb-2.5 select-none flex items-center justify-between">
@@ -278,8 +268,8 @@ export default function Navbar() {
                         </Link>
                       </div>
                     </div>
-                  </div> {/* 👈 Yahan ek </div> missing tha jo ab add ho gaya hai */}
-
+                  </div>{" "}
+                  {/* 👈 Yahan ek </div> missing tha jo ab add ho gaya hai */}
                   {/* 🎬 VIDEO UTILITIES SECTION */}
                   <div>
                     <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 dark:text-blue-400 pb-1.5 border-b border-slate-100 dark:border-white/5 mb-2.5 select-none flex items-center gap-1">
@@ -309,7 +299,6 @@ export default function Navbar() {
                       ))}
                     </div>
                   </div>
-
                 </div>
 
                 {/* ------------------------------------------ */}
@@ -379,7 +368,6 @@ export default function Navbar() {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
 
@@ -389,13 +377,13 @@ export default function Navbar() {
             {/* THEME SWITCHER */}
             <ThemeSwitcher />
 
-            {/* MOBILE HAMBURGER TOGGLE BUTTON */}
+           {/* HAMBURGER TOGGLE BUTTON */}
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle navigation menu"
               aria-expanded={isOpen}
-              className="sm:hidden inline-flex items-center justify-center p-2 rounded-xl text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 focus:outline-none cursor-pointer"
+              className="inline-flex items-center justify-center p-2 rounded-xl text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5 focus:outline-none cursor-pointer"
             >
               {!isOpen ? (
                 <svg
@@ -427,49 +415,43 @@ export default function Navbar() {
                 </svg>
               )}
             </button>
-
           </div>
         </div>
       </div>
-{/* ========================================== */}
-      {/* MOBILE DRAWER NAVIGATION                   */}
+   {/* ========================================== */}
+      {/* DRAWER NAVIGATION                          */}
       {/* ========================================== */}
       {isOpen && (
-        <div className="bg-white dark:bg-[#0a0a0a] border-t border-slate-200 dark:border-white/5 max-h-[85vh] overflow-y-auto animate-in slide-in-from-top duration-200 sm:hidden">
-          <div className="px-4 pt-3 pb-6 space-y-4 text-left">
+        <div className="bg-white dark:bg-[#0a0a0a] border-t border-slate-200 dark:border-white/5 max-h-[85vh] overflow-y-auto animate-in slide-in-from-top duration-200 shadow-2xl">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 space-y-5 text-left">
             
-            {/* MOBILE HOME LINK */}
-            <Link
-              href="/"
-              onClick={closeAllMenus}
-              className="block px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider text-slate-800 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
-            >
-              🏠 Home
-            </Link>
-
-            {/* ⚡ PRO LEVEL UTILITIES SECTION */}
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 pt-2 pb-1 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
-                <span>⚡ Pro Level Utilities</span>
-                <span className="text-[8px] bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-1.5 py-0.5 rounded-full font-bold">
-                  HOT
-                </span>
-              </div>
-              <div className="mt-1 space-y-1">
-                {proLevelTools.map((t) => (
-                  <Link
-                    key={t.id}
-                    href={t.link}
-                    onClick={closeAllMenus}
-                    className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-800 dark:text-gray-200 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 rounded-lg transition-colors"
-                  >
-                    <span>{t.icon}</span>
-                    <span>{t.name}</span>
-                  </Link>
-                ))}
-
-                {/* 🚀 MOBILE AND MANY MORE LINK */}
-                <div className="pt-1.5 mt-1 border-t border-slate-100 dark:border-white/5 px-3">
+            {/* 📱 MOBILE ONLY: TOOLS LISTING (PC/Desktop par auto-hide) */}
+            <div className="sm:hidden space-y-5">
+              
+              {/* ⚡ PRO LEVEL UTILITIES */}
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 pt-2 pb-1 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
+                  <span>⚡ Pro Level Utilities</span>
+                  <span className="text-[8px] bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 px-1.5 py-0.5 rounded-full font-bold">
+                    HOT
+                  </span>
+                </div>
+                <div className="mt-2 grid grid-cols-1 gap-2">
+                  {proLevelTools.map((t) => (
+                    <Link
+                      key={t.id}
+                      href={t.link}
+                      onClick={closeAllMenus}
+                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-800 dark:text-gray-200 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 rounded-lg transition-colors"
+                    >
+                      <span>{t.icon}</span>
+                      <span>{t.name}</span>
+                    </Link>
+                  ))}
+                </div>
+                
+                {/* MORE PRO TOOLS LINK */}
+                <div className="pt-2 mt-1 border-t border-slate-100 dark:border-white/5 px-1">
                   <Link
                     href="/?tab=pro"
                     onClick={closeAllMenus}
@@ -480,51 +462,103 @@ export default function Navbar() {
                   </Link>
                 </div>
               </div>
+
+              {/* 🎬 VIDEO UTILITIES */}
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 pt-2 pb-1 border-b border-slate-100 dark:border-white/5">
+                  🎬 Video Utilities
+                </div>
+                <div className="mt-2 grid grid-cols-1 gap-2">
+                  {videoTools.map((t) => (
+                    <Link
+                      key={t.id}
+                      href={t.link}
+                      onClick={closeAllMenus}
+                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-800 dark:text-gray-200 hover:bg-blue-50/50 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
+                    >
+                      <span>{t.icon}</span>
+                      <span>{t.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* 📄 PDF & IMAGE UTILITIES */}
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-emerald-500 pt-2 pb-1 border-b border-slate-100 dark:border-white/5">
+                  📄 PDF & Image Utilities
+                </div>
+                <div className="mt-2 grid grid-cols-1 gap-2">
+                  {pdfTools.concat(imageTools).map((t) => (
+                    <Link
+                      key={t.id}
+                      href={t.link}
+                      onClick={closeAllMenus}
+                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-800 dark:text-gray-200 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 rounded-lg transition-colors"
+                    >
+                      <span>{t.icon}</span>
+                      <span>{t.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
             </div>
 
-            {/* 🎬 VIDEO UTILITIES SECTION */}
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 pt-2 pb-1 border-b border-slate-100 dark:border-white/5">
-                🎬 Video Utilities
+            {/* 🖥️ PC & MOBILE BOTH: HOME + LEGAL PAGES LINKS */}
+            <div className="space-y-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-white/5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Navigation & Legal Information
+              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2.5 text-xs font-bold text-slate-700 dark:text-gray-300 items-center">
+                <Link
+                  href="/"
+                  onClick={closeAllMenus}
+                  className="hover:text-blue-500 transition-colors flex items-center gap-1 text-blue-600 dark:text-blue-400"
+                >
+                  <span>🏠</span> Home
+                </Link>
+                <span className="text-slate-300 dark:text-slate-700">•</span>
+                <Link
+                  href="/privacy-policy"
+                  onClick={closeAllMenus}
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+                <Link
+                  href="/terms"
+                  onClick={closeAllMenus}
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  Terms of Service
+                </Link>
+                <Link
+                  href="/disclaimer"
+                  onClick={closeAllMenus}
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  Disclaimer
+                </Link>
+                <Link
+                  href="/about"
+                  onClick={closeAllMenus}
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  About Us
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={closeAllMenus}
+                  className="hover:text-blue-500 transition-colors"
+                >
+                  Contact Us
+                </Link>
               </div>
-              <div className="mt-1 space-y-1">
-                {videoTools.map((t) => (
-                  <Link
-                    key={t.id}
-                    href={t.link}
-                    onClick={closeAllMenus}
-                    className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-800 dark:text-gray-200 hover:bg-blue-50/50 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
-                  >
-                    <span>{t.icon}</span>
-                    <span>{t.name}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
 
-            {/* 📄 PDF & IMAGE UTILITIES SECTION */}
-            <div>
-              <div className="text-[10px] font-black uppercase tracking-widest text-emerald-500 pt-2 pb-1 border-b border-slate-100 dark:border-white/5">
-                📄 PDF & Image Utilities
+              <div className="text-[10px] text-slate-400 dark:text-slate-500 font-medium pt-2 border-t border-slate-100 dark:border-white/5">
+                Useful Tools Zone • 100% Client-Side Privacy
               </div>
-              <div className="mt-1 space-y-1">
-                {pdfTools.concat(imageTools).map((t) => (
-                  <Link
-                    key={t.id}
-                    href={t.link}
-                    onClick={closeAllMenus}
-                    className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-800 dark:text-gray-200 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 rounded-lg transition-colors"
-                  >
-                    <span>{t.icon}</span>
-                    <span>{t.name}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* MOBILE DRAWER FOOTER INFO */}
-            <div className="pt-3 border-t border-slate-100 dark:border-white/5 text-[10px] text-slate-400 dark:text-slate-500 text-center font-medium">
-              Useful Tools Zone • 100% Client-Side Privacy
             </div>
 
           </div>
