@@ -25,8 +25,8 @@ import ThemeSwitcher from "./ui/ThemeSwitcher.jsx";
 const proLevelTools = [
   {
     id: "social-text-chunker",
-    name: "Social Media Text Chunker",
-    link: "/social-media-text-chunker",
+    name: "Social Media Post Chunker",
+    link: "/social-media-post-chunker",
     icon: "✍️",
     desc: "Split long posts & scripts into viral, platform-ready chunks with high-CTR attention hooks.",
     badge: "PRO",

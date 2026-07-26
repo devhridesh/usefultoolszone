@@ -11,14 +11,14 @@ export const metadata = {
     "read more whatsapp text generator",
     "linkedin post chunker",
   ],
-  alternates: {
-    canonical: "https://usefultoolszone.com/social-media-text-chunker",
+alternates: {
+    canonical: "https://usefultoolszone.com/social-media-post-chunker",
   },
   openGraph: {
-    title: "Social Media Text Chunker & Video Hook Generator | Useful Tools Zone",
+    title: "Social Media Post Chunker & Video Hook Generator | Useful Tools Zone",
     description:
       "Format and split long text into clean chunks & generate attention-grabbing video overlays with zero data logging.",
-    url: "https://usefultoolszone.com/social-media-text-chunker",
+    url: "https://usefultoolszone.com/social-media-post-chunker",
     siteName: "Useful Tools Zone",
     type: "website",
   },

@@ -1,6 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // वेबपैक वाला भारी कोड यहाँ से हटा दिया है ताकि सर्वर स्टेबल हो जाए
+  // 301 Permanent Redirects (SEO URL Migration)
+  async redirects() {
+    return [
+      {
+        source: '/social-media-text-chunker',
+        destination: '/social-media-post-chunker',
+        permanent: true,
+      },
+      {
+        source: '/social-media-text-chunker/:slug*',
+        destination: '/social-media-post-chunker/:slug*',
+        permanent: true,
+      },
+    ];
+  },
+
+  // Security & SharedArrayBuffer Headers for Video Processing
   async headers() {
     return [
       {

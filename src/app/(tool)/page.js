@@ -68,19 +68,20 @@ export default async function MasterHomepage({ searchParams }) {
     },
   };
 
-  const currentHeader = headerContent[activeTab] || headerContent.all;
+  
+const currentHeader = headerContent[activeTab] || headerContent.all;
 
   // Tools Data Array (Updated with multi-category support)
   const tools = [
     {
-      title: "Social Media Text Chunker & Video Hooks",
+      title: "Social Media Post Chunker & Video Hooks",
       description:
         "Split long posts & scripts into viral, platform-ready chunks for WhatsApp Status, Threads & Reels with high-CTR attention hooks.",
-      link: "/social-media-text-chunker",
+      link: "/social-media-post-chunker",
       badge: "High-CTR Hooks",
       badgeColor:
         "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400",
-      btnText: "Launch Text Chunker",
+      btnText: "Launch Post Chunker",
       icon: "✍️",
       categories: ["pro", "video"], // 👈 Shows in Pro & Video
     },
@@ -144,8 +145,7 @@ export default async function MasterHomepage({ searchParams }) {
       categories: ["video"],
     },
   ];
-
-  // Multi-Category Filter Logic Fix
+    // Multi-Category Filter Logic Fix
   const filteredTools = tools.filter((tool) => {
     if (activeTab === "all") return true;
     if (Array.isArray(tool.categories)) {

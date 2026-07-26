@@ -20,7 +20,8 @@ export async function generateMetadata(props) {
   const formattedTitle = slug
     .replace(/-/g, " ")
     .replace(/\b\w/g, (l) => l.toUpperCase());
-  const targetUrl = `https://usefultoolszone.com/social-media-text-chunker/${slug}`;
+// Metadata inside page.js
+const targetUrl = `https://usefultoolszone.com/social-media-post-chunker/${slug}`;
 
   const metaDesc = `⚡ Split long text into attention-grabbing ${formattedTitle} posts! Inject high-CTR viral hook presets, create custom hooks & auto-bold key phrases instantly.`;
 
