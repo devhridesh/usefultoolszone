@@ -109,11 +109,11 @@ const currentHeader = headerContent[activeTab] || headerContent.all;
       icon: "✂️",
       categories: ["pro", "video"], // 👈 Shows in Pro & Video
     },
-    {
+   {
       title: "Compress Videos Locally",
       description:
         "Compress video size instantly with zero quality loss. Works 100% offline inside your browser sandbox for absolute privacy.",
-      link: "/compressor",
+      link: "/video-compressor",
       badge: "100% Private",
       badgeColor:
         "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400",

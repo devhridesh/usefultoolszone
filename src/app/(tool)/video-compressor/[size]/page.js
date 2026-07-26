@@ -42,9 +42,9 @@ export async function generateMetadata({ params }) {
   return {
     title: `Compress Video for ${seoData.platform} to ${seoData.mbSize} 🎥 - Free Online | Useful Tools Zone`,
     description: `Compress video size for ${seoData.platform} to ${seoData.mbSize} ⚡ [No Watermark, No signups, 100% cookie-free]. Smart SSIM pixel tuning. 100% offline & 🔒 private.`,
-  alternates: {
-    // 🟢 FIXED: Pointing perfectly to the new compressor sub-directory
-    canonical: `https://usefultoolszone.com/compressor/${size}`,
+alternates: {
+    //   FIXED: Pointing perfectly to the new video-compressor sub-directory
+    canonical: `https://usefultoolszone.com/video-compressor/${size}`,
   },
   };
 }

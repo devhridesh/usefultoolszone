@@ -68,40 +68,43 @@ export default function CompressPage({ initialSize, platform }) {
 
   const dynamicUrl = `https://usefultoolszone.com/compress/${currentSlug}`;
 
+// 🚀 pSEO High-CTR Title Tag Generator
+  const targetMB = initialSize || "10";
   const dynamicName = isHomepage
     ? "Free Video Compressor Online - 100% Private & Fast"
     : platform && platform !== "Video"
-      ? `${platform} Video Compressor Online`
-      : `Compress Video to ${initialSize}MB Online`;
-
-  // 🧠 यूजर साइकोलॉजी और एसईओ बूस्टर डिक्शनरी
+      ? `Compress Video for ${platform} to ${targetMB}MB Online (Free)`
+      : `Compress Video to ${targetMB}MB Online - Fast & Offline`;
+  // 🧠 High-Intent Keywords SEO & Social Meta Dictionary
+  
+// 🧠 pSEO High-CTR Meta Description Dictionary (Platform + Exact MB Intent)
   const descriptionDict = {
     "10mb":
-      "⚡ Instant 10MB compression with pixel-perfect clarity. Ideal for quick Discord free-tier sharing and standard email attachments without losing high-density details. [100% Cookies Free]",
+      "⚡ Compress video to 10MB online for free. Ideal for Discord free-tier uploads and email attachments without losing pixel clarity. 100% private browser encoding.",
     "20mb":
-      "✨ Shrink your videos down to exactly 20MB in seconds. Maintained via local hyper-precision algorithms to fit standard chat pipelines flawlessly with zero quality drops.",
+      "✨ Shrink video file size down to 20MB instantly. Maintains smooth framerates and clear audio for fast web sharing with zero server uploads.",
     "40mb":
-      "🎬 Heavy camera footage or raw clips? Compress down to 40MB cleanly. Strips unnecessary background data while keeping frames sharp and 100% watermark-free.",
+      "🎬 Reduce heavy video recordings down to 40MB cleanly. Strips background noise while preserving sharp 1080p resolution and zero watermarks.",
     "50mb":
-      "🚀 The perfect choice to scale high-definition files down to 50MB. Engineered for smooth web distribution and lightning-fast cloud transfers with zero server overhead.",
+      "🚀 Compress 4K & HD videos to 50MB online. Optimized for fast cloud transfers, website embeds, and web distribution without lag.",
     whatsapp:
-      "🟢 Share smooth HD media on WhatsApp instantly! Safely optimizes your clips to under 16MB to match the official status and chat limit without annoying blurriness. [Zero Data Logging]",
+      "🟢 Compress video for WhatsApp status and messages under 16MB limit. Bypasses WhatsApp auto-blur issues with crisp HD quality and zero server uploads.",
     gmail:
-      "📧 Skip the 'Google Drive link' hassle. Compress video bitrates down to exactly 25MB to easily clear Gmail's official attachment limit with full audio-video sync.",
+      "📧 Compress video for Gmail attachment under 25MB. Skip Google Drive link restrictions with full audio-video sync directly inside your browser.",
     tiktok:
-      "🎵 Keep your TikTok views high with crisp quality! Intelligently resizes and compresses high-framerate clips to fit mobile constraints perfectly with zero pixelation drops.",
+      "🎵 Compress TikTok videos to 72MB online. Preserves high 60fps motion fluidity and mobile resolution for maximum feed engagement.",
     instagram:
-      "📸 Scale your clips down to 95MB to stay safely under Instagram's recommended upload cap. Perfect for crisp, fast-loading Reels and posts that grab attention.",
+      "📸 Compress video for Instagram Reels and posts under 95MB cap. Prevents upload compression artifacts and retains sharp text overlays.",
     "youtube-shorts":
-      "🔴 Maximize your Shorts processing speed! Compresses files to the optimal 60MB threshold for instant HD rendering and high-retention streaming on mobile feeds.",
+      "🔴 Compress video for YouTube Shorts under 60MB. Ensures rapid HD processing, smooth rendering, and fast mobile playback.",
     wechat:
-      "💬 Shrink heavy video files to exactly 25MB for WeChat chats. Bypasses file transfer blocks locally while preserving high-fidelity audio and original aspect ratios.",
-    line: "🇯🇵 Max out your sharing capacity on the LINE app! Compresses files smoothly up to 200MB locally, ensuring rapid delivery and clear presentation inside your chat windows.",
+      "💬 Compress video files for WeChat under 25MB limit. Fast client-side WebAssembly compression preserving original aspect ratios.",
+    line: "🇯🇵 Compress heavy video files for LINE app under 200MB limit. Fast offline processing with zero bandwidth data usage.",
     discord:
-      "👾 Free tier upload limit slowing you down? Smash your video files under 10MB locally. Fits Discord's strict size constraints perfectly with crisp text and clean visuals.",
-  pinterest:
-      "📌 Optimize your pins with high visual retention! Intelligently compresses your video files down to the official 100MB threshold locally with smart SSIM pixel tuning to prevent text or border blurring on active boards.",
-    };
+      "👾 Compress video for Discord under 10MB free tier limit. Shrinks MP4/MOV files with sharp text and screen recording readability.",
+    pinterest:
+      "📌 Compress Pinterest pin videos under 100MB threshold. Tuned with SSIM algorithms to prevent text or border blurring on active boards.",
+  };
 
   const dynamicParagraph = isHomepage
     ? "Looking for a secure way to shrink heavy files? Our advanced client-side core engine optimizes your video clips instantly inside your browser memory sandbox with pixel-perfect clarity, 100% offline processing, and zero tracking cookies."
@@ -121,12 +124,19 @@ export default function CompressPage({ initialSize, platform }) {
       <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col items-center justify-center space-y-6 my-auto px-4">
         {/* Header Section (Psychologically optimized typography) */}
         <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
             {platform ? (
               <>
-                Compress for {platform} <br />
+                Compress Video for {platform} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                  Target Size: {initialSize} MB
+                  Target Limit: {initialSize || "10"} MB (Free & Private)
+                </span>
+              </>
+            ) : initialSize ? (
+              <>
+                Compress Video to {initialSize} MB <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                  Instant Offline Compression
                 </span>
               </>
             ) : (
@@ -563,7 +573,7 @@ export default function CompressPage({ initialSize, platform }) {
           </p>
         </article>
 
-        {/* FAQ SECTION */}
+        {/* FAQ SECTION WITH SEARCH CONSOLE QUERY TARGETING */}
         <div className="border-t border-slate-100 dark:border-white/5 pt-8 mt-8 space-y-4">
           <h2 className="text-xl font-black text-slate-950 dark:text-white tracking-tight mb-6">
             Frequently Asked Questions
@@ -572,15 +582,49 @@ export default function CompressPage({ initialSize, platform }) {
           <div className="space-y-3">
             <details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
               <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">
+                <span>Why does WhatsApp compress videos and make them blurry?</span>
+                <span className="text-blue-500 transition group-open:rotate-180">
+                  ▼
+                </span>
+              </summary>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                WhatsApp automatically applies heavy compression to any video over 16MB, ruining frame clarity. By pre-compressing your video to 16MB or 10MB using Useful Tools Zone before sending, you bypass WhatsApp's aggressive compression engine and preserve sharp video quality on Status and chats.
+              </p>
+            </details>
+
+            <details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
+              <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">
+                <span>How long is a 10MB or 50MB video file?</span>
+                <span className="text-blue-500 transition group-open:rotate-180">
+                  ▼
+                </span>
+              </summary>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                A 10MB video compressed with modern H.264 codecs typically lasts 1 to 3 minutes at 720p HD resolution. A 50MB video can hold 5 to 15 minutes of HD footage while keeping speech and motion clear. Duration depends on resolution and selected audio bitrates.
+              </p>
+            </details>
+
+            <details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
+              <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">
+                <span>How to compress videos for Discord without Nitro?</span>
+                <span className="text-blue-500 transition group-open:rotate-180">
+                  ▼
+                </span>
+              </summary>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                Discord limits non-Nitro uploads to 10MB. Select our 'Discord (10MB)' preset, drag your video, and our local engine will scale the file below 10MB while keeping text and screen captures readable.
+              </p>
+            </details>
+
+            <details className="group border border-slate-100 dark:border-white/[0.02] bg-transparent hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-200 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden cursor-pointer">
+              <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">
                 <span>Is it safe to compress private videos here?</span>
                 <span className="text-blue-500 transition group-open:rotate-180">
                   ▼
                 </span>
               </summary>
               <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                Yes, it is 100% safe. Our tool runs locally in your browser.
-                Your video is never uploaded to any server, meaning nobody else
-                can ever see or access your files.
+                Yes, it is 100% safe. Our tool runs locally in your browser memory sandbox via WebAssembly. Your video is never uploaded to any remote server, guaranteeing absolute privacy.
               </p>
             </details>
 
@@ -592,10 +636,7 @@ export default function CompressPage({ initialSize, platform }) {
                 </span>
               </summary>
               <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                The service is completely free to use. Because the compression
-                relies on your device's hardware rather than our cloud servers,
-                you can compress files as large as your device's memory can
-                handle without any paywalls.
+                The service is 100% free with no hidden subscriptions or watermarks. Since encoding uses your local hardware, you can compress files as large as your browser RAM allows.
               </p>
             </details>
           </div>
@@ -741,7 +782,7 @@ export default function CompressPage({ initialSize, platform }) {
         </div>
       </footer>
 
-      {/* SCHEMA ENGINE */}
+      {/* SCHEMA ENGINE WITH DYNAMIC FAQ RICH SNIPPETS */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -755,6 +796,36 @@ export default function CompressPage({ initialSize, platform }) {
               applicationCategory: "MultimediaApplication",
               offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
             },
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "Why does WhatsApp compress videos and make them blurry?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "WhatsApp compresses videos over 16MB automatically. Pre-compressing your video under 16MB locally using Useful Tools Zone prevents blurriness on WhatsApp status and chats."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  name: "How long is a 10MB or 50MB video file?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "A 10MB video compressed in HD resolution lasts about 1 to 3 minutes, while a 50MB video can hold 5 to 15 minutes of HD footage depending on framerate and bitrate settings."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  name: "How to compress videos for Discord free limit (10MB)?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Select our Discord 10MB preset to shrink any large video file under Discord's 10MB free tier cap directly inside your browser memory without quality loss."
+                  }
+                }
+              ]
+            }
           ]),
         }}
       />

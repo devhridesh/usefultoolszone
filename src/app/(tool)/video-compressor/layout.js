@@ -12,15 +12,14 @@ export const metadata = {
     "fast video compression browser",
     "local video compressor"
   ],
-  alternates: {
-    canonical: "https://usefultoolszone.com/compressor",
+alternates: {
+    canonical: "https://usefultoolszone.com/video-compressor",
   },
-  
-  // 👥 Open Graph Matrix (WhatsApp Rich Link Preview Card & Facebook Share)
+  //   Open Graph Matrix (WhatsApp Rich Link Preview Card & Facebook Share)
   openGraph: {
     title: "Free Video Compressor Online - 100% Private | Useful Tools Zone",
-    description: "🌟 Compress large videos locally in your browser memory. No Sign Up, No Watermark, 100% Cookies Free! Zero cloud uploads.",
-    url: "https://usefultoolszone.com/compressor",
+    description: "  Compress large videos locally in your browser memory. No Sign Up, No Watermark, 100% Cookies Free! Zero cloud uploads.",
+    url: "https://usefultoolszone.com/video-compressor",
     siteName: "Useful Tools Zone",
     type: "website",
     images: [

@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 301 Permanent Redirects (SEO URL Migration)
+  // 🚀 1. 301 Permanent Redirects for All Tool Migrations (SEO Safe)
   async redirects() {
     return [
+      // -------------------------------------------------------------
+      // Tool 1: Social Media Text Chunker -> Post Chunker Migration
+      // -------------------------------------------------------------
       {
         source: '/social-media-text-chunker',
         destination: '/social-media-post-chunker',
@@ -13,10 +16,34 @@ const nextConfig = {
         destination: '/social-media-post-chunker/:slug*',
         permanent: true,
       },
+
+      // -------------------------------------------------------------
+      // Tool 2: Legacy Video Compressor URLs (/compress & /compressor) -> /video-compressor
+      // -------------------------------------------------------------
+      {
+        source: '/compressor',
+        destination: '/video-compressor',
+        permanent: true,
+      },
+      {
+        source: '/compressor/:slug*',
+        destination: '/video-compressor/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/compress',
+        destination: '/video-compressor',
+        permanent: true,
+      },
+      {
+        source: '/compress/:slug*',
+        destination: '/video-compressor/:slug*',
+        permanent: true,
+      },
     ];
   },
 
-  // Security & SharedArrayBuffer Headers for Video Processing
+  // 🔒 2. Security & SharedArrayBuffer Headers (Required for Local WASM Video & Media Processing)
   async headers() {
     return [
       {

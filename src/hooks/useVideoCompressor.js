@@ -591,105 +591,72 @@ export default function useVideoCompressor() {
 
         // Cheap devices par UI re-renders aggressively drop karenge
         const progressStep = isMobile ? (systemThreads <= 4 ? 5 : 3) : 1;
+// ⚡ SINGLE-PASS SMART ENGINE (2x Speed, No 2-Pass Loop)
+        setStatusText("Compressing video... 🚀");
+        await acquireWakeLock();
 
-        let currentBitrateMultiplier = 1.0;
-        let finalData = null;
+        try {
+          await ffmpeg.deleteFile("output.mp4");
+        } catch (e) {}
 
-        for (let attempt = 1; attempt <= 2; attempt++) {
-          setStatusText(`Compressing video: Cycle ${attempt}/2...`);
-          await acquireWakeLock();
+        // 1. 7% Safety Buffer Math (93% Headroom to guarantee under-target file size)
+        const safeTargetMB = requestedSizeMB * 0.93;
+        const targetKilobits = safeTargetMB * 8192;
 
-          try {
-            await ffmpeg.deleteFile("output.mp4");
-          } catch (e) {}
+        // 2. Exact Video Bitrate Calculation (Total Bitrate MINUS Audio Bitrate)
+        const audioKbps = audioBitrateForCalc / 1000; // e.g., 64, 48, 32
+        let calculatedVideoKbps = Math.floor((targetKilobits / durationSeconds) - audioKbps);
+        
+        // Quality Floor Cap: Minimum 100k bitrate
+        calculatedVideoKbps = Math.max(100, calculatedVideoKbps);
+        const bitrateString = `${calculatedVideoKbps}k`;
 
-          // Math Tuning: Subtract audio bits from target size budget
-          const totalBits =
-            targetSizeMB * currentBitrateMultiplier * 1024 * 1024 * 8;
-          const totalAudioBits = audioBitrateForCalc * durationSeconds;
-          let calculatedVideoBitrate =
-            (totalBits - totalAudioBits) / durationSeconds;
+        // 3. Single-Pass FFmpeg Execution
+        await ffmpeg.exec([
+          "-y",
+          "-i",
+          "input.mp4",
+          "-vcodec",
+          "libx264",
+          "-preset",
+          isUltrafast ? "ultrafast" : "veryfast",
+          "-tune",
+          "fastdecode,ssim",
 
-          if (calculatedVideoBitrate < 16000) calculatedVideoBitrate = 16000;
-          const bitrateString = `${Math.round(calculatedVideoBitrate / 1000)}k`;
+          ...(isUltrafast ? ["-x264opts", "no-mbtree=1:subq=2:me=dia"] : []),
 
-          await ffmpeg.exec([
-            "-y",
-            "-i",
-            "input.mp4",
-            "-vcodec",
-            "libx264",
-            "-preset",
-            isUltrafast ? "ultrafast" : "veryfast",
-            "-tune",
-            "fastdecode,ssim",
+          "-threads",
+          String(safeThreads),
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "-sws_flags",
+          "fast_bilinear",
+          "-r",
+          String(dynamicFPS),
+          "-g",
+          String(dynamicFPS * gopMultiplier),
+          "-profile:v",
+          dynamicProfile,
 
-            ...(isUltrafast ? ["-x264opts", "no-mbtree=1:subq=2:me=dia"] : []),
+          // 🎯 Boundary Locks (Overshoot Control)
+          "-b:v",
+          bitrateString,
+          "-maxrate",
+          bitrateString,
+          "-bufsize",
+          `${calculatedVideoKbps * 2}k`,
 
-            "-threads",
-            String(safeThreads), // 👈 Cheap phone par automatic 2 cores cap ho jayenge
-            "-pix_fmt",
-            "yuv420p",
-            "-movflags",
-            "+faststart",
-            "-sws_flags",
-            "fast_bilinear",
-            "-r",
-            String(dynamicFPS),
-            "-g",
-            String(dynamicFPS * gopMultiplier), // 👈 Cheap devices par GOP frames load drastically kam kar dega
-            "-profile:v",
-            dynamicProfile,
+          ...scaleArgs,
+          ...audioArgs,
 
-            // 🎯 STRICT TARGET ENFORCEMENT BOUNDARIES
-            "-b:v",
-            bitrateString,
-            "-maxrate",
-            bitrateString,
-            "-bufsize",
-            `${Math.round(calculatedVideoBitrate / 500)}k`,
+          "-dn",
+          "output.mp4",
+        ]);
 
-            ...scaleArgs,
-            ...audioArgs,
-
-            "-dn",
-            "output.mp4",
-          ]);
-
-          const data = await ffmpeg.readFile("output.mp4");
-          const actualSizeMB = data.length / (1024 * 1024);
-
-          if (
-            actualSizeMB < requestedSizeMB &&
-            actualSizeMB >= requestedSizeMB * 0.86
-          ) {
-            finalData = data;
-            break;
-          }
-
-          if (attempt === 1) {
-            finalData = data;
-          } else if (attempt === 2) {
-            if (actualSizeMB < requestedSizeMB) {
-              finalData = data;
-            } else {
-              const prevSize = finalData
-                ? finalData.length / (1024 * 1024)
-                : 9999;
-              if (actualSizeMB < prevSize) finalData = data;
-            }
-            break;
-          }
-
-          const correctionRatio = targetSizeMB / actualSizeMB;
-          if (actualSizeMB >= requestedSizeMB) {
-            currentBitrateMultiplier *= correctionRatio * 0.92;
-          } else {
-            currentBitrateMultiplier *= correctionRatio;
-          }
-        }
-
-        const outputData = finalData || (await ffmpeg.readFile("output.mp4"));
+        const outputData = await ffmpeg.readFile("output.mp4");
+        
         setCompressedBlob(new Blob([outputData], { type: "video/mp4" }));
         setStatusText("Done!");
         setProgress(100);

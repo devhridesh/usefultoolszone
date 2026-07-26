@@ -6,7 +6,8 @@ import GlassCard from "@/components/ui/GlassCard";
 import AdBanner from "@/components/ui/AdBanner";
 
 // 🔗 Compressor Page Link Configuration (Isey kal ko badal kar '/compressor' bhi kar sakte hain)
-const COMPRESS_LINK = "/compress";
+// Compressor Page Link Configuration
+const COMPRESS_LINK = "/video-compressor";
 const PLATFORM_CONFIG = {
   whatsapp: {
     name: "WhatsApp Status", // 👈 'WhatsApp' से बदलकर 'WhatsApp Status' किया
