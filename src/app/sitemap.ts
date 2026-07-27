@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'compress-5mb', 'compress-10mb'
   ];
 
-  // ✍️ Social Media Text Chunker pSEO Target Presets Array
+  // ✍️ Social Media Post Chunker pSEO Target Presets Array
   const chunkerSlugs = [
     'whatsapp-status-formatter',
     'twitter-thread-generator',
@@ -32,19 +32,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'telegram-message-chunker'
   ];
 
-  // 🔄 Component 1: Video Compressor Loop
+  // 🖼️ Batch Image Compressor Presets Array
+  const imageSlugs = [
+    'compress-image-to-20kb',
+    'compress-image-to-50kb',
+    'compress-image-to-100kb',
+    'compress-image-to-200kb',
+    'compress-image-to-500kb',
+    'compress-image-to-1mb',
+    'compress-image-to-2mb',
+    'compress-image-to-5mb',
+    'compress-image-to-10mb',
+    'ssc-photo-compressor',
+    'upsc-photo-compressor',
+    'image-compressor-for-whatsapp'
+  ];
+
+  // 🔄 Component 1: Video Compressor Loop (Updated to /video-compressor)
   const compressorRoutes = [
     ...compressSizes.map((size) => ({
-      url: `${baseUrl}compressor/${size}`,
+      url: `${baseUrl}video-compressor/${size}`,
       lastModified: new Date(),
       priority: 0.8,
-      alternates: { languages: { es: `${baseUrl}compressor/${size}?lang=es`, pt: `${baseUrl}compressor/${size}?lang=pt`, hi: `${baseUrl}compressor/${size}?lang=hi` } },
+      alternates: { languages: { es: `${baseUrl}video-compressor/${size}?lang=es`, pt: `${baseUrl}video-compressor/${size}?lang=pt`, hi: `${baseUrl}video-compressor/${size}?lang=hi` } },
     })),
     ...compressPlatforms.map((platform) => ({
-      url: `${baseUrl}compressor/${platform}`,
+      url: `${baseUrl}video-compressor/${platform}`,
       lastModified: new Date(),
       priority: 0.9,
-      alternates: { languages: { es: `${baseUrl}compressor/${platform}?lang=es`, pt: `${baseUrl}compressor/${platform}?lang=pt`, hi: `${baseUrl}compressor/${platform}?lang=hi` } },
+      alternates: { languages: { es: `${baseUrl}video-compressor/${platform}?lang=es`, pt: `${baseUrl}video-compressor/${platform}?lang=pt`, hi: `${baseUrl}video-compressor/${platform}?lang=hi` } },
     })),
   ];
 
@@ -70,16 +86,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   }));
 
-  // 🔄 Component 4: Social Text Chunker & Hook Generator pSEO Matrix Loop
+  // 🔄 Component 4: Social Post Chunker & Hook Generator Loop (Updated to /social-media-post-chunker)
   const chunkerRoutes = chunkerSlugs.map((slug) => ({
-    url: `${baseUrl}social-media-text-chunker/${slug}`,
+    url: `${baseUrl}social-media-post-chunker/${slug}`,
     lastModified: new Date(),
     priority: 0.9,
     alternates: {
       languages: {
-        es: `${baseUrl}social-media-text-chunker/${slug}?lang=es`,
-        pt: `${baseUrl}social-media-text-chunker/${slug}?lang=pt`,
-        hi: `${baseUrl}social-media-text-chunker/${slug}?lang=hi`,
+        es: `${baseUrl}social-media-post-chunker/${slug}?lang=es`,
+        pt: `${baseUrl}social-media-post-chunker/${slug}?lang=pt`,
+        hi: `${baseUrl}social-media-post-chunker/${slug}?lang=hi`,
+      },
+    },
+  }));
+
+  // 🔄 Component 5: Batch Image Compressor Loop
+  const imageRoutes = imageSlugs.map((slug) => ({
+    url: `${baseUrl}image-compressor/${slug}`,
+    lastModified: new Date(),
+    priority: 0.9,
+    alternates: {
+      languages: {
+        es: `${baseUrl}image-compressor/${slug}?lang=es`,
+        pt: `${baseUrl}image-compressor/${slug}?lang=pt`,
+        hi: `${baseUrl}image-compressor/${slug}?lang=hi`,
       },
     },
   }));
@@ -92,56 +122,43 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
       alternates: { languages: { es: `${baseUrl}?lang=es`, pt: `${baseUrl}?lang=pt`, hi: `${baseUrl}?lang=hi` } },
     },
+    
+    // ⚡ CORE TOOL MAIN ROUTES
+    {
+      url: `${baseUrl}video-compressor`,
+      lastModified: new Date(),
+      priority: 0.95,
+      alternates: { languages: { es: `${baseUrl}video-compressor?lang=es`, pt: `${baseUrl}video-compressor?lang=pt`, hi: `${baseUrl}video-compressor?lang=hi` } },
+    },
+    {
+      url: `${baseUrl}video-splitter`,
+      lastModified: new Date(),
+      priority: 0.95,
+      alternates: { languages: { es: `${baseUrl}video-splitter?lang=es`, pt: `${baseUrl}video-splitter?lang=pt`, hi: `${baseUrl}video-splitter?lang=hi` } },
+    },
     {
       url: `${baseUrl}merge-images-compress-pdf-at-one-place`,
       lastModified: new Date(),
       priority: 0.95,
       alternates: { languages: { es: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=es`, pt: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=pt`, hi: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=hi` } },
     },
-    
-    // ⚡ PRO LEVEL UTILITY: SOCIAL TEXT CHUNKER MAIN ROUTE
     {
-      url: `${baseUrl}social-media-text-chunker`,
+      url: `${baseUrl}social-media-post-chunker`,
       lastModified: new Date(),
       priority: 0.95,
       alternates: { 
         languages: { 
-          es: `${baseUrl}social-media-text-chunker?lang=es`, 
-          pt: `${baseUrl}social-media-text-chunker?lang=pt`, 
-          hi: `${baseUrl}social-media-text-chunker?lang=hi` 
+          es: `${baseUrl}social-media-post-chunker?lang=es`, 
+          pt: `${baseUrl}social-media-post-chunker?lang=pt`, 
+          hi: `${baseUrl}social-media-post-chunker?lang=hi` 
         } 
       },
     },
-
     {
-      url: `${baseUrl}about`,
+      url: `${baseUrl}image-compressor`,
       lastModified: new Date(),
-      priority: 0.7,
-      alternates: { languages: { es: `${baseUrl}about?lang=es`, pt: `${baseUrl}about?lang=pt`, hi: `${baseUrl}about?lang=hi` } },
-    },
-    {
-      url: `${baseUrl}privacy-policy`,
-      lastModified: new Date(),
-      priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}privacy-policy?lang=es`, pt: `${baseUrl}privacy-policy?lang=pt`, hi: `${baseUrl}privacy-policy?lang=hi` } },
-    },
-    {
-      url: `${baseUrl}terms`,
-      lastModified: new Date(),
-      priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}terms?lang=es`, pt: `${baseUrl}terms?lang=pt`, hi: `${baseUrl}terms?lang=hi` } },
-    },
-    {
-      url: `${baseUrl}disclaimer`,
-      lastModified: new Date(),
-      priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}disclaimer?lang=es`, pt: `${baseUrl}disclaimer?lang=pt`, hi: `${baseUrl}disclaimer?lang=hi` } },
-    },
-    {
-      url: `${baseUrl}contact`,
-      lastModified: new Date(),
-      priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
+      priority: 0.95,
+      alternates: { languages: { es: `${baseUrl}image-compressor?lang=es`, pt: `${baseUrl}image-compressor?lang=pt`, hi: `${baseUrl}image-compressor?lang=hi` } },
     },
 
     // 🌟 YOUTUBE TOOLS
@@ -182,10 +199,43 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
 
+    // 📜 FOOTER & LEGAL PAGES
+    {
+      url: `${baseUrl}about`,
+      lastModified: new Date(),
+      priority: 0.7,
+      alternates: { languages: { es: `${baseUrl}about?lang=es`, pt: `${baseUrl}about?lang=pt`, hi: `${baseUrl}about?lang=hi` } },
+    },
+    {
+      url: `${baseUrl}privacy-policy`,
+      lastModified: new Date(),
+      priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}privacy-policy?lang=es`, pt: `${baseUrl}privacy-policy?lang=pt`, hi: `${baseUrl}privacy-policy?lang=hi` } },
+    },
+    {
+      url: `${baseUrl}terms`,
+      lastModified: new Date(),
+      priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}terms?lang=es`, pt: `${baseUrl}terms?lang=pt`, hi: `${baseUrl}terms?lang=hi` } },
+    },
+    {
+      url: `${baseUrl}disclaimer`,
+      lastModified: new Date(),
+      priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}disclaimer?lang=es`, pt: `${baseUrl}disclaimer?lang=pt`, hi: `${baseUrl}disclaimer?lang=hi` } },
+    },
+    {
+      url: `${baseUrl}contact`,
+      lastModified: new Date(),
+      priority: 0.5,
+      alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
+    },
+
     // 🔄 MATRIX SPREADS
     ...compressorRoutes,
     ...splitterRoutes,
     ...pdfRoutes, 
     ...chunkerRoutes,
+    ...imageRoutes,
   ];
 }
