@@ -176,8 +176,7 @@ async function generatePngSlideBlob(
     const lineHeight = fontSize + 20; // 62px line spacing
     const maxWidth = canvas.width - 180; // 900px line width
     const startY = 190;
-    const maxTextY = 1720; // Maximum vertical height boundary
-
+const maxTextY = 1780; // 🔴 Exact height cutoff right at the drawn line (Zero badge overlap)
     ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
 // Smart Line Wrapping (With Auto-Break for Long URLs)
     const words = cleanText ? cleanText.split(/\s+/) : [];
@@ -311,7 +310,21 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
   const [isMobile, setIsMobile] = useState(false);
 
   // Core States
-  const [inputText, setInputText] = useState("");
+// 🟢 Persistent Input Text (Platform switch karne par bhi text save rahega)
+  const [inputText, setInputText] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("utz_saved_chunker_text") || "";
+    }
+    return "";
+  });
+
+  // Auto-save text to localStorage on every change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("utz_saved_chunker_text", inputText);
+    }
+  }, [inputText]);
+  
   const [chunkMode, setChunkMode] = useState("text-only");
   const [selectedPlatform, setSelectedPlatform] = useState("whatsapp");
   const [customLimit, setCustomLimit] = useState(700);
@@ -499,7 +512,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     }
 
     // PNG mode me full canvas capacity (1020 chars), text mode me customLimit
-    const effectiveLimit = viewMode === "png_slides" ? 1020 : (Number(customLimit) || 700);
+const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) || 700);
     const words = cleanInput.split(/\s+/);
     let currentChunk = "";
     let rawChunks = [];
@@ -514,19 +527,18 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     });
     if (currentChunk) rawChunks.push(currentChunk);
 
-    // 2. Smart Spill & Anti-Orphan Logic (Aakhiri slide me sirf 5-10% text allow ya merge karna)
+ // 2. Ultra-Tight 3% Spill & Second-Last Slide Auto-Merge Logic
     if (rawChunks.length > 1) {
       const lastChunk = rawChunks[rawChunks.length - 1];
-      
-      // Agar last slide me text bohot kam (< 250 chars / ~15-20% of limit) hai
-      if (lastChunk.length < 250) {
-        const previousChunk = rawChunks[rawChunks.length - 2];
-        
-        // Agar previous slide thoda aur extra capacity (~1150 chars) le sakti hai, toh last slide merge kar do
-        if ((previousChunk + " " + lastChunk).length <= 1150) {
-          const removedLast = rawChunks.pop();
-          rawChunks[rawChunks.length - 1] += " " + removedLast;
-        }
+      const previousChunk = rawChunks[rawChunks.length - 2];
+
+      // Agar last slide ka content <= 100 chars (below 3%) hai 
+      // YA second-last slide me absorb ho sakta hai (up to 1180 chars)
+      if (
+        lastChunk.length <= 100 ||
+(previousChunk + " " + lastChunk).length <= 1400      ) {
+        const removedLast = rawChunks.pop();
+        rawChunks[rawChunks.length - 1] = (previousChunk + "\n\n" + removedLast).trim();
       }
     }
 
@@ -933,30 +945,42 @@ const [shortTeaserText, setShortTeaserText] = useState("");
           <div className="relative group rounded-3xl w-full">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl blur-md opacity-25"></div>
             <GlassCard className="relative w-full p-6 bg-white/90 dark:bg-black/80 border border-slate-200 dark:border-white/10 shadow-xl rounded-3xl z-10 space-y-6 text-left">
+           
+           
               {/* AUTOMATIC DEVICE SYSTEM DETECTOR BANNER */}
-              {!isMobile ? (
-                <div className="p-3 bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-2xl flex items-start gap-2.5 text-xs text-blue-800 dark:text-blue-300 animate-fadeIn">
-                  <span className="text-base shrink-0">💻</span>
-                  <div className="leading-relaxed">
-                    <strong className="font-extrabold block text-blue-900 dark:text-blue-200">
-                      PC / Desktop System Detected
-                    </strong>
-                    {selectedPlatform === "whatsapp"
-                      ? 'WhatsApp PC App does not support direct Web Status sharing. Use the "Serial Copy" button below to copy parts sequentially and press Ctrl + V to paste in WhatsApp Status.'
-                      : `${currentPlatformName} web/desktop mode detected. Use the "Serial Copy" button below to copy parts sequentially and press Ctrl + V to paste.`}
-                  </div>
-                </div>
-              ) : (
-                <div className="p-3 bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-300 animate-fadeIn">
-                  <span className="text-base shrink-0">📱</span>
-                  <div className="leading-relaxed">
-                    <strong className="font-extrabold">
-                      Mobile Device Detected:
-                    </strong>{" "}
-                    You can use direct native sharing or 1-click serial copying!
-                  </div>
-                </div>
-              )}
+{!isMobile ? (
+  // 💻 PC / DESKTOP BANNER (Unchanged - Original Setup)
+  <div className="p-3 bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-2xl flex items-start gap-2.5 text-xs text-blue-800 dark:text-blue-300 animate-fadeIn">
+    <span className="text-base shrink-0">💻</span>
+    <div className="leading-relaxed">
+      <strong className="font-extrabold block text-blue-900 dark:text-blue-200">
+        PC / Desktop System Detected
+      </strong>
+      {selectedPlatform === "whatsapp"
+        ? 'WhatsApp PC App does not support direct Web Status sharing. Use the "Serial Copy" button below to copy parts sequentially and press Ctrl + V to paste in WhatsApp Status.'
+        : `${currentPlatformName} web/desktop mode detected. Use the "Serial Copy" button below to copy parts sequentially and press Ctrl + V to paste.`}
+    </div>
+  </div>
+) : (
+  // 📱 MOBILE BANNER (Dynamic & Optimized for Mobile)
+  <div className="p-3 bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl flex items-start gap-2.5 text-xs text-emerald-800 dark:text-emerald-300 animate-fadeIn">
+    <span className="text-base shrink-0">📱</span>
+    <div className="leading-relaxed">
+      <strong className="font-extrabold block text-emerald-900 dark:text-emerald-200">
+        Mobile Device Detected:
+      </strong>
+      {viewMode === "png_slides" ? (
+        <span>
+          1-Tap Direct Native Sharing active! Easily post HD PNG slides and media directly to your WhatsApp Status or Social Apps.
+        </span>
+      ) : (
+        <span>
+          Direct App Share & 1-Tap Serial Copy active! Copy parts sequentially or share text chunks directly to apps.
+        </span>
+      )}
+    </div>
+  </div>
+)}
 
               {/* RADIO BUTTON MODE SELECTOR */}
               <div className="bg-slate-100 dark:bg-gray-950 p-2 rounded-2xl border border-slate-200 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 gap-2">
