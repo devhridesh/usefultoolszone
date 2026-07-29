@@ -99,7 +99,7 @@ const SLIDE_THEMES = [
   { id: "burgundy", name: "Burgundy", color: "#4a1424" },
 ];
 
-// Fixed PNG Slide Generator (Border-Embedded Watermark + Zero Text Overlap)
+// Fixed PNG Slide Generator (Full Height Fill + No Hold Trigger on Last Slide)
 async function generatePngSlideBlob(
   textChunk,
   slideNumber,
@@ -118,16 +118,16 @@ async function generatePngSlideBlob(
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Inner Border Frame (Geometric 36px Margin)
+    // 2. Geometric Frame Border (36px Margin)
     const frameMargin = 36;
     const frameWidth = canvas.width - frameMargin * 2;
     const frameHeight = canvas.height - frameMargin * 2;
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
     ctx.lineWidth = 14;
     ctx.strokeRect(frameMargin, frameMargin, frameWidth, frameHeight);
 
-    // ---------------- TOP HEADER ROW (Symmetric Pill Badges) ----------------
+    // ---------------- TOP HEADER ROW ----------------
 
     // Top-Left: SLIDE COUNTER
     ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
@@ -164,7 +164,7 @@ async function generatePngSlideBlob(
       108
     );
 
-    // ---------------- MAIN CONTENT AREA (Clash-Free Boundary) ----------------
+    // ---------------- MAIN CONTENT AREA (Top-to-Bottom Fill) ----------------
 
     let cleanText = (textChunk || "")
       .replace(/\[\d+\/\d+\]/g, "")
@@ -173,10 +173,10 @@ async function generatePngSlideBlob(
       .trim();
 
     const fontSize = 42;
-    const lineHeight = fontSize + 18;
+    const lineHeight = fontSize + 20; // 62px line spacing
     const maxWidth = canvas.width - 180; // 900px line width
     const startY = 190;
-    const maxTextY = 1700; // 🔴 STRICT SAFETY MARGIN: Bottom border se pehle hi line brake!
+    const maxTextY = 1720; // Maximum vertical height boundary
 
     ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
 
@@ -195,7 +195,7 @@ async function generatePngSlideBlob(
     }
     if (line) lines.push(line);
 
-    // Safe Line Rendering
+    // Render Text Lines
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "left";
 
@@ -208,18 +208,16 @@ async function generatePngSlideBlob(
 
     // ---------------- DECORATIVE EMBEDDED BOTTOM BORDER ----------------
 
-    const borderY = canvas.height - frameMargin; // Exact Bottom Border Coordinate (Y = 1884)
+    const borderY = canvas.height - frameMargin; // Y = 1884
 
     if (totalSlides > 1 && slideNumber < totalSlides) {
-      // Intermediate Slides: Next Slide CTA Pill Embedded on Border
+      // Intermediate Slides: Next Slide CTA Banner
       const ctaW = 580;
       const ctaX = (canvas.width - ctaW) / 2;
 
-      // Mask border line behind pill
       ctx.fillStyle = bgColor;
       ctx.fillRect(ctaX - 10, borderY - 26, ctaW + 20, 52);
 
-      // Contrast Adaptive Pill Container
       ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
       ctx.beginPath();
       ctx.roundRect(ctaX, borderY - 26, ctaW, 52, 16);
@@ -238,16 +236,14 @@ async function generatePngSlideBlob(
         borderY + 8
       );
     } else {
-      // Final Slide: Decorative Watermark Embedded DIRECTLY IN Bottom Border Line
+      // Final Slide: Embedded Watermark Badge (No Hold Trigger)
       const endText = "✦ USEFUL TOOLS ZONE ✦";
       const tagW = 380;
       const tagX = (canvas.width - tagW) / 2;
 
-      // Mask border line behind badge
       ctx.fillStyle = bgColor;
       ctx.fillRect(tagX - 10, borderY - 22, tagW + 20, 44);
 
-      // High-Contrast Dual Tone Pill Badge (Universal Palette Compatibility)
       ctx.fillStyle = "rgba(0, 0, 0, 0.68)";
       ctx.beginPath();
       ctx.roundRect(tagX, borderY - 22, tagW, 44, 14);
@@ -257,7 +253,6 @@ async function generatePngSlideBlob(
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Sharp High-Contrast Text
       ctx.fillStyle = "#ffffff";
       ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
       ctx.shadowBlur = 4;
@@ -445,56 +440,107 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       return char;
     });
   };
-
-// Main Chunker Logic (Updated for Hybrid Teaser vs Pure PNG Mode)
+// Main Chunker Logic (Full Capacity Fill + 5-10% Spill Logic + No Last Slide Trigger)
   useEffect(() => {
     if (!inputText.trim()) {
       setChunks([]);
-      setShortTeaserText("");
       setNextSerialIndex(0);
       return;
     }
 
-    let processedText = inputText.trim();
+    // 1. Cleaning: Input text se old hooks aur triggers ki safai
+    let cleanInput = inputText;
 
-    // Unicode Bold apply karein agar toggle ON hai
+    DEFAULT_HOOKS.forEach((h) => {
+      cleanInput = cleanInput.replaceAll(h, "");
+      cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
+    });
+    if (customHooks && customHooks.length > 0) {
+      customHooks.forEach((h) => {
+        cleanInput = cleanInput.replaceAll(h, "");
+        cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
+      });
+    }
+
+    cleanInput = cleanInput.replace(/⏸️\s*\(Hold screen to pause & read full text\)/g, "");
+    cleanInput = cleanInput.replace(new RegExp(toUnicodeBold("(Hold screen to pause & read full text)"), "g"), "");
+    cleanInput = cleanInput.replace(/\u200B{10,}\n\.\.\.Read More/g, "");
+    cleanInput = cleanInput.replace(/\[\d+\/\d+\]\n?/g, "");
+    cleanInput = cleanInput.trim();
+
     if (enableBoldKeywords) {
-      processedText = processedText.replace(/\b[A-Z0-9]{2,}\b/g, (match) =>
+      cleanInput = cleanInput.replace(/\b[A-Z0-9]{2,}\b/g, (match) =>
         toUnicodeBold(match)
       );
     }
 
-    // 🟢 HYBRID MODE (Media File Attached + Storyboard Mode)
-    if (mediaFile && chunkMode === "video-hooks") {
-      if (includeMediaCaption) {
-        // 1. CHECKED (DEFAULT): Pehla ~140 char Slide 1 Caption Teaser banega
-        const teaserLength = 140;
-        let teaser = processedText.slice(0, teaserLength);
-        let remainingText = processedText.slice(teaserLength).trim();
+    // PNG mode me full canvas capacity (1020 chars), text mode me customLimit
+    const effectiveLimit = viewMode === "png_slides" ? 1020 : (Number(customLimit) || 700);
+    const words = cleanInput.split(/\s+/);
+    let currentChunk = "";
+    let rawChunks = [];
 
-        if (processedText.length > teaserLength) {
-          teaser = teaser.substring(0, teaser.lastIndexOf(" ")) + "...";
-        }
-        setShortTeaserText(teaser);
-
-        // 2. Baaki bacha text PNG Slides (Slide 2, 3...) banega
-        if (remainingText) {
-          generateChunksFromText(remainingText);
-        } else {
-          setChunks([]);
-        }
+    words.forEach((word) => {
+      if ((currentChunk + " " + word).trim().length <= effectiveLimit) {
+        currentChunk += (currentChunk ? " " : "") + word;
       } else {
-        // 🔴 UNCHECKED: Caption 100% empty, POORA text standard PNG slides banega
-        setShortTeaserText("");
-        generateChunksFromText(processedText);
+        if (currentChunk) rawChunks.push(currentChunk);
+        currentChunk = word;
       }
-    } 
-    // 🟢 PURE TEXT MODE
-    else {
-      setShortTeaserText("");
-      generateChunksFromText(processedText);
+    });
+    if (currentChunk) rawChunks.push(currentChunk);
+
+    // 2. Smart Spill & Anti-Orphan Logic (Aakhiri slide me sirf 5-10% text allow ya merge karna)
+    if (rawChunks.length > 1) {
+      const lastChunk = rawChunks[rawChunks.length - 1];
+      
+      // Agar last slide me text bohot kam (< 250 chars / ~15-20% of limit) hai
+      if (lastChunk.length < 250) {
+        const previousChunk = rawChunks[rawChunks.length - 2];
+        
+        // Agar previous slide thoda aur extra capacity (~1150 chars) le sakti hai, toh last slide merge kar do
+        if ((previousChunk + " " + lastChunk).length <= 1150) {
+          const removedLast = rawChunks.pop();
+          rawChunks[rawChunks.length - 1] += " " + removedLast;
+        }
+      }
     }
 
+    const total = rawChunks.length;
+
+    // 3. Final Formatting (NO Hold Trigger on Last Slide!)
+    const finalChunks = rawChunks.map((chunk, index) => {
+      let result = chunk;
+
+      // Primary Attention Hook ONLY on Slide 1
+      if (index === 0 && selectedHook && selectedHook !== "none") {
+        result = `${toUnicodeBold(selectedHook)}\n\n${result}`;
+      }
+
+      // 🔴 Hold Trigger ONLY on Intermediate Slides (NOT on Last Slide!)
+      if (enableHoldToRead && index < total - 1) {
+        result += `\n\n⏸️ ${toUnicodeBold("(Hold screen to pause & read full text)")}`;
+      }
+
+      // Slide Badge Prefix
+      if (total > 1) {
+        result = `[${index + 1}/${total}]\n${result}`;
+      }
+
+      // Read More Trigger (WhatsApp only in Text Copy Mode on Last Slide)
+      if (
+        selectedPlatform === "whatsapp" &&
+        enableReadMore &&
+        index === total - 1 &&
+        viewMode === "text_copy"
+      ) {
+        result += "\u200B".repeat(3500) + "\n...Read More";
+      }
+
+      return result;
+    });
+
+    setChunks(finalChunks);
     setNextSerialIndex(0);
   }, [
     inputText,
@@ -505,10 +551,10 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     selectedHook,
     enableHoldToRead,
     enableReadMore,
-    mediaFile,
-    includeMediaCaption
+    customHooks,
+    viewMode,
   ]);
-
+  
   // Helper logic to split text into array chunks
   const generateChunksFromText = (textToChunk) => {
     const effectiveLimit = Number(customLimit) || 300;
