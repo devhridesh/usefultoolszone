@@ -452,32 +452,46 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
       return;
     }
 
-    // Safai: Old Hooks aur Text Triggers ko input se hatana
-    let cleanInput = inputText;
-    DEFAULT_HOOKS.forEach((h) => {
+   // Safai: Old Hooks, Triggers aur Formatting ko input se completely hatana
+let cleanInput = inputText;
+
+// 1. Default Presets (Normal + Unicode Bold dono रूप saaf karein)
+DEFAULT_HOOKS.forEach((h) => {
+  if (h) {
+    cleanInput = cleanInput.replaceAll(h, "");
+    cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
+  }
+});
+
+// 2. Custom Saved Hooks ko saaf karein
+if (customHooks && customHooks.length > 0) {
+  customHooks.forEach((h) => {
+    if (h) {
       cleanInput = cleanInput.replaceAll(h, "");
       cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
-    });
-    if (customHooks && customHooks.length > 0) {
-      customHooks.forEach((h) => {
-        cleanInput = cleanInput.replaceAll(h, "");
-        cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
-      });
     }
+  });
+}
 
-    cleanInput = cleanInput.replace(/⏸️\s*\(Hold screen to pause & read full text\)/g, "");
-    cleanInput = cleanInput.replace(new RegExp(toUnicodeBold("(Hold screen to pause & read full text)"), "g"), "");
-    cleanInput = cleanInput.replace(/👉\s*READ NEXT SLIDE FOR PART \d+ 📲/g, "");
-    cleanInput = cleanInput.replace(/\u200B{10,}\n\.\.\.Read More/g, "");
-    cleanInput = cleanInput.replace(/\[\d+\/\d+\]\n?/g, "");
-    cleanInput = cleanInput.trim();
+// 3. Hold-To-Read & Pause Triggers (Normal aur Unicode Bold dono saaf karein)
+const holdTextNormal = "(Hold screen to pause & read full text)";
+const holdTextBold = toUnicodeBold(holdTextNormal);
 
-    if (enableBoldKeywords) {
-      cleanInput = cleanInput.replace(/\b[A-Z0-9]{2,}\b/g, (match) =>
-        toUnicodeBold(match)
-      );
-    }
+// Unicode Pause icons + Direct string replacement
+cleanInput = cleanInput.replaceAll("⏸️", "").replaceAll("⏸", "");
+cleanInput = cleanInput.replaceAll(holdTextNormal, "");
+cleanInput = cleanInput.replaceAll(holdTextBold, "");
 
+// 4. Extra RegEx Cleaning (Slide numbers, Read More, leftover empty brackets)
+cleanInput = cleanInput
+  .replace(/\(\s*Hold\s*screen\s*to\s*pause\s*&?\s*read\s*full\s*text\s*\)/gi, "")
+  .replace(/👉\s*READ NEXT SLIDE FOR PART \d+ 📲/gi, "")
+  .replace(/\u200B{10,}\n\.\.\.Read More/g, "")
+  .replace(/\[\d+\/\d+\]\n?/g, "")
+  .replace(/\(\s*\)/g, "") // Khali reh gaye () brackets hatayein
+  .replace(/\{\s*\}/g, "") // Khali reh gaye {} brackets hatayein
+  .replace(/\n\s*\n\s*\n/g, "\n\n") // Multi-line extra gaps saaf karein
+  .trim();
     // Full 1020 character canvas space limit
     const effectiveLimit = viewMode === "png_slides" ? 1020 : (Number(customLimit) || 700);
     const words = cleanInput.split(/\s+/);
