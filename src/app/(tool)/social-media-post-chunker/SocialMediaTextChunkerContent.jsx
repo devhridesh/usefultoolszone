@@ -179,21 +179,46 @@ async function generatePngSlideBlob(
     const maxTextY = 1720; // Maximum vertical height boundary
 
     ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
-
+// Smart Line Wrapping (With Auto-Break for Long URLs)
     const words = cleanText ? cleanText.split(/\s+/) : [];
     let line = "";
     const lines = [];
 
     for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n] + " ";
+      let word = words[n];
+
+      // 🔴 FIX: Agar single word (jaise Long URL) boundary se bada hai
+      if (ctx.measureText(word).width > maxWidth) {
+        if (line.trim()) {
+          lines.push(line.trim());
+          line = "";
+        }
+
+        // Character-by-character break
+        let subWord = "";
+        for (let c = 0; c < word.length; c++) {
+          if (ctx.measureText(subWord + word[c]).width > maxWidth) {
+            lines.push(subWord);
+            subWord = word[c];
+          } else {
+            subWord += word[c];
+          }
+        }
+        if (subWord) {
+          line = subWord + " ";
+        }
+        continue;
+      }
+
+      const testLine = line + word + " ";
       if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-        lines.push(line);
-        line = words[n] + " ";
+        lines.push(line.trim());
+        line = word + " ";
       } else {
         line = testLine;
       }
     }
-    if (line) lines.push(line);
+    if (line.trim()) lines.push(line.trim());
 
     // Render Text Lines
     ctx.fillStyle = "#ffffff";
@@ -205,7 +230,6 @@ async function generatePngSlideBlob(
         ctx.fillText(l.trim(), 90, currentY);
       }
     });
-
     // ---------------- DECORATIVE EMBEDDED BOTTOM BORDER ----------------
 
     const borderY = canvas.height - frameMargin; // Y = 1884
@@ -752,20 +776,25 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     });
   };
 
- // Single File Share Helper (Zero Text Clutter Fix)
+ // Single File Share Helper (For Attached Media)
   const handleShareFile = async (file, textCaption, isSlide1Media = false) => {
-    // Caption tabhi jayega jab Media File ho aur Checkbox CHECKED ho
     let finalCaption = "";
     if (isSlide1Media && includeMediaCaption && shortTeaserText) {
-      const hookPrefix = selectedHook && selectedHook !== "none" ? `${selectedHook}\n\n` : "";
+      const hookPrefix =
+        selectedHook && selectedHook !== "none" ? `${selectedHook}\n\n` : "";
       finalCaption = `${hookPrefix}${shortTeaserText}\n\n👉 Read full story in next slides 📲`;
     }
 
-    if (typeof navigator !== "undefined" && navigator.canShare && file && isMobile) {
+    if (
+      typeof navigator !== "undefined" &&
+      navigator.canShare &&
+      file &&
+      isMobile
+    ) {
       try {
         await navigator.share({
           files: [file],
-          text: finalCaption, // Unchecked ya PNG slides ke liye EXACT EMPTY String ("")
+          text: finalCaption,
         });
       } catch (err) {
         if (err.name !== "AbortError") console.error(err);
@@ -773,10 +802,60 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     } else {
       const link = document.createElement("a");
       link.href = URL.createObjectURL(file);
-      link.download = file.name || "UTZ_Slide.png";
+      link.download = file.name || "UTZ_Media.png";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+  };
+
+  // 🟢 NEW: PNG Slide Share Handler (With Auto Link Extraction on Last Slide)
+  const handleShareSlide = async (slideIndex) => {
+    const currentSlide = pngSlides[slideIndex];
+    if (!currentSlide) return;
+
+    try {
+      const file = new File([currentSlide.blob], `Slide_${slideIndex + 1}.png`, {
+        type: "image/png",
+      });
+
+      let shareCaption = "";
+      const total = pngSlides.length;
+
+      // 🌐 Last Slide: Auto Extract URLs & Generate Clickable CTA Caption
+      if (slideIndex === total - 1) {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const extractedUrls = inputText.match(urlRegex) || [];
+        const uniqueUrls = [...new Set(extractedUrls)];
+
+        if (uniqueUrls.length > 0) {
+          shareCaption =
+            `🌐 OFFICIAL SOURCE & DIRECT LINKS:\n\n` +
+            uniqueUrls.map((url) => `🔗 ${url}`).join("\n\n") +
+            `\n\n📌 Tap the link above to visit or download app!`;
+        }
+      }
+
+      if (
+        typeof navigator !== "undefined" &&
+        navigator.canShare &&
+        isMobile &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          files: [file],
+          text: shareCaption, // Last slide gets clickable links; earlier slides stay clean
+        });
+      } else {
+        const link = document.createElement("a");
+        link.href = currentSlide.url;
+        link.download = `UTZ_Slide_${slideIndex + 1}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (err) {
+      if (err.name !== "AbortError") console.error("Share failed:", err);
     }
   };
 
