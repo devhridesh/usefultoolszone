@@ -308,6 +308,8 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
   const [enableBoldKeywords, setEnableBoldKeywords] = useState(false);
   const [selectedHook, setSelectedHook] = useState(DEFAULT_HOOKS[0]);
   const [enableHoldToRead, setEnableHoldToRead] = useState(true);
+const [includeMediaCaption, setIncludeMediaCaption] = useState(true);
+const [shortTeaserText, setShortTeaserText] = useState("");
   const [enableReadMore, setEnableReadMore] = useState(true);
 
   // Custom Saved Hooks State with LocalStorage Sync
@@ -444,57 +446,73 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
     });
   };
 
- // Main Chunker Logic (Clean User Text + Image-Native Slide Hooks)
+// Main Chunker Logic (Updated for Hybrid Teaser vs Pure PNG Mode)
   useEffect(() => {
     if (!inputText.trim()) {
       setChunks([]);
+      setShortTeaserText("");
       setNextSerialIndex(0);
       return;
     }
 
-   // Safai: Old Hooks, Triggers aur Formatting ko input se completely hatana
-let cleanInput = inputText;
+    let processedText = inputText.trim();
 
-// 1. Default Presets (Normal + Unicode Bold dono रूप saaf karein)
-DEFAULT_HOOKS.forEach((h) => {
-  if (h) {
-    cleanInput = cleanInput.replaceAll(h, "");
-    cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
-  }
-});
-
-// 2. Custom Saved Hooks ko saaf karein
-if (customHooks && customHooks.length > 0) {
-  customHooks.forEach((h) => {
-    if (h) {
-      cleanInput = cleanInput.replaceAll(h, "");
-      cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
+    // Unicode Bold apply karein agar toggle ON hai
+    if (enableBoldKeywords) {
+      processedText = processedText.replace(/\b[A-Z0-9]{2,}\b/g, (match) =>
+        toUnicodeBold(match)
+      );
     }
-  });
-}
 
-// 3. Hold-To-Read & Pause Triggers (Normal aur Unicode Bold dono saaf karein)
-const holdTextNormal = "(Hold screen to pause & read full text)";
-const holdTextBold = toUnicodeBold(holdTextNormal);
+    // 🟢 HYBRID MODE (Media File Attached + Storyboard Mode)
+    if (mediaFile && chunkMode === "video-hooks") {
+      if (includeMediaCaption) {
+        // 1. CHECKED (DEFAULT): Pehla ~140 char Slide 1 Caption Teaser banega
+        const teaserLength = 140;
+        let teaser = processedText.slice(0, teaserLength);
+        let remainingText = processedText.slice(teaserLength).trim();
 
-// Unicode Pause icons + Direct string replacement
-cleanInput = cleanInput.replaceAll("⏸️", "").replaceAll("⏸", "");
-cleanInput = cleanInput.replaceAll(holdTextNormal, "");
-cleanInput = cleanInput.replaceAll(holdTextBold, "");
+        if (processedText.length > teaserLength) {
+          teaser = teaser.substring(0, teaser.lastIndexOf(" ")) + "...";
+        }
+        setShortTeaserText(teaser);
 
-// 4. Extra RegEx Cleaning (Slide numbers, Read More, leftover empty brackets)
-cleanInput = cleanInput
-  .replace(/\(\s*Hold\s*screen\s*to\s*pause\s*&?\s*read\s*full\s*text\s*\)/gi, "")
-  .replace(/👉\s*READ NEXT SLIDE FOR PART \d+ 📲/gi, "")
-  .replace(/\u200B{10,}\n\.\.\.Read More/g, "")
-  .replace(/\[\d+\/\d+\]\n?/g, "")
-  .replace(/\(\s*\)/g, "") // Khali reh gaye () brackets hatayein
-  .replace(/\{\s*\}/g, "") // Khali reh gaye {} brackets hatayein
-  .replace(/\n\s*\n\s*\n/g, "\n\n") // Multi-line extra gaps saaf karein
-  .trim();
-    // Full 1020 character canvas space limit
-    const effectiveLimit = viewMode === "png_slides" ? 1020 : (Number(customLimit) || 700);
-    const words = cleanInput.split(/\s+/);
+        // 2. Baaki bacha text PNG Slides (Slide 2, 3...) banega
+        if (remainingText) {
+          generateChunksFromText(remainingText);
+        } else {
+          setChunks([]);
+        }
+      } else {
+        // 🔴 UNCHECKED: Caption 100% empty, POORA text standard PNG slides banega
+        setShortTeaserText("");
+        generateChunksFromText(processedText);
+      }
+    } 
+    // 🟢 PURE TEXT MODE
+    else {
+      setShortTeaserText("");
+      generateChunksFromText(processedText);
+    }
+
+    setNextSerialIndex(0);
+  }, [
+    inputText,
+    chunkMode,
+    selectedPlatform,
+    customLimit,
+    enableBoldKeywords,
+    selectedHook,
+    enableHoldToRead,
+    enableReadMore,
+    mediaFile,
+    includeMediaCaption
+  ]);
+
+  // Helper logic to split text into array chunks
+  const generateChunksFromText = (textToChunk) => {
+    const effectiveLimit = Number(customLimit) || 300;
+    const words = textToChunk.split(/\s+/);
     let currentChunk = "";
     let rawChunks = [];
 
@@ -508,54 +526,28 @@ cleanInput = cleanInput
     });
     if (currentChunk) rawChunks.push(currentChunk);
 
-    // Anti-Orphan Merger (Extra tiny last slide elimination)
-    if (rawChunks.length > 1) {
-      const lastChunk = rawChunks[rawChunks.length - 1];
-      if (lastChunk.length < 280) {
-        const removedLast = rawChunks.pop();
-        rawChunks[rawChunks.length - 1] += " " + removedLast;
-      }
-    }
-
     const total = rawChunks.length;
-// Formatting: PNG mode me visual Read More nahi juda hona chahiye
+
     const finalChunks = rawChunks.map((chunk, index) => {
       let result = chunk;
-
       if (index === 0 && selectedHook && selectedHook !== "none") {
         result = `${toUnicodeBold(selectedHook)}\n\n${result}`;
       }
-
+      if (enableHoldToRead) {
+        result += `\n\n⏸️ ${toUnicodeBold("(Hold screen to pause & read full text)")}`;
+      }
       if (total > 1) {
         result = `[${index + 1}/${total}]\n${result}`;
       }
-
-      // WhatsApp Read More Trick ONLY in Text Copy Mode (PNG Slides me nahi)
-      if (
-        selectedPlatform === "whatsapp" &&
-        enableReadMore &&
-        index === total - 1 &&
-        viewMode === "text_copy"
-      ) {
+      if (selectedPlatform === "whatsapp" && enableReadMore && index === total - 1) {
         result += "\u200B".repeat(3500) + "\n...Read More";
       }
-
       return result;
     });
+
     setChunks(finalChunks);
-    setNextSerialIndex(0);
-  }, [
-    inputText,
-    chunkMode,
-    selectedPlatform,
-    customLimit,
-    enableBoldKeywords,
-    selectedHook,
-    enableHoldToRead,
-    enableReadMore,
-    customHooks,
-    viewMode,
-  ]);
+  };
+
   // Current Selected Theme State
   const [themeIndex, setThemeIndex] = useState(0);
   const [selectedSlideTheme, setSelectedSlideTheme] = useState(SLIDE_THEMES[0]);
@@ -714,18 +706,20 @@ cleanInput = cleanInput
     });
   };
 
-  // Single File Share / Download Helper
-  const handleShareFile = async (file, textCaption) => {
-    if (
-      typeof navigator !== "undefined" &&
-      navigator.canShare &&
-      file &&
-      isMobile
-    ) {
+ // Single File Share Helper (Zero Text Clutter Fix)
+  const handleShareFile = async (file, textCaption, isSlide1Media = false) => {
+    // Caption tabhi jayega jab Media File ho aur Checkbox CHECKED ho
+    let finalCaption = "";
+    if (isSlide1Media && includeMediaCaption && shortTeaserText) {
+      const hookPrefix = selectedHook && selectedHook !== "none" ? `${selectedHook}\n\n` : "";
+      finalCaption = `${hookPrefix}${shortTeaserText}\n\n👉 Read full story in next slides 📲`;
+    }
+
+    if (typeof navigator !== "undefined" && navigator.canShare && file && isMobile) {
       try {
         await navigator.share({
           files: [file],
-          text: textCaption || "",
+          text: finalCaption, // Unchecked ya PNG slides ke liye EXACT EMPTY String ("")
         });
       } catch (err) {
         if (err.name !== "AbortError") console.error(err);
@@ -955,6 +949,37 @@ cleanInput = cleanInput
                     />
                     <span>Add &quot;Hold Screen to Read&quot; Trigger</span>
                   </label>
+
+{/* 🟢 Conditional Teaser Checkbox: Only visible when Video/Photo Storyboard Mode is selected */}
+{chunkMode === "video-hooks" && (
+  <div className="col-span-full space-y-2 mt-1 animate-fadeIn">
+    <label className="flex items-center gap-2 cursor-pointer select-none bg-indigo-100/60 dark:bg-indigo-950/60 p-2 rounded-xl border border-indigo-300 dark:border-indigo-800">
+      <input
+        type="checkbox"
+        checked={includeMediaCaption}
+        onChange={(e) => setIncludeMediaCaption(e.target.checked)}
+        className="rounded text-indigo-600 focus:ring-0 cursor-pointer w-4 h-4 shrink-0"
+      />
+      <span className="text-indigo-950 dark:text-indigo-200 font-extrabold text-[11px] leading-tight">
+        Attach Short Teaser & &quot;Read full story in next slides 📲&quot; Caption
+      </span>
+    </label>
+
+    {/* ⚠️ Warning Info Box (Appears instantly when UNCHECKED) */}
+    {!includeMediaCaption && (
+      <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl flex items-start gap-2 text-[11px] text-amber-900 dark:text-amber-200 animate-fadeIn">
+        <span className="text-sm shrink-0">⚠️</span>
+        <div className="leading-snug font-semibold">
+          <strong className="font-extrabold block text-amber-950 dark:text-amber-100 mb-0.5">
+            Pure PNG Mode Active:
+          </strong>
+          Captions will stay completely empty when sharing. Your full text will convert directly into clean PNG slides starting from Slide 1 without any teaser cuts.
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
                 </div>
                 {/* CHOOSE ATTENTION GRABBING HOOK WITH CUSTOM HOOK CREATOR */}
                 <div className="pt-2 border-t border-indigo-100 dark:border-indigo-900/40 space-y-2">
@@ -1444,11 +1469,11 @@ cleanInput = cleanInput
                               key={slide.index}
                               className="p-2 bg-slate-100 dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 flex flex-col items-center space-y-2"
                             >
-                              <img
-                                src={slide.url}
-                                alt={`Slide ${slide.index}`}
-                                className="w-full h-40 object-cover rounded-lg"
-                              />
+                      <img
+  src={slide.url}
+  alt={`Slide ${slide.index}`}
+  className="w-full aspect-[9/16] object-contain bg-slate-900/10 dark:bg-black/50 rounded-xl shadow-sm border border-slate-200/60 dark:border-white/10"
+/>
                               <button
                                 type="button"
                                 onClick={() =>
