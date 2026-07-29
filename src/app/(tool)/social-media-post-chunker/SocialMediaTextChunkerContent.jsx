@@ -72,8 +72,218 @@ const HOOK_PRESETS = [
   "👀 If You Are Doing This, STOP Immediately:",
   "⚡ The Secret Strategy Revealed in 30 Seconds:",
 ];
+// WhatsApp Authentic Unique Status Colors (No Repeats)
+const SLIDE_THEMES = [
+  { id: "sky-blue", name: "Sky Blue", color: "#00a8f3" },
+  { id: "deep-magenta", name: "Deep Magenta", color: "#6b1539" },
+  { id: "crimson-wine", name: "Wine Red", color: "#741928" },
+  { id: "slate-dark", name: "Dark Slate", color: "#374247" },
+  { id: "whatsapp-green", name: "WhatsApp Green", color: "#25d366" },
+  { id: "soft-lavender", name: "Soft Lavender", color: "#9770b0" },
+  { id: "warm-taupe", name: "Warm Taupe", color: "#7b675e" },
+  { id: "bright-cyan", name: "Bright Cyan", color: "#00a2db" },
+  { id: "coral-pink", name: "Coral Pink", color: "#d75065" },
+  { id: "deep-violet", name: "Deep Violet", color: "#512160" },
+  { id: "dark-teal", name: "Dark Teal", color: "#075e54" },
+  { id: "mustard-gold", name: "Mustard Gold", color: "#8d781e" },
+  { id: "royal-blue", name: "Royal Blue", color: "#3761a1" },
+  { id: "slate-grey", name: "Slate Grey", color: "#637075" },
+  { id: "vibrant-pink", name: "Vibrant Pink", color: "#e54a7b" },
+  { id: "olive-green", name: "Olive Green", color: "#4c5d33" },
+  { id: "ice-blue", name: "Ice Blue", color: "#5aa4c7" },
+  { id: "deep-purple", name: "Deep Purple", color: "#391a48" },
+  { id: "dusty-plum", name: "Dusty Plum", color: "#7a547b" },
+  { id: "yellow-green", name: "Yellow Green", color: "#a7b32f" },
+  { id: "aqua-teal", name: "Aqua Teal", color: "#4ba4b4" },
+  { id: "steel-blue", name: "Steel Blue", color: "#516877" },
+  { id: "burgundy", name: "Burgundy", color: "#4a1424" },
+];
+
+// Fixed PNG Slide Generator (Border-Embedded Watermark + Zero Text Overlap)
+async function generatePngSlideBlob(
+  textChunk,
+  slideNumber,
+  totalSlides,
+  theme = SLIDE_THEMES[0]
+) {
+  return new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext("2d");
+
+    const bgColor = theme?.color || "#25d366";
+
+    // 1. Background Solid Fill
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 2. Inner Border Frame (Geometric 36px Margin)
+    const frameMargin = 36;
+    const frameWidth = canvas.width - frameMargin * 2;
+    const frameHeight = canvas.height - frameMargin * 2;
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.lineWidth = 14;
+    ctx.strokeRect(frameMargin, frameMargin, frameWidth, frameHeight);
+
+    // ---------------- TOP HEADER ROW (Symmetric Pill Badges) ----------------
+
+    // Top-Left: SLIDE COUNTER
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.beginPath();
+    ctx.roundRect(75, 75, 210, 54, 16);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 24px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(`SLIDE ${slideNumber}/${totalSlides}`, 180, 110);
+
+    // Top-Right: DOMAIN WATERMARK
+    const wmWidth = 640;
+    const wmX = canvas.width - 75 - wmWidth;
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.beginPath();
+    ctx.roundRect(wmX, 75, wmWidth, 54, 16);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 19px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "chunked on www.usefultoolszone.com/social-media-post-chunker",
+      wmX + wmWidth / 2,
+      108
+    );
+
+    // ---------------- MAIN CONTENT AREA (Clash-Free Boundary) ----------------
+
+    let cleanText = (textChunk || "")
+      .replace(/\[\d+\/\d+\]/g, "")
+      .replace(/\u200B{10,}\n\.\.\.Read More/g, "")
+      .replace(/\.\.\.Read More/g, "")
+      .trim();
+
+    const fontSize = 42;
+    const lineHeight = fontSize + 18;
+    const maxWidth = canvas.width - 180; // 900px line width
+    const startY = 190;
+    const maxTextY = 1700; // 🔴 STRICT SAFETY MARGIN: Bottom border se pehle hi line brake!
+
+    ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
+
+    const words = cleanText ? cleanText.split(/\s+/) : [];
+    let line = "";
+    const lines = [];
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + " ";
+      if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+        lines.push(line);
+        line = words[n] + " ";
+      } else {
+        line = testLine;
+      }
+    }
+    if (line) lines.push(line);
+
+    // Safe Line Rendering
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "left";
+
+    lines.forEach((l, idx) => {
+      const currentY = startY + idx * lineHeight;
+      if (currentY <= maxTextY) {
+        ctx.fillText(l.trim(), 90, currentY);
+      }
+    });
+
+    // ---------------- DECORATIVE EMBEDDED BOTTOM BORDER ----------------
+
+    const borderY = canvas.height - frameMargin; // Exact Bottom Border Coordinate (Y = 1884)
+
+    if (totalSlides > 1 && slideNumber < totalSlides) {
+      // Intermediate Slides: Next Slide CTA Pill Embedded on Border
+      const ctaW = 580;
+      const ctaX = (canvas.width - ctaW) / 2;
+
+      // Mask border line behind pill
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(ctaX - 10, borderY - 26, ctaW + 20, 52);
+
+      // Contrast Adaptive Pill Container
+      ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+      ctx.beginPath();
+      ctx.roundRect(ctaX, borderY - 26, ctaW, 52, 16);
+      ctx.fill();
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 22px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        `👉 READ NEXT SLIDE FOR PART ${slideNumber + 1} 📲`,
+        canvas.width / 2,
+        borderY + 8
+      );
+    } else {
+      // Final Slide: Decorative Watermark Embedded DIRECTLY IN Bottom Border Line
+      const endText = "✦ USEFUL TOOLS ZONE ✦";
+      const tagW = 380;
+      const tagX = (canvas.width - tagW) / 2;
+
+      // Mask border line behind badge
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(tagX - 10, borderY - 22, tagW + 20, 44);
+
+      // High-Contrast Dual Tone Pill Badge (Universal Palette Compatibility)
+      ctx.fillStyle = "rgba(0, 0, 0, 0.68)";
+      ctx.beginPath();
+      ctx.roundRect(tagX, borderY - 22, tagW, 44, 14);
+      ctx.fill();
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Sharp High-Contrast Text
+      ctx.fillStyle = "#ffffff";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+      ctx.shadowBlur = 4;
+      ctx.font = "bold 18px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(endText, canvas.width / 2, borderY + 6);
+      ctx.shadowBlur = 0;
+    }
+
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      resolve({ blob, url });
+    }, "image/png");
+  });
+}
+
 
 export default function SocialMediaTextChunkerContent({ forcedSlug }) {
+  // 1. Media Upload Handler
+  const handleMediaUpload = (file) => {
+    if (!file) return;
+    setMediaFile(file);
+    setMediaType(file.type.startsWith("video/") ? "video" : "image");
+    setMediaPreviewUrl(URL.createObjectURL(file));
+  };
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeSlug = forcedSlug || searchParams.get("preset") || "";
@@ -86,7 +296,7 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
   const [chunkMode, setChunkMode] = useState("text-only");
   const [selectedPlatform, setSelectedPlatform] = useState("whatsapp");
   const [customLimit, setCustomLimit] = useState(700);
-// High-CTR Feature Toggles
+  // High-CTR Feature Toggles
   const DEFAULT_HOOKS = [
     "🚨 STOP SCROLLING! READ THIS 👇",
     "💡 3 Harsh Truths Nobody Tells You About This:",
@@ -95,7 +305,7 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
     "⚡ The Secret Strategy Revealed in 30 Seconds:",
   ];
 
-  const [enableBoldKeywords, setEnableBoldKeywords] = useState(true);
+  const [enableBoldKeywords, setEnableBoldKeywords] = useState(false);
   const [selectedHook, setSelectedHook] = useState(DEFAULT_HOOKS[0]);
   const [enableHoldToRead, setEnableHoldToRead] = useState(true);
   const [enableReadMore, setEnableReadMore] = useState(true);
@@ -150,6 +360,14 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [nextSerialIndex, setNextSerialIndex] = useState(0);
 
+  // Media & PNG Memory States
+  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaPreviewUrl, setMediaPreviewUrl] = useState(null);
+  const [mediaType, setMediaType] = useState(null);
+  const [pngSlides, setPngSlides] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [viewMode, setViewMode] = useState("png_slides"); // Default: PNG Slides Mode
+
   // Device System Recognition Engine
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -158,6 +376,26 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
       );
       setIsMobile(checkMobile);
     }
+  }, []);
+
+  // Ctrl + F Search Interceptor (Naya Code - Paste Here)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
+        e.preventDefault(); // Browser ka default search bar rokne ke liye
+
+        setViewMode("text_copy");
+        setTimeout(() => {
+          const searchInput = document.getElementById("slideSearchInput");
+          if (searchInput) {
+            searchInput.focus();
+          }
+        }, 50);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // URL Dynamic Slug Router & Preset Sync Engine
@@ -206,7 +444,7 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
     });
   };
 
-  // Main Chunker Logic
+ // Main Chunker Logic (Clean User Text + Image-Native Slide Hooks)
   useEffect(() => {
     if (!inputText.trim()) {
       setChunks([]);
@@ -214,17 +452,35 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
       return;
     }
 
-    let processedText = inputText;
+    // Safai: Old Hooks aur Text Triggers ko input se hatana
+    let cleanInput = inputText;
+    DEFAULT_HOOKS.forEach((h) => {
+      cleanInput = cleanInput.replaceAll(h, "");
+      cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
+    });
+    if (customHooks && customHooks.length > 0) {
+      customHooks.forEach((h) => {
+        cleanInput = cleanInput.replaceAll(h, "");
+        cleanInput = cleanInput.replaceAll(toUnicodeBold(h), "");
+      });
+    }
 
-    // Apply Unicode Bold if Toggled
+    cleanInput = cleanInput.replace(/⏸️\s*\(Hold screen to pause & read full text\)/g, "");
+    cleanInput = cleanInput.replace(new RegExp(toUnicodeBold("(Hold screen to pause & read full text)"), "g"), "");
+    cleanInput = cleanInput.replace(/👉\s*READ NEXT SLIDE FOR PART \d+ 📲/g, "");
+    cleanInput = cleanInput.replace(/\u200B{10,}\n\.\.\.Read More/g, "");
+    cleanInput = cleanInput.replace(/\[\d+\/\d+\]\n?/g, "");
+    cleanInput = cleanInput.trim();
+
     if (enableBoldKeywords) {
-      processedText = processedText.replace(/\b[A-Z0-9]{2,}\b/g, (match) =>
-        toUnicodeBold(match),
+      cleanInput = cleanInput.replace(/\b[A-Z0-9]{2,}\b/g, (match) =>
+        toUnicodeBold(match)
       );
     }
 
-    const effectiveLimit = Number(customLimit) || 300;
-    const words = processedText.split(/\s+/);
+    // Full 1020 character canvas space limit
+    const effectiveLimit = viewMode === "png_slides" ? 1020 : (Number(customLimit) || 700);
+    const words = cleanInput.split(/\s+/);
     let currentChunk = "";
     let rawChunks = [];
 
@@ -238,32 +494,40 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
     });
     if (currentChunk) rawChunks.push(currentChunk);
 
-    const total = rawChunks.length;
+    // Anti-Orphan Merger (Extra tiny last slide elimination)
+    if (rawChunks.length > 1) {
+      const lastChunk = rawChunks[rawChunks.length - 1];
+      if (lastChunk.length < 280) {
+        const removedLast = rawChunks.pop();
+        rawChunks[rawChunks.length - 1] += " " + removedLast;
+      }
+    }
 
+    const total = rawChunks.length;
+// Formatting: PNG mode me visual Read More nahi juda hona chahiye
     const finalChunks = rawChunks.map((chunk, index) => {
       let result = chunk;
+
       if (index === 0 && selectedHook && selectedHook !== "none") {
         result = `${toUnicodeBold(selectedHook)}\n\n${result}`;
-      }
-      if (enableHoldToRead) {
-        result += `\n\n⏸️ ${toUnicodeBold("(Hold screen to pause & read full text)")}`;
       }
 
       if (total > 1) {
         result = `[${index + 1}/${total}]\n${result}`;
       }
 
+      // WhatsApp Read More Trick ONLY in Text Copy Mode (PNG Slides me nahi)
       if (
         selectedPlatform === "whatsapp" &&
         enableReadMore &&
-        index === total - 1
+        index === total - 1 &&
+        viewMode === "text_copy"
       ) {
         result += "\u200B".repeat(3500) + "\n...Read More";
       }
 
       return result;
     });
-
     setChunks(finalChunks);
     setNextSerialIndex(0);
   }, [
@@ -275,7 +539,192 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
     selectedHook,
     enableHoldToRead,
     enableReadMore,
+    customHooks,
+    viewMode,
   ]);
+  // Current Selected Theme State
+  const [themeIndex, setThemeIndex] = useState(0);
+  const [selectedSlideTheme, setSelectedSlideTheme] = useState(SLIDE_THEMES[0]);
+
+  // WhatsApp Palette Click -> Cycle to Next Color & Auto-Regenerate
+  const handleNextTheme = () => {
+    const nextIdx = (themeIndex + 1) % SLIDE_THEMES.length;
+    setThemeIndex(nextIdx);
+    const newTheme = SLIDE_THEMES[nextIdx];
+    setSelectedSlideTheme(newTheme);
+
+    if (chunks.length > 0) {
+      handleGeneratePngSlides(newTheme);
+    }
+  };
+// Direct Swatch Click Handler
+  const handleSelectTheme = (theme, idx) => {
+    setThemeIndex(idx);
+    setSelectedSlideTheme(theme);
+
+    if (chunks.length > 0) {
+      handleGeneratePngSlides(theme);
+    }
+  };
+
+// Generate PNG Slides Handler
+  const handleGeneratePngSlides = async (targetTheme) => {
+    if (chunks.length === 0 && !mediaFile) return;
+    setIsProcessing(true);
+
+    const activeTheme =
+      targetTheme && typeof targetTheme === "object" && targetTheme.color
+        ? targetTheme
+        : selectedSlideTheme;
+
+    pngSlides.forEach((s) => URL.revokeObjectURL(s.url));
+    setPngSlides([]);
+
+    const slides = [];
+    const totalSlidesCount = chunks.length;
+
+    for (let i = 0; i < chunks.length; i++) {
+      const res = await generatePngSlideBlob(
+        chunks[i],
+        i + 1,
+        totalSlidesCount,
+        activeTheme
+      );
+      slides.push({
+        index: i + 1,
+        text: chunks[i],
+        blob: res.blob,
+        url: res.url,
+      });
+    }
+
+    setPngSlides(slides);
+    setIsProcessing(false);
+
+    // Auto-scroll to results
+    setTimeout(() => {
+      const resultsSection = document.getElementById("pngResultsArea");
+      if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 200);
+  }; // 👈 YAHAN SIRF EK HI '};' RAHEGA (Extra }; hata diya gaya hai)
+
+  // 1-Click Color Swatch Click -> Auto Re-Generate Slides Live
+  const handleThemeChange = (theme) => {
+    setSelectedSlideTheme(theme);
+    if (chunks.length > 0) {
+      handleGeneratePngSlides(theme);
+    }
+  };
+
+  // Clipboard Paste Handler (For Textarea Image/Video Paste)
+  const handlePaste = (e) => {
+    const clipboardItems = e.clipboardData?.items;
+    if (!clipboardItems) return;
+
+    for (const item of clipboardItems) {
+      if (item.type.startsWith("image/") || item.type.startsWith("video/")) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          handleMediaUpload(file);
+        }
+        break;
+      }
+    }
+  };
+  // Master 1-Click Multi-File Share (No Popups + Unique UTZ Naming)
+  const handleShareAll = async () => {
+    // 1. Generate Unique Name Prefix using UTZ + First Word + Timestamp
+    const cleanTopic =
+      inputText
+        .trim()
+        .split(/\s+/)[0]
+        ?.replace(/[^a-zA-Z0-9]/g, "") || "Post";
+    const dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const timeStamp = Math.floor(Date.now() / 1000)
+      .toString()
+      .slice(-4);
+    const baseName = `UTZ_${cleanTopic}_${dateStamp}_${timeStamp}`;
+
+    const filesToShare = [];
+
+    // 2. Add Uploaded Media File with UTZ Unique Name
+    if (mediaFile) {
+      const ext = mediaFile.name.split(".").pop() || "jpg";
+      const renamedMedia = new File([mediaFile], `${baseName}_Media.${ext}`, {
+        type: mediaFile.type,
+      });
+      filesToShare.push(renamedMedia);
+    }
+
+    // 3. Add Generated PNG Slides with UTZ Unique Names
+    pngSlides.forEach((slide) => {
+      filesToShare.push(
+        new File([slide.blob], `${baseName}_Slide_${slide.index}.png`, {
+          type: "image/png",
+        }),
+      );
+    });
+
+    if (filesToShare.length === 0) {
+      return;
+    }
+
+    // 4. Mobile Native App Share (If OS supports)
+    if (isMobile && typeof navigator !== "undefined" && navigator.canShare) {
+      try {
+        if (navigator.canShare({ files: filesToShare })) {
+          await navigator.share({
+            files: filesToShare,
+            title: `${currentPlatformName} Multi-Slide Post`,
+            text: chunks[0] || "",
+          });
+          return;
+        }
+      } catch (err) {
+        if (err.name === "AbortError") return;
+      }
+    }
+    // 5. Desktop Batch Auto-Download
+    filesToShare.forEach((file, idx) => {
+      setTimeout(() => {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(file);
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }, idx * 220);
+    });
+  };
+
+  // Single File Share / Download Helper
+  const handleShareFile = async (file, textCaption) => {
+    if (
+      typeof navigator !== "undefined" &&
+      navigator.canShare &&
+      file &&
+      isMobile
+    ) {
+      try {
+        await navigator.share({
+          files: [file],
+          text: textCaption || "",
+        });
+      } catch (err) {
+        if (err.name !== "AbortError") console.error(err);
+      }
+    } else {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(file);
+      link.download = file.name || "UTZ_Slide.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   // Copy Single Specific Chunk
   const copyToClipboard = (text, index) => {
@@ -493,99 +942,106 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
                     <span>Add &quot;Hold Screen to Read&quot; Trigger</span>
                   </label>
                 </div>
-       {/* CHOOSE ATTENTION GRABBING HOOK WITH CUSTOM HOOK CREATOR */}
-              <div className="pt-2 border-t border-indigo-100 dark:border-indigo-900/40 space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                    Choose Your Attention Grabbing Hook:
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setShowCustomInput(!showCustomInput)}
-                    className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    {showCustomInput ? "✕ Cancel" : "✨ + Create Your Own Hook"}
-                  </button>
-                </div>
-
-                {/* Custom Hook Creation Input Field */}
-                {showCustomInput && (
-                  <form onSubmit={handleAddCustomHook} className="flex items-center gap-2 animate-fadeIn">
-                    <input
-                      type="text"
-                      value={newHookText}
-                      onChange={(e) => setNewHookText(e.target.value)}
-                      placeholder="Type your custom hook text (e.g. 🎯 Don't Miss This!)..."
-                      className="flex-1 px-3 py-1.5 bg-white dark:bg-gray-950 border-2 border-indigo-400 rounded-xl text-xs font-bold text-slate-900 dark:text-white outline-none"
-                    />
+                {/* CHOOSE ATTENTION GRABBING HOOK WITH CUSTOM HOOK CREATOR */}
+                <div className="pt-2 border-t border-indigo-100 dark:border-indigo-900/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                      Choose Your Attention Grabbing Hook:
+                    </label>
                     <button
-                      type="submit"
-                      className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all shrink-0 cursor-pointer"
+                      type="button"
+                      onClick={() => setShowCustomInput(!showCustomInput)}
+                      className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
                     >
-                      Save & Use
+                      {showCustomInput
+                        ? "✕ Cancel"
+                        : "✨ + Create Your Own Hook"}
                     </button>
-                  </form>
-                )}
+                  </div>
 
-                {/* Main Hook Dropdown Select */}
-                <select
-                  value={selectedHook}
-                  onChange={(e) => setSelectedHook(e.target.value)}
-                  className="w-full px-3 py-2 bg-white dark:bg-gray-950 border border-indigo-200 dark:border-indigo-800 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 outline-none cursor-pointer"
-                >
-                  <option value="" disabled>
-                    Choose your attention grabbing hook...
-                  </option>
-                  <option value="none">🚫 None (No Hook)</option>
+                  {/* Custom Hook Creation Input Field */}
+                  {showCustomInput && (
+                    <form
+                      onSubmit={handleAddCustomHook}
+                      className="flex items-center gap-2 animate-fadeIn"
+                    >
+                      <input
+                        type="text"
+                        value={newHookText}
+                        onChange={(e) => setNewHookText(e.target.value)}
+                        placeholder="Type your custom hook text (e.g. 🎯 Don't Miss This!)..."
+                        className="flex-1 px-3 py-1.5 bg-white dark:bg-gray-950 border-2 border-indigo-400 rounded-xl text-xs font-bold text-slate-900 dark:text-white outline-none"
+                      />
+                      <button
+                        type="submit"
+                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all shrink-0 cursor-pointer"
+                      >
+                        Save & Use
+                      </button>
+                    </form>
+                  )}
 
-                  {/* Saved Custom Hooks Group */}
-                  {customHooks.length > 0 && (
-                    <optgroup label="⭐ Your Saved Custom Hooks">
-                      {customHooks.map((hook, idx) => (
-                        <option key={`custom-${idx}`} value={hook}>
-                          ★ {hook}
+                  {/* Main Hook Dropdown Select */}
+                  <select
+                    value={selectedHook}
+                    onChange={(e) => setSelectedHook(e.target.value)}
+                    className="w-full px-3 py-2 bg-white dark:bg-gray-950 border border-indigo-200 dark:border-indigo-800 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 outline-none cursor-pointer"
+                  >
+                    <option value="" disabled>
+                      Choose your attention grabbing hook...
+                    </option>
+                    <option value="none">🚫 None (No Hook)</option>
+
+                    {/* Saved Custom Hooks Group */}
+                    {customHooks.length > 0 && (
+                      <optgroup label="⭐ Your Saved Custom Hooks">
+                        {customHooks.map((hook, idx) => (
+                          <option key={`custom-${idx}`} value={hook}>
+                            ★ {hook}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+
+                    {/* Standard Default Presets */}
+                    <optgroup label="🔥 Default Attention Hooks">
+                      {DEFAULT_HOOKS.map((hook, idx) => (
+                        <option key={`default-${idx}`} value={hook}>
+                          {hook}
                         </option>
                       ))}
                     </optgroup>
-                  )}
+                  </select>
 
-                  {/* Standard Default Presets */}
-                  <optgroup label="🔥 Default Attention Hooks">
-                    {DEFAULT_HOOKS.map((hook, idx) => (
-                      <option key={`default-${idx}`} value={hook}>
-                        {hook}
-                      </option>
-                    ))}
-                  </optgroup>
-                </select>
-
-                {/* Saved Custom Hooks Delete Manager List */}
-                {customHooks.length > 0 && (
-                  <div className="mt-2 space-y-1">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                      Manage Saved Hooks:
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {customHooks.map((hook, idx) => (
-                        <div
-                          key={idx}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold text-indigo-700 dark:text-indigo-300"
-                        >
-                          <span className="truncate max-w-[180px]">{hook}</span>
-                          <button
-                            type="button"
-                            onClick={(e) => handleDeleteCustomHook(hook, e)}
-                            className="text-red-500 hover:text-red-700 ml-1 font-black cursor-pointer"
-                            title="Delete Saved Hook"
+                  {/* Saved Custom Hooks Delete Manager List */}
+                  {customHooks.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                        Manage Saved Hooks:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {customHooks.map((hook, idx) => (
+                          <div
+                            key={idx}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 rounded-lg text-[10px] font-bold text-indigo-700 dark:text-indigo-300"
                           >
-                            🗑️
-                          </button>
-                        </div>
-                      ))}
+                            <span className="truncate max-w-[180px]">
+                              {hook}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => handleDeleteCustomHook(hook, e)}
+                              className="text-red-500 hover:text-red-700 ml-1 font-black cursor-pointer"
+                              title="Delete Saved Hook"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
               </div>
 
               {/* READ MORE TRICK TOGGLE (WhatsApp Only) */}
@@ -603,21 +1059,258 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
                 </div>
               )}
 
+              {/* MEDIA ATTACH & PNG PROCESS CONTROL WITH COLOR THEME & PREVIEW TILE */}
+              <div className="p-4 bg-slate-100 dark:bg-gray-900/80 rounded-2xl border border-slate-200 dark:border-gray-800 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <label className="cursor-pointer text-xs font-bold bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 hover:border-indigo-500 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm">
+                    <span>📁 Attach Photo / Video</span>
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleMediaUpload(file);
+                        }
+                      }}
+                    />
+                  </label>
+
+                  {/* 👇 YE NAYA BUTTON YAHAN ADD KAREIN 👇 */}
+                  {mediaFile && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleGeneratePngSlides(selectedSlideTheme, true)
+                      }
+                      className="text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
+                    >
+                      Want to generate slide for this also? Click here
+                    </button>
+                  )}
+                  {/* HD WHATSAPP PALETTE SWITCHER & STABLE PAGINATED DOTS */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    {/* HD Interactive Palette Button */}
+                    <button
+                      type="button"
+                      onClick={handleNextTheme}
+                      className="relative group flex items-center gap-2.5 px-4 py-2 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 dark:from-gray-900 dark:via-indigo-950 dark:to-gray-900 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/20 border border-indigo-500/40 hover:border-indigo-400 transition-all active:scale-95 cursor-pointer overflow-hidden"
+                      title="Click to cycle next background color"
+                    >
+                      {/* Subtle Animated Gradient Glow Effect */}
+                      <span className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-400 opacity-20 group-hover:opacity-40 blur-sm transition-opacity"></span>
+
+                      {/* Animated Palette Icon */}
+                      <span className="relative flex items-center justify-center w-6 h-6 rounded-lg bg-white/10 group-hover:scale-110 transition-transform">
+                        <span className="text-sm">🎨</span>
+                      </span>
+
+                      <div className="relative text-left">
+                        <span className="text-[9px] uppercase tracking-wider text-indigo-300 font-extrabold block leading-none mb-0.5">
+                          Click to Switch ⚡
+                        </span>
+                        <span className="text-xs font-black text-white block leading-none">
+                          {selectedSlideTheme.name}
+                        </span>
+                      </div>
+
+                      {/* Cycle Arrow Symbol */}
+                      <span className="relative text-indigo-300 group-hover:rotate-180 transition-transform duration-300 text-xs ml-1">
+                        🔄
+                      </span>
+                    </button>
+
+                    {/* STABLE 5-DOT PAGINATED SWATCH CONTAINER (Zero Jumpiness) */}
+                    <div className="flex items-center gap-2 p-1.5 bg-white dark:bg-gray-950 rounded-2xl border border-slate-200 dark:border-gray-800 shadow-inner">
+                      {(() => {
+                        // Page calculation: Keeps 5 dots locked in place until cycling past the 5th dot
+                        const pageSize = 5;
+                        const pageStart =
+                          Math.floor(themeIndex / pageSize) * pageSize;
+                        const currentWindow = SLIDE_THEMES.slice(
+                          pageStart,
+                          pageStart + pageSize,
+                        );
+
+                        return currentWindow.map((theme) => {
+                          const realIdx = SLIDE_THEMES.findIndex(
+                            (t) => t.id === theme.id,
+                          );
+                          const isActive = selectedSlideTheme.id === theme.id;
+                          return (
+                            <button
+                              key={theme.id}
+                              type="button"
+                              onClick={() => handleSelectTheme(theme, realIdx)}
+                              className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative ${
+                                isActive
+                                  ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-950 scale-125 shadow-md z-10"
+                                  : "opacity-60 hover:opacity-100 hover:scale-110"
+                              }`}
+                              style={{ backgroundColor: theme.color }}
+                              title={`${theme.name} (Click to select)`}
+                            >
+                              {isActive && (
+                                <span className="absolute inset-0 flex items-center justify-center text-[10px] text-white font-black drop-shadow-md">
+                                  ✓
+                                </span>
+                              )}
+                            </button>
+                          );
+                        });
+                      })()}
+
+                      {/* Page Counter Badge */}
+                      <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 px-1 select-none">
+                        {Math.floor(themeIndex / 5) + 1}/
+                        {Math.ceil(SLIDE_THEMES.length / 5)}
+                      </span>
+                    </div>
+                  </div>
+       {chunks.length > 0 && (
+  <button
+    type="button"
+    disabled={isProcessing}
+    onClick={() => handleGeneratePngSlides(selectedSlideTheme)}
+    className="relative group overflow-hidden px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/30 border border-white/20 transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0"
+  >
+    {/* Background Shine Effect */}
+    <span className="absolute -inset-full top-0 block w-1/2 h-full bg-white/20 transform -skew-x-12 group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out"></span>
+
+    <span className="relative flex items-center justify-center gap-2">
+      {isProcessing ? (
+        <>
+          <span className="animate-spin text-sm">⏳</span>
+         <span>Generating HD Slides...</span>
+            </>
+          ) : (
+            <>
+              <span className="text-sm">🖼️</span>
+              <span>Generate PNG Slides</span>
+            </>
+          )}
+        </span>
+      </button>
+    )}
+  </div>
+                {/* VISUAL ATTACHED MEDIA PREVIEW TILE */}
+                {mediaPreviewUrl && (
+                  <div className="flex items-center gap-3 p-2.5 bg-white dark:bg-gray-950 rounded-2xl border border-emerald-500/40 shadow-sm relative animate-fadeIn max-w-sm">
+                    <div className="w-14 h-14 bg-black rounded-xl overflow-hidden shrink-0 border border-slate-300 dark:border-gray-800">
+                      {mediaType === "video" ? (
+                        <video
+                          src={mediaPreviewUrl}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={mediaPreviewUrl}
+                          alt="Attached Preview"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0 pr-6">
+                      <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+                        ✓ Media Attached
+                      </span>
+                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                        {mediaFile?.name}
+                      </p>
+                      <span className="text-[10px] text-slate-400 block font-semibold uppercase">
+                        {mediaType === "video"
+                          ? "📹 Video File"
+                          : "🖼️ Image File"}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMediaFile(null);
+                        setMediaPreviewUrl(null);
+                        setMediaType(null);
+                      }}
+                      className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center font-black cursor-pointer shadow-sm transition-all"
+                      title="Remove Media"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* TEXT INPUT AREA */}
               <div>
-                <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1">
-                  Paste Your Full Text Below
+                <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+                  <span>
+                    Paste Your Full Text Below (Or Paste Image Directly)
+                  </span>
+                  {mediaFile && (
+                    <span className="text-emerald-500 font-bold text-[11px]">
+                      ✓ Media Attached: {mediaFile.name}
+                    </span>
+                  )}
                 </label>
                 <textarea
                   rows="6"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Paste your long article, script, or post text here..."
+                  onPaste={handlePaste}
+                  placeholder="Paste text here, OR press Ctrl + V / long-press to paste an Image/Video directly into this box..."
                   className="w-full p-4 bg-slate-50 dark:bg-gray-950 border-2 border-slate-200 dark:border-gray-800 focus:border-blue-500 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white outline-none resize-none transition-all"
                 ></textarea>
               </div>
 
               {/* OUTPUT CHUNKS GRID WITH SERIAL QUEUE BUTTON */}
+              {chunks.length > 0 && (
+                <div className="flex items-center justify-between p-3 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-xl border border-indigo-200 dark:border-indigo-900/40">
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    View Mode:
+                  </span>
+                  <div className="flex items-center gap-4 text-xs font-bold">
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="viewMode"
+                        value="png_slides"
+                        checked={viewMode === "png_slides"}
+                        onChange={() => setViewMode("png_slides")}
+                        className="accent-indigo-600 cursor-pointer"
+                      />
+                      <span
+                        className={
+                          viewMode === "png_slides"
+                            ? "text-indigo-600 dark:text-indigo-400"
+                            : "text-slate-500"
+                        }
+                      >
+                        🖼️ Photo/Video + PNG Slides
+                      </span>
+                    </label>
+                    <label className="flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="viewMode"
+                        value="text_copy"
+                        checked={viewMode === "text_copy"}
+                        onChange={() => setViewMode("text_copy")}
+                        className="accent-indigo-600 cursor-pointer"
+                      />
+                      <span
+                        className={
+                          viewMode === "text_copy"
+                            ? "text-indigo-600 dark:text-indigo-400"
+                            : "text-slate-500"
+                        }
+                      >
+                        📝 Text Only (Serial Copy)
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
               {chunks.length > 0 && (
                 <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-gray-800 animate-fadeIn">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -638,6 +1331,131 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
                       </span>
                     </button>
                   </div>
+
+                  {/* PNG SLIDES MODE DISPLAY */}
+                  {viewMode === "png_slides" &&
+                    (pngSlides.length > 0 || mediaFile) && (
+                      <div className="space-y-3 pt-2">
+                        {/* MASTER 1-CLICK MULTI-SHARE & PRO INFO BANNER */}
+                        <div className="p-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                          <div className="space-y-1 text-left">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-black text-white flex items-center gap-1.5">
+                                🚀 1-Click Master Multi-Export
+                              </span>
+                              <span className="px-2 py-0.5 text-[9px] font-black bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 rounded-full uppercase">
+                                UTZ Auto-Naming Enabled
+                              </span>
+                            </div>
+
+                            {/* Easy English Professional Notice */}
+                            <p className="text-[11px] text-slate-300 font-medium">
+                              {isMobile ? (
+                                <span>
+                                  📲 <strong>Mobile Share:</strong> Opens native
+                                  app menu to share all{" "}
+                                  {pngSlides.length + (mediaFile ? 1 : 0)}{" "}
+                                  slides with caption instantly.
+                                </span>
+                              ) : (
+                                <span>
+                                  💻 <strong>Desktop Download:</strong>{" "}
+                                  Auto-saves structured slides directly to your
+                                  PC downloads folder. Ready to drag & drop into
+                                  WhatsApp Web!
+                                </span>
+                              )}
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={handleShareAll}
+                            className="w-full sm:w-auto px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer shrink-0 flex items-center justify-center gap-2"
+                          >
+                            <span>📲</span>
+                            <span>
+                              {isMobile
+                                ? "Share All via App"
+                                : "Download All Slides (UTZ)"}
+                            </span>
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                          {/* SLIDE 1 (Media + Hook) */}
+                          <div className="col-span-full p-3 bg-slate-100 dark:bg-gray-900 rounded-xl border border-indigo-500/30 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              {mediaPreviewUrl && (
+                                <div className="w-16 h-20 bg-black rounded-lg overflow-hidden shrink-0 border border-slate-700">
+                                  {mediaType === "video" ? (
+                                    <video
+                                      src={mediaPreviewUrl}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <img
+                                      src={mediaPreviewUrl}
+                                      alt="Preview"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  )}
+                                </div>
+                              )}
+                              <div>
+                                <span className="text-[10px] font-bold text-indigo-500 uppercase block">
+                                  Slide 1 (Media + Hook)
+                                </span>
+                                <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-2">
+                                  {chunks[0]}
+                                </p>
+                              </div>
+                            </div>
+                            {mediaFile && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleShareFile(mediaFile, chunks[0])
+                                }
+                                className="px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-lg shrink-0 cursor-pointer"
+                              >
+                                🚀 Share
+                              </button>
+                            )}
+                          </div>
+
+                          {/* GENERATED PNG SLIDES */}
+                          {pngSlides.map((slide) => (
+                            <div
+                              key={slide.index}
+                              className="p-2 bg-slate-100 dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 flex flex-col items-center space-y-2"
+                            >
+                              <img
+                                src={slide.url}
+                                alt={`Slide ${slide.index}`}
+                                className="w-full h-40 object-cover rounded-lg"
+                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleShareFile(
+                                    new File(
+                                      [slide.blob],
+                                      `slide-${slide.index}.png`,
+                                      { type: "image/png" },
+                                    ),
+                                    "",
+                                  )
+                                }
+                                className="w-full py-1 text-[10px] font-bold bg-slate-800 hover:bg-indigo-600 text-white rounded-lg cursor-pointer"
+                              >
+                                🚀 Share Slide {slide.index}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                   <div className="space-y-3 max-h-[450px] overflow-y-auto pr-1">
                     {chunks.map((chunk, idx) => (
