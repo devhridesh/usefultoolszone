@@ -41,7 +41,7 @@ const videoTools = [
   {
     id: "video-compressor",
     name: "Video Compressor",
-    link: "/compressor",
+    link: "/video-compressor", // ✅ Direct correct path
     icon: "📉",
     desc: "Compress video size locally inside browser sandbox.",
     badge: "LOCAL",
@@ -377,7 +377,7 @@ export default function Navbar() {
             {/* THEME SWITCHER */}
             <ThemeSwitcher />
 
-           {/* HAMBURGER TOGGLE BUTTON */}
+            {/* HAMBURGER TOGGLE BUTTON */}
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
@@ -418,16 +418,14 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-   {/* ========================================== */}
+      {/* ========================================== */}
       {/* DRAWER NAVIGATION                          */}
       {/* ========================================== */}
       {isOpen && (
         <div className="bg-white dark:bg-[#0a0a0a] border-t border-slate-200 dark:border-white/5 max-h-[85vh] overflow-y-auto animate-in slide-in-from-top duration-200 shadow-2xl">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 space-y-5 text-left">
-            
             {/* 📱 MOBILE ONLY: TOOLS LISTING (PC/Desktop par auto-hide) */}
             <div className="sm:hidden space-y-5">
-              
               {/* ⚡ PRO LEVEL UTILITIES */}
               <div>
                 <div className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 pt-2 pb-1 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
@@ -449,7 +447,7 @@ export default function Navbar() {
                     </Link>
                   ))}
                 </div>
-                
+
                 {/* MORE PRO TOOLS LINK */}
                 <div className="pt-2 mt-1 border-t border-slate-100 dark:border-white/5 px-1">
                   <Link
@@ -502,7 +500,6 @@ export default function Navbar() {
                   ))}
                 </div>
               </div>
-
             </div>
 
             {/* 🖥️ PC & MOBILE BOTH: HOME + LEGAL PAGES LINKS */}
@@ -560,7 +557,6 @@ export default function Navbar() {
                 Useful Tools Zone • 100% Client-Side Privacy
               </div>
             </div>
-
           </div>
         </div>
       )}

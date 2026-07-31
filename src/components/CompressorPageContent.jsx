@@ -66,7 +66,7 @@ export default function CompressPage({ initialSize, platform }) {
         : platform.toLowerCase()
       : `${initialSize.toString().replace(/[^0-9]/g, "")}mb`;
 
-  const dynamicUrl = `https://usefultoolszone.com/compress/${currentSlug}`;
+const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? `/${currentSlug}` : ''}`; // ✅ Correct path
 
 // 🚀 pSEO High-CTR Title Tag Generator
   const targetMB = initialSize || "10";
@@ -353,10 +353,10 @@ export default function CompressPage({ initialSize, platform }) {
               className:
                 "bg-rose-50/40 dark:bg-rose-950/10 border border-rose-200 dark:border-rose-900/50 hover:border-rose-500 text-rose-600 dark:text-rose-400 font-bold",
             },
-          ].map((item) => (
+     ].map((item) => (
             <Link
               key={item.slug}
-              href={`/compressor/${item.slug}?lang=${currentLang}`}
+              href={`/video-compressor/${item.slug}?lang=${currentLang}`}
               className={`text-center p-3 rounded-lg transition-all text-sm shadow-sm flex items-center justify-center border ${item.className}`}
             >
               {item.label}
