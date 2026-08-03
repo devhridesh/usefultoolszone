@@ -45,31 +45,39 @@ export default async function MasterHomepage({ searchParams }) {
   const activeTab = params?.tab || "all";
 
   // Dynamic UI Header content dictionary based on selected tab state
-  const headerContent = {
-    all: {
-      sub: "Next-Gen Serverless Utilities at One Place Locally",
-      desc: "Professional grade media optimization tools executing 100% client-side inside a secure isolated sandbox.",
-    },
-    pro: {
-      sub: "High-Impact Pro Workflows at One Place Locally",
-      desc: "Advanced multi-step serverless tools designed for content creators, viral text chunking, and PDF layout merging.",
-    },
-    video: {
-      sub: "Compress & Split Videos at One Place Locally",
-      desc: "High-performance browser client encoders to optimize and slash video footprints with zero data leakage.",
-    },
-    pdf: {
-      sub: "Merge Images & Compress PDF at One Place Locally",
-      desc: "Convert multiple document sheets and graphic logs into clean, highly compressed PDF files instantly.",
-    },
-    image: {
-      sub: "Optimize, Resize & Convert Images Locally",
-      desc: "Natively transform graphic assets, scale layouts, and convert next-gen formats with zero privacy compromise.",
-    },
-  };
+// app/(tool)/page.js ke andar:
 
-  
-const currentHeader = headerContent[activeTab] || headerContent.all;
+const headerContent = {
+  all: {
+    sub: "Next-Gen Serverless Utilities at One Place Locally",
+    desc: "Professional grade media optimization tools executing 100% client-side inside a secure isolated sandbox.",
+  },
+  pro: {
+    sub: "High-Impact Pro Workflows at One Place Locally",
+    desc: "Advanced multi-step serverless tools designed for content creators, viral text chunking, and PDF layout merging.",
+  },
+  video: {
+    sub: "Compress & Split Videos at One Place Locally",
+    desc: "High-performance browser client encoders to optimize and slash video footprints with zero data leakage.",
+  },
+
+  // 👇 YAHAN PE PASTE KARNA HAI 👇
+  book: {
+    sub: "Aesthetic Reader & Book Utilities Locally",
+    desc: "Create 3x3 book grid cards, auto-fetch covers via ISBN or Title, and generate high-impact reading cards.",
+  },
+
+  pdf: {
+    sub: "Merge Images & Compress PDF at One Place Locally",
+    desc: "Convert multiple document sheets and graphic logs into clean, highly compressed PDF files instantly.",
+  },
+  image: {
+    sub: "Optimize, Resize & Convert Images Locally",
+    desc: "Natively transform graphic assets, scale layouts, and convert next-gen formats with zero privacy compromise.",
+  },
+};
+
+  const currentHeader = headerContent[activeTab] || headerContent.all;
 
   // Tools Data Array (Updated with multi-category support)
   const tools = [
@@ -109,7 +117,7 @@ const currentHeader = headerContent[activeTab] || headerContent.all;
       icon: "✂️",
       categories: ["pro", "video"], // 👈 Shows in Pro & Video
     },
-   {
+    {
       title: "Compress Videos Locally",
       description:
         "Compress video size instantly with zero quality loss. Works 100% offline inside your browser sandbox for absolute privacy.",
@@ -144,8 +152,21 @@ const currentHeader = headerContent[activeTab] || headerContent.all;
       icon: "📸",
       categories: ["video"],
     },
+
+   {
+      title: "Visual Book Grid Generator",
+      description:
+        "Create aesthetic 3x3 book grid cards, auto-fetch covers by book name or ISBN, and customize selfie branding cards.",
+      link: "/book-grid-generator",
+      badge: "Book Grid",
+      badgeColor:
+        "bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400",
+      btnText: "Launch Grid Generator",
+      icon: "📚",
+      categories: ["pro", "book"], // 👈 Pehle ["pro", "image"] tha, ise ["pro", "book"] kar dein
+    },
   ];
-    // Multi-Category Filter Logic Fix
+  // Multi-Category Filter Logic Fix
   const filteredTools = tools.filter((tool) => {
     if (activeTab === "all") return true;
     if (Array.isArray(tool.categories)) {
@@ -193,83 +214,124 @@ const currentHeader = headerContent[activeTab] || headerContent.all;
             </div>
           </div>
 
-          {/* 🔘 TRUSTED TAB FILTER BAR */}
-          <div className="w-full flex justify-start sm:justify-center items-center gap-2 border-b border-slate-200 dark:border-white/5 pb-2.5 overflow-x-auto no-scrollbar scroll-smooth">
-            {[
-              { id: "all", label: "All Tools" },
-              { id: "pro", label: "⚡ Pro Level Utilities" },
-              { id: "video", label: "Video Utilities" },
-              { id: "pdf", label: "PDF Utilities" },
-              { id: "image", label: "Image Utilities" },
-            ].map((tab) => {
-              const isPro = tab.id === "pro";
-              const isActive = activeTab === tab.id;
+{/* 🔘 TRUSTED TAB FILTER BAR */}
+          <div className="w-full border-b border-slate-200 dark:border-white/5 pb-3">
+            {/* 🎯 justify-center se second line ke buttons hamesha bilkul center (mid) me rahenge */}
+            <div className="w-full flex flex-wrap items-center justify-center gap-2.5 px-2">
+              {[
+                { id: "all", label: "All Tools" },
+                { id: "pro", label: "⚡ Pro Level Utilities" },
+                { id: "video", label: "Video Utilities" },
+                { id: "pdf", label: "PDF Utilities" },
+                { id: "image", label: "Image Utilities" },
+                { id: "book", label: "📖 Reader & Book Utilities" },
+              ].map((tab) => {
+                const isPro = tab.id === "pro";
+                const isActive = activeTab === tab.id;
 
-              return (
-                <Link
-                  key={tab.id}
-                  href={`?tab=${tab.id}`}
-                  scroll={false}
-                  className={`px-5 py-2 text-[10px] sm:text-xs font-bold rounded-xl tracking-wider uppercase whitespace-nowrap transition-all duration-150 ${
-                    isActive
-                      ? isPro
-                        ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md scale-105"
-                        : "bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm"
-                      : isPro
-                        ? "bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 border border-indigo-200/80 hover:bg-indigo-100 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800/50"
-                        : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 dark:bg-[#0c0c12] dark:text-slate-400 dark:border-white/5"
-                  }`}
-                >
-                  {tab.label}
-                </Link>
-              );
-            })}
+                return (
+                  <Link
+                    key={tab.id}
+                    href={`?tab=${tab.id}`}
+                    scroll={false}
+                    className={`px-4 py-2 text-[10px] sm:text-xs font-bold rounded-xl tracking-wider uppercase whitespace-nowrap transition-all duration-150 ${
+                      isActive
+                        ? isPro
+                          ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md scale-105"
+                          : "bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm"
+                        : isPro
+                          ? "bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 border border-indigo-200/80 hover:bg-indigo-100 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800/50"
+                          : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 dark:bg-[#0c0c12] dark:text-slate-400 dark:border-white/5"
+                    }`}
+                  >
+                    {tab.label}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Tools Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-stretch mb-16 pt-2">
-            {filteredTools.map((tool, index) => (
-              <div
-                key={index}
-                className="relative group transition-all duration-300 hover:-translate-y-1 rounded-3xl flex"
-              >
-                {/* 🌟 NEON GLOW BACKDROP LAYER */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-15 group-hover:opacity-35 transition duration-300"></div>
+{/* 📂 CATEGORIZED TOOLS SECTIONS (Yellow Zone Fix) */}
+          <div className="w-full space-y-12 mb-16 pt-2">
+            {[
+              { id: "pro", title: "⚡ Pro Level Utilities", desc: "High-impact creator & multi-step serverless workflows" },
+              { id: "video", title: "🎬 Video Utilities", desc: "Compress & split videos 100% locally with zero quality loss" },
+              { id: "pdf", title: "📄 PDF Utilities", desc: "Merge graphic layouts and compress PDF documents instantly" },
+              { id: "image", title: "🖼️ Image Utilities", desc: "Batch resize, convert and optimize web graphics natively" },
+              { id: "book", title: "📖 Reader & Book Utilities", desc: "Create aesthetic book grid cards and branding graphics" },
+            ]
+              .filter((section) => activeTab === "all" || activeTab === section.id)
+              .map((section) => {
+                const sectionTools = tools.filter((t) =>
+                  t.categories?.includes(section.id)
+                );
 
-                <GlassCard className="relative w-full p-5 z-10 border border-slate-200/60 dark:border-white/5 shadow-sm bg-white dark:bg-[#0c0c12] rounded-3xl flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-2xl">
-                        {tool.icon}
+                if (sectionTools.length === 0) return null;
+
+                return (
+                  <section key={section.id} id={section.id} className="space-y-4 text-left w-full">
+                    {/* 🏷️ Section Header (Yellow Marked Area) */}
+                    <div className="border-b border-slate-200/80 dark:border-white/10 pb-3 flex items-center justify-between">
+                      <div>
+                        <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                          {section.title}
+                        </h2>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                          {section.desc}
+                        </p>
                       </div>
-                      <span
-                        className={`px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md ${tool.badgeColor}`}
-                      >
-                        {tool.badge}
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/10">
+                        {sectionTools.length} {sectionTools.length === 1 ? 'Tool' : 'Tools'}
                       </span>
                     </div>
 
-                    <div className="space-y-1.5 text-left">
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                        {tool.title}
-                      </h3>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-                        {tool.description}
-                      </p>
-                    </div>
-                  </div>
+                    {/* 🎴 Category Tools Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-stretch pt-1">
+                      {sectionTools.map((tool, index) => (
+                        <div
+                          key={index}
+                          className="relative group transition-all duration-300 hover:-translate-y-1 rounded-3xl flex"
+                        >
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-15 group-hover:opacity-35 transition duration-300"></div>
 
-                  <div className="pt-5">
-                    <Link
-                      href={tool.link}
-                      className="block w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-center font-bold text-xs rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98]"
-                    >
-                      {tool.btnText}
-                    </Link>
-                  </div>
-                </GlassCard>
-              </div>
-            ))}
+                          <GlassCard className="relative w-full p-5 z-10 border border-slate-200/60 dark:border-white/5 shadow-sm bg-white dark:bg-[#0c0c12] rounded-3xl flex flex-col justify-between">
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-2xl">
+                                  {tool.icon}
+                                </div>
+                                <span
+                                  className={`px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md ${tool.badgeColor}`}
+                                >
+                                  {tool.badge}
+                                </span>
+                              </div>
+
+                              <div className="space-y-1.5 text-left">
+                                <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                                  {tool.title}
+                                </h3>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                                  {tool.description}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="pt-5">
+                              <Link
+                                href={tool.link}
+                                className="block w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-center font-bold text-xs rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98]"
+                              >
+                                {tool.btnText}
+                              </Link>
+                            </div>
+                          </GlassCard>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
           </div>
 
           {/* 📱 ONLY MOBILE AD ZONE */}

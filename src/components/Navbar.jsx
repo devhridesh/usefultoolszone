@@ -94,6 +94,16 @@ const imageTools = [
   },
 ];
 
+const bookTools = [
+  {
+    id: "book-grid-generator",
+    name: "Visual Book Grid Generator",
+    link: "/book-grid-generator",
+    icon: "📚",
+    desc: "Create 3x3 book grid cards, auto-fetch covers & custom selfie cards.",
+    badge: "NEW",
+  },
+];
 // ==========================================
 // MAIN NAVBAR COMPONENT
 // ==========================================
@@ -335,6 +345,40 @@ export default function Navbar() {
                   </div>
                 </div>
 
+                {/* 📖 READER & BOOK UTILITIES SECTION */}
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-purple-600 dark:text-purple-400 pb-1.5 border-b border-slate-100 dark:border-white/5 mb-2.5 select-none flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span>📖</span> Reader & Book Utilities
+                    </span>
+                    <span className="text-[8px] bg-purple-600 text-white px-1.5 py-0.5 rounded-full font-extrabold shadow-sm">
+                      NEW
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    {bookTools.map((tool) => (
+                      <Link
+                        key={tool.id}
+                        href={tool.link}
+                        onClick={closeAllMenus}
+                        className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-all group/item"
+                      >
+                        <span className="text-base mt-0.5 group-hover/item:scale-110 transition-transform">
+                          {tool.icon}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-slate-900 dark:text-white group-hover/item:text-purple-600 dark:group-hover/item:text-purple-400 transition-colors">
+                            {tool.name}
+                          </div>
+                          <div className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">
+                            {tool.desc}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
                 {/* ------------------------------------------ */}
                 {/* COLUMN 3: GRAPHIC & IMAGE UTILITIES        */}
                 {/* ------------------------------------------ */}

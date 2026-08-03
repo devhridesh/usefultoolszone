@@ -48,7 +48,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'image-compressor-for-whatsapp'
   ];
 
-  // 🔄 Component 1: Video Compressor Loop (Updated to /video-compressor)
+  // 📚 Visual Book Grid Generator pSEO Target Presets Array
+  const bookGridSlugs = [
+    'top-self-help-books',
+    'best-fiction-books-2026',
+    'books-by-colleen-hoover',
+    'naval-ravikant-recommendations',
+    'best-sci-fi-novels'
+  ];
+
+  // 🔄 Component 1: Video Compressor Loop
   const compressorRoutes = [
     ...compressSizes.map((size) => ({
       url: `${baseUrl}video-compressor/${size}`,
@@ -86,7 +95,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   }));
 
-  // 🔄 Component 4: Social Post Chunker & Hook Generator Loop (Updated to /social-media-post-chunker)
+  // 🔄 Component 4: Social Post Chunker & Hook Generator Loop
   const chunkerRoutes = chunkerSlugs.map((slug) => ({
     url: `${baseUrl}social-media-post-chunker/${slug}`,
     lastModified: new Date(),
@@ -110,6 +119,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
         es: `${baseUrl}image-compressor/${slug}?lang=es`,
         pt: `${baseUrl}image-compressor/${slug}?lang=pt`,
         hi: `${baseUrl}image-compressor/${slug}?lang=hi`,
+      },
+    },
+  }));
+
+  // 🔄 Component 6: Visual Book Grid Generator pSEO Loop
+  const bookGridRoutes = bookGridSlugs.map((slug) => ({
+    url: `${baseUrl}book-grid-generator/${slug}`,
+    lastModified: new Date(),
+    priority: 0.9,
+    alternates: {
+      languages: {
+        es: `${baseUrl}book-grid-generator/${slug}?lang=es`,
+        pt: `${baseUrl}book-grid-generator/${slug}?lang=pt`,
+        hi: `${baseUrl}book-grid-generator/${slug}?lang=hi`,
       },
     },
   }));
@@ -159,6 +182,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       priority: 0.95,
       alternates: { languages: { es: `${baseUrl}image-compressor?lang=es`, pt: `${baseUrl}image-compressor?lang=pt`, hi: `${baseUrl}image-compressor?lang=hi` } },
+    },
+    {
+      url: `${baseUrl}book-grid-generator`,
+      lastModified: new Date(),
+      priority: 0.95,
+      alternates: { 
+        languages: { 
+          es: `${baseUrl}book-grid-generator?lang=es`, 
+          pt: `${baseUrl}book-grid-generator?lang=pt`, 
+          hi: `${baseUrl}book-grid-generator?lang=hi` 
+        } 
+      },
     },
 
     // 🌟 YOUTUBE TOOLS
@@ -237,5 +272,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...pdfRoutes, 
     ...chunkerRoutes,
     ...imageRoutes,
+    ...bookGridRoutes,
   ];
 }

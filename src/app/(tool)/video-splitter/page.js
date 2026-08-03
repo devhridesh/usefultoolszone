@@ -20,8 +20,8 @@ const PLATFORM_CONFIG = {
     presets: [60, 90],
     h1: "High-Fidelity Video Cutter for Instagram Reels & Stories",
   },
-  youtube: {
-    name: "YouTube Shorts", // 👈 'YouTube' से बदलकर 'YouTube Shorts' किया
+  "youtube-shorts": {
+    name: "YouTube Shorts",
     presets: [60, 30],
     h1: "Professional Video Splitter for YouTube Shorts & Videos",
   },
@@ -942,8 +942,9 @@ function VideoSplitterContent({ forcedPlatform }) {
                   className:
                     "bg-pink-50/40 dark:bg-pink-950/10 border-pink-200 dark:border-pink-900/50 text-pink-600 dark:text-pink-400 font-bold hover:border-pink-500",
                 },
+
                 {
-                  slug: "youtube",
+                  slug: "youtube-shorts",
                   label: "YouTube Shorts",
                   className:
                     "bg-red-50/40 dark:bg-red-950/10 border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 font-bold hover:border-red-500",
