@@ -1049,46 +1049,51 @@ export default function BookGridContent({ initialTitle }) {
                     </div>
                   </div>
                 )}
+{/* STEP-BY-STEP GUIDANCE BOX */}
+              <div className="p-3.5 bg-blue-50/90 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/80 rounded-2xl space-y-2.5 my-2 text-left shadow-sm">
+                <p className="text-[11px] font-black text-blue-950 dark:text-blue-200 flex items-center gap-1.5 uppercase tracking-wide">
+                  💡 How to copy correct book cover photo link:
+                </p>
 
-                {/* STEP-BY-STEP GUIDANCE BOX */}
-                <div className="p-3.5 bg-blue-50/90 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/80 rounded-2xl space-y-2.5 my-2 text-left shadow-sm">
-                  <p className="text-[11px] font-black text-blue-950 dark:text-blue-200 flex items-center gap-1.5 uppercase tracking-wide">
-                    💡 How to copy correct book cover photo link:
-                  </p>
-                  <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
-                      <span>🖥️</span> <span>For PC / Laptop Users:</span>
-                    </div>
-                    <ol className="text-[11px] font-bold text-slate-700 dark:text-slate-300 space-y-1 list-decimal list-inside pl-1">
-                      <li>Search for the book cover on <b>Google Images, Amazon, or Flipkart</b>.</li>
-                      <li><b>Right-click</b> directly on the book cover photo.</li>
-                      <li>Click on <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Copy image address</code> (or <i>Copy Image Link</i>).</li>
-                    </ol>
+                {/* PC / LAPTOP INSTRUCTIONS */}
+                <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
+                    <span>🖥️</span> <span>For PC / Laptop Users:</span>
                   </div>
-                  <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
-                      <span>📱</span> <span>For Mobile Users:</span>
-                    </div>
-                    <p className="text-[11px] font-bold text-slate-700 dark:text-slate-300 pl-1">
-                      <b>Press & hold (long-press)</b> on the book cover photo &rarr; tap <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Copy image link / address</code>.
-                    </p>
-                  </div>
-                  <p className="text-[10px] font-bold text-amber-800 dark:text-amber-300 pt-1 border-t border-blue-200/60 dark:border-blue-800/60 flex items-start gap-1">
+                  <ol className="text-[11px] font-bold text-slate-700 dark:text-slate-300 space-y-1 list-decimal list-inside pl-1">
+                    <li>Search book cover on <b>Google Images, Amazon, or Flipkart</b>.</li>
+                    <li><b>Right-click</b> directly on the book cover photo.</li>
+                    <li>Click on <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Copy image address</code> (or <i>Copy Image Link</i>).</li>
+                  </ol>
+                  <p className="text-[10px] font-bold text-amber-800 dark:text-amber-300 pt-1 border-t border-blue-100 dark:border-blue-900/40 flex items-start gap-1">
                     <span className="shrink-0">⚠️</span>
-                    <span><b>Common Mistake:</b> Do NOT copy the URL from your browser's top address bar or Share button.</span>
+                    <span><b>PC Common Mistake:</b> Do NOT copy the web page URL from your browser's top address bar.</span>
                   </p>
                 </div>
 
-                <label className="block w-full text-center py-2.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer transition mt-2">
-                  📁 Or Select Photo From Device
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleCustomCoverUpload}
-                  />
-                </label>
+                {/* MOBILE INSTRUCTIONS */}
+                <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
+                    <span>📱</span> <span>For Mobile Users:</span>
+                  </div>
+                  <ol className="text-[11px] font-bold text-slate-700 dark:text-slate-300 space-y-1 list-decimal list-inside pl-1">
+                    <li>Long-press cover photo &rarr; tap <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Open image in new tab</code> &rarr; Go to the new opened tab & copy top address bar URL.</li>
+                    <li><b>Easiest Way:</b> Tap <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Download image</code> & upload using button below.</li>
+                  </ol>
+                </div>
               </div>
+
+              {/* SELECT PHOTO FROM DEVICE BUTTON */}
+              <label className="block w-full text-center py-2.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer transition mt-2">
+                📁 Or Select Photo From Device
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleCustomCoverUpload}
+                />
+              </label>
+            </div>
 
               {/* Option 3: Clear Current Slot */}
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
