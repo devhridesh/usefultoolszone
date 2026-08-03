@@ -1,8 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 🚀 1. 301 Permanent Redirects for All Tool Migrations (SEO Safe)
+  // ⚡ Trailing Slash Disabled (Clean URLs)
+  trailingSlash: false,
+
+  // 🚀 1. 301 Permanent Redirects for All Tool Migrations & Domain Normalization
   async redirects() {
     return [
+      // -------------------------------------------------------------
+      // Domain Redirect: WWW -> Non-WWW (SEO Canonical URL Fix)
+      // -------------------------------------------------------------
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.usefultoolszone.com' }],
+        destination: 'https://usefultoolszone.com/:path*',
+        permanent: true, // 301 Permanent Redirect for SEO
+      },
+
       // -------------------------------------------------------------
       // Tool 1: Social Media Text Chunker -> Post Chunker Migration
       // -------------------------------------------------------------
