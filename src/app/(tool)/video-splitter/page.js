@@ -235,8 +235,11 @@ function VideoSplitterContent({ forcedPlatform }) {
     setProgress(0);
     setResults([]);
 
-    const OriginalWorker = window.Worker;
+    // ⚡ आपके CPU के कोर्स (Cores) काउंट करके मल्टी-थ्रेडिंग ऑन करना
+    const systemThreads = typeof navigator !== "undefined" ? navigator.hardwareConcurrency || 4 : 4;
+    const safeThreads = Math.min(systemThreads, 4);
 
+    const OriginalWorker = window.Worker;
     try {
       window.Worker = function (url, options) {
         const urlStr = url.toString();
@@ -255,7 +258,6 @@ function VideoSplitterContent({ forcedPlatform }) {
       const utilPackage = await eval(
         'import("https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js")',
       );
-
       const { FFmpeg } = ffmpegPackage;
       const { toBlobURL } = utilPackage;
 
@@ -281,22 +283,14 @@ function VideoSplitterContent({ forcedPlatform }) {
       const arrayBuffer = await file.arrayBuffer();
       await ffmpeg.writeFile("input.mp4", new Uint8Array(arrayBuffer));
 
-      const splitDuration =
-        selectedDuration === "recommended"
-          ? config.presets[0]
-          : selectedDuration === "custom"
-            ? Number(customDuration) || 30
-            : Number(selectedDuration);
-      // 🎵 1. Voice-Isolated Dialogue Detection (Music/Voice Identifier Engine)
+      // 1. 🚀 FAST SILENCE DETECTION (मल्टी-थ्रेडिंग के साथ)
       setProgress(5);
       const silencePoints = [];
       let currentSilenceStart = null;
-
       ffmpeg.off("log");
       ffmpeg.on("log", ({ message }) => {
         const startMatch = message.match(/silence_start:\s+(\d+\.?\d*)/);
         const durationMatch = message.match(/silence_duration:\s+(\d+\.?\d*)/);
-
         if (startMatch) {
           currentSilenceStart = parseFloat(startMatch[1]);
         }
@@ -309,23 +303,19 @@ function VideoSplitterContent({ forcedPlatform }) {
         }
       });
 
-      // Sensitivity को -24dB और ड्यूरेशन को 0.15s रखा है ताकि म्यूजिक के बीच भी शब्दों का गैप पकड़ा जा सके
       await ffmpeg.exec([
-        "-i",
-        "input.mp4",
+        "-threads", String(safeThreads),
+        "-i", "input.mp4",
         "-vn",
-        "-af",
-        "highpass=f=250,lowpass=f=3500,silencedetect=noise=-24dB:d=0.15",
-        "-f",
-        "null",
+        "-af", "silencedetect=noise=-24dB:d=0.15",
+        "-f", "null",
         "-",
       ]);
 
-      // 📊 2. Dynamic Case-by-Case Resolution Split Engine (Strict Maximum Cap)
-      setProgress(10);
+      // 2. CUT POINTS CALCULATOR
+      setProgress(15);
       let cuts = [];
       let currentStart = 0;
-
       const baseDuration =
         selectedDuration === "recommended"
           ? config.presets[0]
@@ -338,7 +328,6 @@ function VideoSplitterContent({ forcedPlatform }) {
         let noSilenceFound = false;
         let remainingVideo = videoDuration - targetEnd;
 
-        // सिचुएशन A: अगर आख़िरी टुकड़ा बेहद छोटा (3s से कम) है, तो उसे इसी क्लिप में समाहित कर लें
         if (targetEnd >= videoDuration || remainingVideo < 3.0) {
           cuts.push({
             start: currentStart,
@@ -348,7 +337,6 @@ function VideoSplitterContent({ forcedPlatform }) {
           break;
         }
 
-        // सिचुएशन B: Recommended मोड में क्लिप्स की संख्या कम करने के लिए मैक्सिमम 90s तक स्केलिंग
         if (selectedDuration === "recommended") {
           if (
             remainingVideo > 0 &&
@@ -364,7 +352,6 @@ function VideoSplitterContent({ forcedPlatform }) {
           }
         }
 
-        // प्राइमरी सर्च विंडो: डिमांड लिमिट से 40% पीछे का एरिया
         let primaryWindowStart = targetEnd - baseDuration * 0.4;
         let candidates = silencePoints.filter(
           (p) => p.start >= primaryWindowStart && p.start <= targetEnd,
@@ -372,15 +359,13 @@ function VideoSplitterContent({ forcedPlatform }) {
         let finalEnd;
 
         if (candidates.length > 0) {
-          // सिचुएशन C: परफेक्ट साइलेंस उपलब्ध है -> सबसे लंबी और गहरी शांति को चुनें
           candidates.sort(
             (a, b) =>
               b.duration - a.duration ||
               Math.abs(a.start - targetEnd) - Math.abs(b.start - targetEnd),
           );
-          finalEnd = candidates[0].start + 0.05; // साइलेंस फ्लोर के 50ms अंदर सटीक कट
+          finalEnd = candidates[0].start + 0.05;
         } else {
-          // सिचुएशन D: एक्सटेंडेड बैकअप प्लान -> 40% से भी पीछे जाकर क्लिप लिमिट (Min 2s) तक पूरा बैक-स्कैन करें
           let backupCandidates = silencePoints.filter(
             (p) => p.start >= currentStart + 2 && p.start < primaryWindowStart,
           );
@@ -392,18 +377,16 @@ function VideoSplitterContent({ forcedPlatform }) {
             );
             finalEnd = backupCandidates[0].start + 0.05;
           } else {
-            // सिचुएशन E: पूर्णतः नो-साइलेंस केस -> डिमांड लिमिट पर हार्ड कट मारकर एरर फ़्लैग ऑन करें
             finalEnd = targetEnd;
             noSilenceFound = true;
           }
         }
 
-        // Strict Max Cap बाउंड्री गार्डरेल
         if (finalEnd > targetEnd || finalEnd <= currentStart + 0.5) {
           finalEnd = targetEnd;
           noSilenceFound = true;
         }
-        // चेक करें कि क्या क्लिप को डिमांड टाइम से 1 सेकंड से ज़्यादा छोटा किया गया है
+
         let isAdjusted = false;
         if (!noSilenceFound && targetEnd - finalEnd > 1.0) {
           isAdjusted = true;
@@ -418,45 +401,33 @@ function VideoSplitterContent({ forcedPlatform }) {
         currentStart = finalEnd;
       }
 
-      // 🎬 3. Zero-Bleed Pro-Audio Sample-Accurate Cutting & Micro-Fading Loop
+      // 3. ⚡ TURBO SPLIT LOOP (Fast Seek -ss before -i + Multi-Threading)
       const mappedResults = [];
       let totalParts = cuts.length;
 
       for (let i = 0; i < cuts.length; i++) {
         const { start, end, noSilenceFound, isAdjusted } = cuts[i];
-
-        // पिछले शब्द की तरंगों की गूंज रोकने के लिए 40ms का माइक्रो-ऑफसेट बफ़र
-        let exactStart = start;
-        if (i > 0) {
-          exactStart = start + 0.04;
-        }
-
+        let exactStart = i > 0 ? start + 0.04 : start;
         let exactDuration = end - exactStart;
         if (exactDuration < 0.5) continue;
 
         const outName = `part_${String(i + 1).padStart(2, "0")}.mp4`;
-        const fadeOutStart = exactDuration - 0.015; // अंत से 15ms पहले फेड आउट शुरू होगा
+        const fadeOutStart = exactDuration - 0.015;
 
-        // trim/atrim + aresample + 15ms micro audio cross-fading (आवाज़ गूंजने और कटने के झटके को पूरी तरह मिटाने के लिए)
+        // 🔥 -ss को -i से पहले लगाया गया है जिससे सीकिंग तुरंत हो जाए
         await ffmpeg.exec([
-          "-i",
-          "input.mp4",
+          "-ss", exactStart.toFixed(3),
+          "-i", "input.mp4",
+          "-threads", String(safeThreads),
           "-filter_complex",
-          `[0:v]trim=start=${exactStart.toFixed(3)}:duration=${exactDuration.toFixed(3)},setpts=PTS-STARTPTS[v];[0:a]atrim=start=${exactStart.toFixed(3)}:duration=${exactDuration.toFixed(3)},asetpts=PTS-STARTPTS,aresample=async=1:first_pts=0,afade=t=in:ss=0:d=0.015,afade=t=out:st=${fadeOutStart.toFixed(3)}:d=0.015[a]`,
-          "-map",
-          "[v]",
-          "-map",
-          "[a]",
-          "-c:v",
-          "libx264",
-          "-preset",
-          "ultrafast",
-          "-crf",
-          "26",
-          "-c:a",
-          "aac",
-          "-b:a",
-          "128k",
+          `[0:v]trim=duration=${exactDuration.toFixed(3)},setpts=PTS-STARTPTS[v];[0:a]atrim=duration=${exactDuration.toFixed(3)},asetpts=PTS-STARTPTS,afade=t=in:ss=0:d=0.015,afade=t=out:st=${fadeOutStart.toFixed(3)}:d=0.015[a]`,
+          "-map", "[v]",
+          "-map", "[a]",
+          "-c:v", "libx264",
+          "-preset", "ultrafast",
+          "-crf", "28",
+          "-c:a", "aac",
+          "-b:a", "96k",
           outName,
         ]);
 
@@ -470,25 +441,20 @@ function VideoSplitterContent({ forcedPlatform }) {
           url,
           file: videoFile,
           durationText: `${exactDuration.toFixed(0)}s`,
-          noSilenceFound: noSilenceFound,
-          isAdjusted: isAdjusted, // ब्लू बैनर ट्रिगर करने के लिए स्टेट में डेटा भेजा गया
+          noSilenceFound,
+          isAdjusted,
         });
 
         await ffmpeg.deleteFile(outName);
-        setProgress(10 + Math.round(((i + 1) / totalParts) * 90));
+        setProgress(15 + Math.round(((i + 1) / totalParts) * 85));
       }
 
       await ffmpeg.deleteFile("input.mp4");
       setResults(mappedResults);
       setIsProcessing(false);
     } catch (error) {
-      console.warn(
-        "⚠️ Smart cut failed, running automated Fallback Cut...",
-        error,
-      );
-
+      console.warn("Smart cut failed, running automated Fallback Cut...", error);
       try {
-        // 🔄 PLAN B (Ultra-Lightweight Copy Segmenting - Uses 0MB RAM)
         const ffmpeg = ffmpegRef.current;
         const splitDuration =
           selectedDuration === "recommended"
@@ -498,20 +464,13 @@ function VideoSplitterContent({ forcedPlatform }) {
               : Number(selectedDuration);
 
         await ffmpeg.exec([
-          "-i",
-          "input.mp4",
-          "-c",
-          "copy",
-          "-map",
-          "0",
-          "-segment_time",
-          splitDuration.toString(),
-          "-f",
-          "segment",
-          "-reset_timestamps",
-          "1",
-          "-avoid_negative_ts",
-          "make_zero",
+          "-i", "input.mp4",
+          "-c", "copy",
+          "-map", "0",
+          "-segment_time", splitDuration.toString(),
+          "-f", "segment",
+          "-reset_timestamps", "1",
+          "-avoid_negative_ts", "make_zero",
           "part_%03d.mp4",
         ]);
 
@@ -519,8 +478,8 @@ function VideoSplitterContent({ forcedPlatform }) {
         const outputFiles = files
           .filter((f) => f.name.startsWith("part_"))
           .sort((a, b) => a.name.localeCompare(b.name));
-        const mappedResults = [];
 
+        const mappedResults = [];
         for (let i = 0; i < outputFiles.length; i++) {
           const f = outputFiles[i];
           const data = await ffmpeg.readFile(f.name);
@@ -533,7 +492,7 @@ function VideoSplitterContent({ forcedPlatform }) {
             url,
             file: new File([videoBlob], newFileName, { type: "video/mp4" }),
             durationText: `${splitDuration}s`,
-            noSilenceFound: true, // फॉलबैक मोड में हमेशा ट्रू रहेगा
+            noSilenceFound: true,
             isAdjusted: false,
           });
           await ffmpeg.deleteFile(f.name);
@@ -541,20 +500,16 @@ function VideoSplitterContent({ forcedPlatform }) {
 
         setResults(mappedResults);
         setIsProcessing(false);
-        {
-          /* 🟢 बदलाव के बाद कोड ऐसा हो जाएगा */
-        }
       } catch (fallbackError) {
-        console.error("🔴 Hard Failure:", fallbackError);
-        setFileError(
-          "Processing failed due to browser memory limit. Please try a smaller video.",
-        );
+        console.error("Hard Failure:", fallbackError);
+        setFileError("Processing failed due to browser memory limit. Please try a smaller video.");
         setIsProcessing(false);
       }
     } finally {
       window.Worker = OriginalWorker;
-      await releaseWakeLock(); // 🟢 काम खत्म, स्क्रीन को वापस आज़ाद करें
+      await releaseWakeLock();
     }
+    
   };
   // 📤 Dynamic Share All Logic
   const handleShareAll = async () => {
