@@ -99,7 +99,7 @@ const SLIDE_THEMES = [
   { id: "burgundy", name: "Burgundy", color: "#4a1424" },
 ];
 
-// Fixed PNG Slide Generator (Full Height Fill + No Hold Trigger on Last Slide)
+// Smart Auto-Fit PNG Slide Generator (Auto Scales Font to Fit 100% Text)
 async function generatePngSlideBlob(
   textChunk,
   slideNumber,
@@ -118,7 +118,7 @@ async function generatePngSlideBlob(
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Geometric Frame Border (36px Margin)
+    // 2. Geometric Frame Border
     const frameMargin = 36;
     const frameWidth = canvas.width - frameMargin * 2;
     const frameHeight = canvas.height - frameMargin * 2;
@@ -128,8 +128,6 @@ async function generatePngSlideBlob(
     ctx.strokeRect(frameMargin, frameMargin, frameWidth, frameHeight);
 
     // ---------------- TOP HEADER ROW ----------------
-
-    // Top-Left: SLIDE COUNTER
     ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
     ctx.beginPath();
     ctx.roundRect(75, 75, 210, 54, 16);
@@ -143,7 +141,6 @@ async function generatePngSlideBlob(
     ctx.textAlign = "center";
     ctx.fillText(`SLIDE ${slideNumber}/${totalSlides}`, 180, 110);
 
-    // Top-Right: DOMAIN WATERMARK
     const wmWidth = 640;
     const wmX = canvas.width - 75 - wmWidth;
 
@@ -164,7 +161,7 @@ async function generatePngSlideBlob(
       108
     );
 
-    // ---------------- MAIN CONTENT AREA (Top-to-Bottom Fill) ----------------
+    // ---------------- MAIN CONTENT AREA (Smart Auto-Fit Scaling) ----------------
 
     let cleanText = (textChunk || "")
       .replace(/\[\d+\/\d+\]/g, "")
@@ -172,69 +169,78 @@ async function generatePngSlideBlob(
       .replace(/\.\.\.Read More/g, "")
       .trim();
 
-    const fontSize = 42;
-    const lineHeight = fontSize + 20; // 62px line spacing
     const maxWidth = canvas.width - 180; // 900px line width
     const startY = 190;
-const maxTextY = 1780; // 🔴 Exact height cutoff right at the drawn line (Zero badge overlap)
-    ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
-// Smart Line Wrapping (With Auto-Break for Long URLs)
+    const maxTextY = 1780; // Safe bottom boundary
+    const availableHeight = maxTextY - startY;
+
     const words = cleanText ? cleanText.split(/\s+/) : [];
-    let line = "";
-    const lines = [];
 
-    for (let n = 0; n < words.length; n++) {
-      let word = words[n];
+    // 🟢 DYNAMIC FONT SCALING: 42px से शुरू करेगा और टेक्स्ट लंबा होने पर ऑटोमैटिक एडजस्ट करेगा
+    let fontSize = 42;
+    let lineHeight = fontSize + 20;
+    let lines = [];
 
-      // 🔴 FIX: Agar single word (jaise Long URL) boundary se bada hai
-      if (ctx.measureText(word).width > maxWidth) {
-        if (line.trim()) {
-          lines.push(line.trim());
-          line = "";
-        }
+    for (let currentFont = 42; currentFont >= 30; currentFont -= 1) {
+      fontSize = currentFont;
+      lineHeight = fontSize + 16; // Tighter line height when text is long
+      ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
 
-        // Character-by-character break
-        let subWord = "";
-        for (let c = 0; c < word.length; c++) {
-          if (ctx.measureText(subWord + word[c]).width > maxWidth) {
-            lines.push(subWord);
-            subWord = word[c];
-          } else {
-            subWord += word[c];
+      lines = [];
+      let line = "";
+
+      for (let n = 0; n < words.length; n++) {
+        let word = words[n];
+
+        // Long URL auto character break
+        if (ctx.measureText(word).width > maxWidth) {
+          if (line.trim()) {
+            lines.push(line.trim());
+            line = "";
           }
+          let subWord = "";
+          for (let c = 0; c < word.length; c++) {
+            if (ctx.measureText(subWord + word[c]).width > maxWidth) {
+              lines.push(subWord);
+              subWord = word[c];
+            } else {
+              subWord += word[c];
+            }
+          }
+          if (subWord) line = subWord + " ";
+          continue;
         }
-        if (subWord) {
-          line = subWord + " ";
-        }
-        continue;
-      }
 
-      const testLine = line + word + " ";
-      if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-        lines.push(line.trim());
-        line = word + " ";
-      } else {
-        line = testLine;
+        const testLine = line + word + " ";
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+          lines.push(line.trim());
+          line = word + " ";
+        } else {
+          line = testLine;
+        }
+      }
+      if (line.trim()) lines.push(line.trim());
+
+      // अगर सारी लाइनें Available Height के अंदर आ गई हैं, तो लूप यही रोक दें
+      if (lines.length * lineHeight <= availableHeight) {
+        break;
       }
     }
-    if (line.trim()) lines.push(line.trim());
 
-    // Render Text Lines
+    // 🔴 100% Guaranteed Line Drawing (No text omitted!)
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "left";
+    ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
 
     lines.forEach((l, idx) => {
-      const currentY = startY + idx * lineHeight;
-      if (currentY <= maxTextY) {
-        ctx.fillText(l.trim(), 90, currentY);
-      }
+      const currentY = startY + idx * lineHeight + fontSize;
+      ctx.fillText(l.trim(), 90, currentY);
     });
-    // ---------------- DECORATIVE EMBEDDED BOTTOM BORDER ----------------
 
-    const borderY = canvas.height - frameMargin; // Y = 1884
+    // ---------------- DECORATIVE EMBEDDED BOTTOM BORDER ----------------
+    const borderY = canvas.height - frameMargin;
 
     if (totalSlides > 1 && slideNumber < totalSlides) {
-      // Intermediate Slides: Next Slide CTA Banner
       const ctaW = 580;
       const ctaX = (canvas.width - ctaW) / 2;
 
@@ -259,7 +265,6 @@ const maxTextY = 1780; // 🔴 Exact height cutoff right at the drawn line (Zero
         borderY + 8
       );
     } else {
-      // Final Slide: Embedded Watermark Badge (No Hold Trigger)
       const endText = "✦ USEFUL TOOLS ZONE ✦";
       const tagW = 380;
       const tagX = (canvas.width - tagW) / 2;
@@ -477,6 +482,8 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       return char;
     });
   };
+  
+
 // Main Chunker Logic (Full Capacity Fill + 5-10% Spill Logic + No Last Slide Trigger)
   useEffect(() => {
     if (!inputText.trim()) {
@@ -511,8 +518,13 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       );
     }
 
-    // PNG mode me full canvas capacity (1020 chars), text mode me customLimit
-const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) || 700);
+    // 🟢 Desktop vs Mobile Separate PNG Limit Logic
+// 🟢 Mobile = 1050 Chars (~1100 Chars Total: 100% full height without cutting the hold line)
+    // Desktop = 660 Chars
+    const pngLimit = isMobile ? 1020 : 660;
+    const effectiveLimit = viewMode === "png_slides" ? pngLimit : (Number(customLimit) || 700);
+
+
     const words = cleanInput.split(/\s+/);
     let currentChunk = "";
     let rawChunks = [];
@@ -578,7 +590,7 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
 
     setChunks(finalChunks);
     setNextSerialIndex(0);
-  }, [
+}, [
     inputText,
     chunkMode,
     selectedPlatform,
@@ -589,8 +601,9 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
     enableReadMore,
     customHooks,
     viewMode,
+    isMobile,
   ]);
-  
+
   // Helper logic to split text into array chunks
   const generateChunksFromText = (textToChunk) => {
     const effectiveLimit = Number(customLimit) || 300;
@@ -722,52 +735,53 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
       }
     }
   };
-  // Master 1-Click Multi-File Share (No Popups + Unique UTZ Naming)
+// 🟢 Helper: Generates Clean Short Teaser Caption (Zero Full-Text Leak)
+  const getTeaserCaption = () => {
+    if (chunkMode !== "video-hooks" || !includeMediaCaption) return "";
+
+    const hookPrefix = selectedHook && selectedHook !== "none" ? `${selectedHook}\n\n` : "";
+
+    let teaser = shortTeaserText.trim();
+    if (!teaser) {
+      const firstLine = inputText.trim().split("\n")[0] || "";
+      teaser = firstLine.length > 110 ? firstLine.slice(0, 110).trim() + "..." : firstLine;
+    }
+
+    return `${hookPrefix}${teaser}\n\n👉 Read full story in next slides 📲`.trim();
+  };
+
+  // Master 1-Click Multi-File Share
   const handleShareAll = async () => {
-    // 1. Generate Unique Name Prefix using UTZ + First Word + Timestamp
-    const cleanTopic =
-      inputText
-        .trim()
-        .split(/\s+/)[0]
-        ?.replace(/[^a-zA-Z0-9]/g, "") || "Post";
+    const cleanTopic = inputText.trim().split(/\s+/)[0]?.replace(/[^a-zA-Z0-9]/g, "") || "Post";
     const dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const timeStamp = Math.floor(Date.now() / 1000)
-      .toString()
-      .slice(-4);
+    const timeStamp = Math.floor(Date.now() / 1000).toString().slice(-4);
     const baseName = `UTZ_${cleanTopic}_${dateStamp}_${timeStamp}`;
 
     const filesToShare = [];
 
-    // 2. Add Uploaded Media File with UTZ Unique Name
     if (mediaFile) {
       const ext = mediaFile.name.split(".").pop() || "jpg";
-      const renamedMedia = new File([mediaFile], `${baseName}_Media.${ext}`, {
-        type: mediaFile.type,
-      });
-      filesToShare.push(renamedMedia);
+      filesToShare.push(new File([mediaFile], `${baseName}_Media.${ext}`, { type: mediaFile.type }));
     }
 
-    // 3. Add Generated PNG Slides with UTZ Unique Names
     pngSlides.forEach((slide) => {
-      filesToShare.push(
-        new File([slide.blob], `${baseName}_Slide_${slide.index}.png`, {
-          type: "image/png",
-        }),
-      );
+      filesToShare.push(new File([slide.blob], `${baseName}_Slide_${slide.index}.png`, { type: "image/png" }));
     });
 
-    if (filesToShare.length === 0) {
-      return;
+    if (filesToShare.length === 0) return;
+
+    let finalShareCaption = "";
+    if (chunkMode === "video-hooks" && includeMediaCaption) {
+      finalShareCaption = getTeaserCaption();
     }
 
-    // 4. Mobile Native App Share (If OS supports)
     if (isMobile && typeof navigator !== "undefined" && navigator.canShare) {
       try {
         if (navigator.canShare({ files: filesToShare })) {
           await navigator.share({
             files: filesToShare,
             title: `${currentPlatformName} Multi-Slide Post`,
-            text: chunks[0] || "",
+            text: finalShareCaption,
           });
           return;
         }
@@ -775,7 +789,7 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
         if (err.name === "AbortError") return;
       }
     }
-    // 5. Desktop Batch Auto-Download
+
     filesToShare.forEach((file, idx) => {
       setTimeout(() => {
         const link = document.createElement("a");
@@ -788,26 +802,17 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
     });
   };
 
- // Single File Share Helper (For Attached Media)
-  const handleShareFile = async (file, textCaption, isSlide1Media = false) => {
-    let finalCaption = "";
-    if (isSlide1Media && includeMediaCaption && shortTeaserText) {
-      const hookPrefix =
-        selectedHook && selectedHook !== "none" ? `${selectedHook}\n\n` : "";
-      finalCaption = `${hookPrefix}${shortTeaserText}\n\n👉 Read full story in next slides 📲`;
+  // Single File Share Helper (For Attached Media)
+  const handleShareFile = async (file, textCaption = "", isSlide1Media = false) => {
+    let finalCaption = textCaption;
+    
+    if (isSlide1Media && chunkMode === "video-hooks" && includeMediaCaption) {
+      finalCaption = getTeaserCaption();
     }
 
-    if (
-      typeof navigator !== "undefined" &&
-      navigator.canShare &&
-      file &&
-      isMobile
-    ) {
+    if (typeof navigator !== "undefined" && navigator.canShare && file && isMobile) {
       try {
-        await navigator.share({
-          files: [file],
-          text: finalCaption,
-        });
+        await navigator.share({ files: [file], text: finalCaption });
       } catch (err) {
         if (err.name !== "AbortError") console.error(err);
       }
@@ -821,43 +826,36 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
     }
   };
 
-  // 🟢 NEW: PNG Slide Share Handler (With Auto Link Extraction on Last Slide)
+  // PNG Slide Share Handler (Fixed Teaser & URL Extractor Logic)
   const handleShareSlide = async (slideIndex) => {
     const currentSlide = pngSlides[slideIndex];
     if (!currentSlide) return;
 
     try {
-      const file = new File([currentSlide.blob], `Slide_${slideIndex + 1}.png`, {
-        type: "image/png",
-      });
+      const file = new File([currentSlide.blob], `Slide_${slideIndex + 1}.png`, { type: "image/png" });
 
       let shareCaption = "";
       const total = pngSlides.length;
 
-      // 🌐 Last Slide: Auto Extract URLs & Generate Clickable CTA Caption
-      if (slideIndex === total - 1) {
+      // 🌐 Slide 1 gets the short Hook/Teaser
+      if (slideIndex === 0 && chunkMode === "video-hooks" && includeMediaCaption) {
+        shareCaption = getTeaserCaption();
+      } 
+      // 🌐 Last Slide gets clickable links (if any exist)
+      else if (slideIndex === total - 1) {
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         const extractedUrls = inputText.match(urlRegex) || [];
         const uniqueUrls = [...new Set(extractedUrls)];
 
         if (uniqueUrls.length > 0) {
-          shareCaption =
-            `🌐 OFFICIAL SOURCE & DIRECT LINKS:\n\n` +
+          shareCaption = `🌐 OFFICIAL SOURCE & DIRECT LINKS:\n\n` +
             uniqueUrls.map((url) => `🔗 ${url}`).join("\n\n") +
             `\n\n📌 Tap the link above to visit or download app!`;
         }
       }
 
-      if (
-        typeof navigator !== "undefined" &&
-        navigator.canShare &&
-        isMobile &&
-        navigator.canShare({ files: [file] })
-      ) {
-        await navigator.share({
-          files: [file],
-          text: shareCaption, // Last slide gets clickable links; earlier slides stay clean
-        });
+      if (typeof navigator !== "undefined" && navigator.canShare && isMobile && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text: shareCaption });
       } else {
         const link = document.createElement("a");
         link.href = currentSlide.url;
@@ -1449,8 +1447,7 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
                   className="w-full p-4 bg-slate-50 dark:bg-gray-950 border-2 border-slate-200 dark:border-gray-800 focus:border-blue-500 rounded-2xl text-xs sm:text-sm font-medium text-slate-900 dark:text-white outline-none resize-none transition-all"
                 ></textarea>
               </div>
-
-              {/* OUTPUT CHUNKS GRID WITH SERIAL QUEUE BUTTON */}
+{/* OUTPUT CHUNKS GRID WITH SERIAL QUEUE BUTTON */}
               {chunks.length > 0 && (
                 <div className="flex items-center justify-between p-3 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-xl border border-indigo-200 dark:border-indigo-900/40">
                   <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
@@ -1536,7 +1533,6 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
                               </span>
                             </div>
 
-                            {/* Easy English Professional Notice */}
                             <p className="text-[11px] text-slate-300 font-medium">
                               {isMobile ? (
                                 <span>
@@ -1599,12 +1595,11 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
                                 </p>
                               </div>
                             </div>
+
                             {mediaFile && (
                               <button
                                 type="button"
-                                onClick={() =>
-                                  handleShareFile(mediaFile, chunks[0])
-                                }
+                                onClick={() => handleShareFile(mediaFile, "", true)}
                                 className="px-3 py-1.5 text-xs font-bold bg-indigo-600 text-white rounded-lg shrink-0 cursor-pointer"
                               >
                                 🚀 Share
@@ -1618,23 +1613,14 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
                               key={slide.index}
                               className="p-2 bg-slate-100 dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-gray-800 flex flex-col items-center space-y-2"
                             >
-                      <img
-  src={slide.url}
-  alt={`Slide ${slide.index}`}
-  className="w-full aspect-[9/16] object-contain bg-slate-900/10 dark:bg-black/50 rounded-xl shadow-sm border border-slate-200/60 dark:border-white/10"
-/>
+                              <img
+                                src={slide.url}
+                                alt={`Slide ${slide.index}`}
+                                className="w-full aspect-[9/16] object-contain bg-slate-900/10 dark:bg-black/50 rounded-xl shadow-sm border border-slate-200/60 dark:border-white/10"
+                              />
                               <button
                                 type="button"
-                                onClick={() =>
-                                  handleShareFile(
-                                    new File(
-                                      [slide.blob],
-                                      `slide-${slide.index}.png`,
-                                      { type: "image/png" },
-                                    ),
-                                    "",
-                                  )
-                                }
+                                onClick={() => handleShareSlide(slide.index - 1)}
                                 className="w-full py-1 text-[10px] font-bold bg-slate-800 hover:bg-indigo-600 text-white rounded-lg cursor-pointer"
                               >
                                 🚀 Share Slide {slide.index}
@@ -1798,7 +1784,7 @@ const effectiveLimit = viewMode === "png_slides" ? 1320 : (Number(customLimit) |
                 </p>
               </div>
             </div>
-          </section>
+          </section>z
 
           {/* Bottom Leaderboard Ad */}
           <div className="w-full min-h-[90px] bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-xl flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold p-2 text-center shadow-sm mt-6">
