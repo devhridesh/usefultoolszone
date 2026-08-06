@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import useVideoCompressor from "../hooks/useVideoCompressor";
 import NoSleep from "nosleep.js"; // 🎯 अल्टीमेट वेक लॉक ब्रह्मास्त्र
-import { sendGAEvent } from "@next/third-parties/google";
 
 export default function CompressorContainer({ initialSize, platform }) {
   const {
@@ -143,25 +142,12 @@ export default function CompressorContainer({ initialSize, platform }) {
     }
   }, [isCompressing]);
 
-// 4. Auto-Download Trigger & Analytics Event Tracker
-  useEffect(() => {
-    if (compressedBlob && !isCompressing) {
-      downloadFile();
-      
-      // Google Analytics me compression record bhejta hai
-      try {
-        sendGAEvent({
-          event: "video_compressed",
-          category: "Compression_Stats",
-          label: platform || "General_Video",
-          value: parseInt(targetSize) || 10,
-        });
-      } catch (err) {
-        console.warn("Analytics tracking skipped:", err);
-      }
-    }
-  }, [compressedBlob, isCompressing]);
-  
+useEffect(() => {
+  if (compressedBlob && !isCompressing) {
+    downloadFile();
+  }
+}, [compressedBlob, isCompressing]);
+
   // 3. ऑटो-स्क्रॉलिंग इंजन (Engine 1: कम्प्रेशन शुरू होने पर)
   useEffect(() => {
     if (isCompressing && containerRef.current) {

@@ -57,19 +57,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'best-sci-fi-novels'
   ];
 
+  // 🌐 Helper Function: Full Multi-Language Alternate URLs (Google SEO Safe)
+  const createAlternates = (path: string) => ({
+    languages: {
+      'x-default': `${baseUrl}${path}`,
+      en: `${baseUrl}${path}`,
+      es: `${baseUrl}${path}?lang=es`,
+      pt: `${baseUrl}${path}?lang=pt`,
+      hi: `${baseUrl}${path}?lang=hi`,
+    },
+  });
+
   // 🔄 Component 1: Video Compressor Loop
   const compressorRoutes = [
     ...compressSizes.map((size) => ({
       url: `${baseUrl}video-compressor/${size}`,
       lastModified: new Date(),
       priority: 0.8,
-      alternates: { languages: { es: `${baseUrl}video-compressor/${size}?lang=es`, pt: `${baseUrl}video-compressor/${size}?lang=pt`, hi: `${baseUrl}video-compressor/${size}?lang=hi` } },
+      alternates: createAlternates(`video-compressor/${size}`),
     })),
     ...compressPlatforms.map((platform) => ({
       url: `${baseUrl}video-compressor/${platform}`,
       lastModified: new Date(),
       priority: 0.9,
-      alternates: { languages: { es: `${baseUrl}video-compressor/${platform}?lang=es`, pt: `${baseUrl}video-compressor/${platform}?lang=pt`, hi: `${baseUrl}video-compressor/${platform}?lang=hi` } },
+      alternates: createAlternates(`video-compressor/${platform}`),
     })),
   ];
 
@@ -78,7 +89,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}video-splitter/${platform}`,
     lastModified: new Date(),
     priority: 0.9,
-    alternates: { languages: { es: `${baseUrl}video-splitter/${platform}?lang=es`, pt: `${baseUrl}video-splitter/${platform}?lang=pt`, hi: `${baseUrl}video-splitter/${platform}?lang=hi` } },
+    alternates: createAlternates(`video-splitter/${platform}`),
   }));
 
   // 🔄 Component 3: Safe Programmatic PDF Conversion Matrix Loop
@@ -86,13 +97,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}`,
     lastModified: new Date(),
     priority: 0.95,
-    alternates: {
-      languages: {
-        es: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=es`,
-        pt: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=pt`,
-        hi: `${baseUrl}merge-images-compress-pdf-at-one-place/${slug}?lang=hi`,
-      },
-    },
+    alternates: createAlternates(`merge-images-compress-pdf-at-one-place/${slug}`),
   }));
 
   // 🔄 Component 4: Social Post Chunker & Hook Generator Loop
@@ -100,13 +105,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}social-media-post-chunker/${slug}`,
     lastModified: new Date(),
     priority: 0.9,
-    alternates: {
-      languages: {
-        es: `${baseUrl}social-media-post-chunker/${slug}?lang=es`,
-        pt: `${baseUrl}social-media-post-chunker/${slug}?lang=pt`,
-        hi: `${baseUrl}social-media-post-chunker/${slug}?lang=hi`,
-      },
-    },
+    alternates: createAlternates(`social-media-post-chunker/${slug}`),
   }));
 
   // 🔄 Component 5: Batch Image Compressor Loop
@@ -114,13 +113,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}image-compressor/${slug}`,
     lastModified: new Date(),
     priority: 0.9,
-    alternates: {
-      languages: {
-        es: `${baseUrl}image-compressor/${slug}?lang=es`,
-        pt: `${baseUrl}image-compressor/${slug}?lang=pt`,
-        hi: `${baseUrl}image-compressor/${slug}?lang=hi`,
-      },
-    },
+    alternates: createAlternates(`image-compressor/${slug}`),
   }));
 
   // 🔄 Component 6: Visual Book Grid Generator pSEO Loop
@@ -128,13 +121,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}book-grid-generator/${slug}`,
     lastModified: new Date(),
     priority: 0.9,
-    alternates: {
-      languages: {
-        es: `${baseUrl}book-grid-generator/${slug}?lang=es`,
-        pt: `${baseUrl}book-grid-generator/${slug}?lang=pt`,
-        hi: `${baseUrl}book-grid-generator/${slug}?lang=hi`,
-      },
-    },
+    alternates: createAlternates(`book-grid-generator/${slug}`),
   }));
 
   // 🚀 CORE STATIC MARKETING CHANNELS COMPILATION
@@ -143,7 +130,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}`,
       lastModified: new Date(),
       priority: 1.0,
-      alternates: { languages: { es: `${baseUrl}?lang=es`, pt: `${baseUrl}?lang=pt`, hi: `${baseUrl}?lang=hi` } },
+      alternates: createAlternates(''),
     },
     
     // ⚡ CORE TOOL MAIN ROUTES
@@ -151,49 +138,37 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}video-compressor`,
       lastModified: new Date(),
       priority: 0.95,
-      alternates: { languages: { es: `${baseUrl}video-compressor?lang=es`, pt: `${baseUrl}video-compressor?lang=pt`, hi: `${baseUrl}video-compressor?lang=hi` } },
+      alternates: createAlternates('video-compressor'),
     },
     {
       url: `${baseUrl}video-splitter`,
       lastModified: new Date(),
       priority: 0.95,
-      alternates: { languages: { es: `${baseUrl}video-splitter?lang=es`, pt: `${baseUrl}video-splitter?lang=pt`, hi: `${baseUrl}video-splitter?lang=hi` } },
+      alternates: createAlternates('video-splitter'),
     },
     {
       url: `${baseUrl}merge-images-compress-pdf-at-one-place`,
       lastModified: new Date(),
       priority: 0.95,
-      alternates: { languages: { es: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=es`, pt: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=pt`, hi: `${baseUrl}merge-images-compress-pdf-at-one-place?lang=hi` } },
+      alternates: createAlternates('merge-images-compress-pdf-at-one-place'),
     },
     {
       url: `${baseUrl}social-media-post-chunker`,
       lastModified: new Date(),
       priority: 0.95,
-      alternates: { 
-        languages: { 
-          es: `${baseUrl}social-media-post-chunker?lang=es`, 
-          pt: `${baseUrl}social-media-post-chunker?lang=pt`, 
-          hi: `${baseUrl}social-media-post-chunker?lang=hi` 
-        } 
-      },
+      alternates: createAlternates('social-media-post-chunker'),
     },
     {
       url: `${baseUrl}image-compressor`,
       lastModified: new Date(),
       priority: 0.95,
-      alternates: { languages: { es: `${baseUrl}image-compressor?lang=es`, pt: `${baseUrl}image-compressor?lang=pt`, hi: `${baseUrl}image-compressor?lang=hi` } },
+      alternates: createAlternates('image-compressor'),
     },
     {
       url: `${baseUrl}book-grid-generator`,
       lastModified: new Date(),
       priority: 0.95,
-      alternates: { 
-        languages: { 
-          es: `${baseUrl}book-grid-generator?lang=es`, 
-          pt: `${baseUrl}book-grid-generator?lang=pt`, 
-          hi: `${baseUrl}book-grid-generator?lang=hi` 
-        } 
-      },
+      alternates: createAlternates('book-grid-generator'),
     },
 
     // 🌟 YOUTUBE TOOLS
@@ -201,37 +176,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}youtube-thumbnail-and-metadata-extractor`,
       lastModified: new Date(),
       priority: 0.9,
-      alternates: { 
-        languages: { 
-          es: `${baseUrl}youtube-thumbnail-and-metadata-extractor?lang=es`, 
-          pt: `${baseUrl}youtube-thumbnail-and-metadata-extractor?lang=pt`, 
-          hi: `${baseUrl}youtube-thumbnail-and-metadata-extractor?lang=hi` 
-        } 
-      },
+      alternates: createAlternates('youtube-thumbnail-and-metadata-extractor'),
     },
     {
       url: `${baseUrl}youtube-thumbnail-downloader`,
       lastModified: new Date(),
       priority: 0.9,
-      alternates: { 
-        languages: { 
-          es: `${baseUrl}youtube-thumbnail-downloader?lang=es`, 
-          pt: `${baseUrl}youtube-thumbnail-downloader?lang=pt`, 
-          hi: `${baseUrl}youtube-thumbnail-downloader?lang=hi` 
-        } 
-      },
+      alternates: createAlternates('youtube-thumbnail-downloader'),
     },
     {
       url: `${baseUrl}youtube-metadata-extractor`,
       lastModified: new Date(),
       priority: 0.9,
-      alternates: { 
-        languages: { 
-          es: `${baseUrl}youtube-metadata-extractor?lang=es`, 
-          pt: `${baseUrl}youtube-metadata-extractor?lang=pt`, 
-          hi: `${baseUrl}youtube-metadata-extractor?lang=hi` 
-        } 
-      },
+      alternates: createAlternates('youtube-metadata-extractor'),
     },
 
     // 📜 FOOTER & LEGAL PAGES
@@ -239,31 +196,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}about`,
       lastModified: new Date(),
       priority: 0.7,
-      alternates: { languages: { es: `${baseUrl}about?lang=es`, pt: `${baseUrl}about?lang=pt`, hi: `${baseUrl}about?lang=hi` } },
+      alternates: createAlternates('about'),
     },
     {
       url: `${baseUrl}privacy-policy`,
       lastModified: new Date(),
       priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}privacy-policy?lang=es`, pt: `${baseUrl}privacy-policy?lang=pt`, hi: `${baseUrl}privacy-policy?lang=hi` } },
+      alternates: createAlternates('privacy-policy'),
     },
     {
       url: `${baseUrl}terms`,
       lastModified: new Date(),
       priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}terms?lang=es`, pt: `${baseUrl}terms?lang=pt`, hi: `${baseUrl}terms?lang=hi` } },
+      alternates: createAlternates('terms'),
     },
     {
       url: `${baseUrl}disclaimer`,
       lastModified: new Date(),
       priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}disclaimer?lang=es`, pt: `${baseUrl}disclaimer?lang=pt`, hi: `${baseUrl}disclaimer?lang=hi` } },
+      alternates: createAlternates('disclaimer'),
     },
     {
       url: `${baseUrl}contact`,
       lastModified: new Date(),
       priority: 0.5,
-      alternates: { languages: { es: `${baseUrl}contact?lang=es`, pt: `${baseUrl}contact?lang=pt`, hi: `${baseUrl}contact?lang=hi` } },
+      alternates: createAlternates('contact'),
     },
 
     // 🔄 MATRIX SPREADS
