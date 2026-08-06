@@ -4,7 +4,7 @@
  * @file Navbar.jsx
  * @description High-performance, fully responsive Navigation Bar featuring an
  * iLovePDF-style 3-Column Wide Mega Menu Dropdown, Mobile Drawer, Theme Switcher,
- * and category-wise grouping for Video, PDF, Image, and ⚡ Pro Level Utilities.
+ * and category-wise grouping for Video, PDF, Image, Book, and ⚡ Pro Level Utilities.
  */
 
 import { useState, useRef, useEffect } from "react";
@@ -18,9 +18,6 @@ import ThemeSwitcher from "./ui/ThemeSwitcher.jsx";
 /**
  * ⚡ PRO LEVEL UTILITIES
  * Multi-step, high-impact workflow tools and advanced generators.
- */
-/**
- * ⚡ PRO LEVEL UTILITIES
  */
 const proLevelTools = [
   {
@@ -94,6 +91,10 @@ const imageTools = [
   },
 ];
 
+/**
+ * 📖 READER & BOOK UTILITIES
+ * Dynamic 3x3 grid tier lists & aesthetic card generators.
+ */
 const bookTools = [
   {
     id: "book-grid-generator",
@@ -104,6 +105,7 @@ const bookTools = [
     badge: "NEW",
   },
 ];
+
 // ==========================================
 // MAIN NAVBAR COMPONENT
 // ==========================================
@@ -223,6 +225,7 @@ export default function Navbar() {
                   ▼
                 </span>
               </button>
+
               {/* 3-COLUMN MEGA MENU GRID CONTAINER */}
               <div
                 className={`absolute right-0 top-full w-[90vw] sm:w-[680px] md:w-[750px] bg-white dark:bg-[#0d0d14] rounded-3xl shadow-2xl ring-1 ring-slate-200/60 dark:ring-white/10 p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-2 duration-150 z-50 ${
@@ -278,8 +281,8 @@ export default function Navbar() {
                         </Link>
                       </div>
                     </div>
-                  </div>{" "}
-                  {/* 👈 Yahan ek </div> missing tha jo ab add ho gaya hai */}
+                  </div>
+
                   {/* 🎬 VIDEO UTILITIES SECTION */}
                   <div>
                     <div className="text-[10px] font-black uppercase tracking-widest text-blue-500 dark:text-blue-400 pb-1.5 border-b border-slate-100 dark:border-white/5 mb-2.5 select-none flex items-center gap-1">
@@ -312,9 +315,45 @@ export default function Navbar() {
                 </div>
 
                 {/* ------------------------------------------ */}
-                {/* COLUMN 2: DOCUMENT & PDF UTILITIES         */}
+                {/* COLUMN 2: BOOK & PDF UTILITIES             */}
                 {/* ------------------------------------------ */}
                 <div className="space-y-5">
+                  {/* 📖 READER & BOOK UTILITIES SECTION */}
+                  <div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-purple-600 dark:text-purple-400 pb-1.5 border-b border-slate-100 dark:border-white/5 mb-2.5 select-none flex items-center justify-between">
+                      <span className="flex items-center gap-1">
+                        <span>📖</span> Reader & Book Utilities
+                      </span>
+                      <span className="text-[8px] bg-purple-600 text-white px-1.5 py-0.5 rounded-full font-extrabold shadow-sm">
+                        NEW
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      {bookTools.map((tool) => (
+                        <Link
+                          key={tool.id}
+                          href={tool.link}
+                          onClick={closeAllMenus}
+                          className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-all group/item"
+                        >
+                          <span className="text-base mt-0.5 group-hover/item:scale-110 transition-transform">
+                            {tool.icon}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-bold text-slate-900 dark:text-white group-hover/item:text-purple-600 dark:group-hover/item:text-purple-400 transition-colors">
+                              {tool.name}
+                            </div>
+                            <div className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">
+                              {tool.desc}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 📄 PDF UTILITIES SECTION */}
                   <div>
                     <div className="text-[10px] font-black uppercase tracking-widest text-emerald-500 dark:text-emerald-400 pb-1.5 border-b border-slate-100 dark:border-white/5 mb-2.5 select-none flex items-center gap-1">
                       <span>📄</span> PDF Utilities
@@ -345,40 +384,6 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* 📖 READER & BOOK UTILITIES SECTION */}
-                <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-purple-600 dark:text-purple-400 pb-1.5 border-b border-slate-100 dark:border-white/5 mb-2.5 select-none flex items-center justify-between">
-                    <span className="flex items-center gap-1">
-                      <span>📖</span> Reader & Book Utilities
-                    </span>
-                    <span className="text-[8px] bg-purple-600 text-white px-1.5 py-0.5 rounded-full font-extrabold shadow-sm">
-                      NEW
-                    </span>
-                  </div>
-
-                  <div className="space-y-1">
-                    {bookTools.map((tool) => (
-                      <Link
-                        key={tool.id}
-                        href={tool.link}
-                        onClick={closeAllMenus}
-                        className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-all group/item"
-                      >
-                        <span className="text-base mt-0.5 group-hover/item:scale-110 transition-transform">
-                          {tool.icon}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-bold text-slate-900 dark:text-white group-hover/item:text-purple-600 dark:group-hover/item:text-purple-400 transition-colors">
-                            {tool.name}
-                          </div>
-                          <div className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">
-                            {tool.desc}
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
                 {/* ------------------------------------------ */}
                 {/* COLUMN 3: GRAPHIC & IMAGE UTILITIES        */}
                 {/* ------------------------------------------ */}
@@ -462,6 +467,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
       {/* ========================================== */}
       {/* DRAWER NAVIGATION                          */}
       {/* ========================================== */}
@@ -470,6 +476,29 @@ export default function Navbar() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 space-y-5 text-left">
             {/* 📱 MOBILE ONLY: TOOLS LISTING (PC/Desktop par auto-hide) */}
             <div className="sm:hidden space-y-5">
+              {/* 📖 READER & BOOK UTILITIES (FIXED: MOBILE MEIN BHI SHOW HOGA) */}
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-purple-600 dark:text-purple-400 pt-2 pb-1 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
+                  <span>📖 Reader & Book Utilities</span>
+                  <span className="text-[8px] bg-purple-600 text-white px-1.5 py-0.5 rounded-full font-bold">
+                    NEW
+                  </span>
+                </div>
+                <div className="mt-2 grid grid-cols-1 gap-2">
+                  {bookTools.map((t) => (
+                    <Link
+                      key={t.id}
+                      href={t.link}
+                      onClick={closeAllMenus}
+                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-800 dark:text-gray-200 hover:bg-purple-50/50 dark:hover:bg-purple-950/30 rounded-lg transition-colors"
+                    >
+                      <span>{t.icon}</span>
+                      <span>{t.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               {/* ⚡ PRO LEVEL UTILITIES */}
               <div>
                 <div className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 pt-2 pb-1 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
