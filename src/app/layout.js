@@ -45,8 +45,8 @@ export default function RootLayout({ children }) {
 
         </ThemeProvider>
         
-        {/* 🎯 गूगल एनालिटिक्स ट्रैकिंग (Corrected ID WITH 'G-' Prefix) */}
-        <GoogleAnalytics gaId="G-G3YFNH1P3" />
+        {/* 🎯 गूगल एनालिटिक्स 4 (100% EXACT MATCH MEASUREMENT ID) */}
+        <GoogleAnalytics gaId="G-G3YFNH41P3" />
 
         {/* 🎯 SAFE ASYNCHRONOUS ADSENSE CORE ENGINE */}
         <Script
