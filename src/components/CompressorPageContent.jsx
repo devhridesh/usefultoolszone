@@ -115,7 +115,7 @@ export default function CompressPage({ initialSize, platform }) {
       {/* Main Content Container */}
       <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col items-center justify-center space-y-4 my-auto px-4">
         
-        {/* Header Section (Psychologically optimized typography) */}
+        {/* Header Section (Clean & Single Header - Speed Tip Removed) */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
             {platform ? (
@@ -166,22 +166,9 @@ export default function CompressPage({ initialSize, platform }) {
               🍪 Zero Tracking Cookies
             </span>
           </div>
-
-          {/* TOP TRIGGER LINK */}
-          <div className="pt-1">
-            <p className="text-xs text-slate-500">
-              Compression running slow?{" "}
-              <a
-                href="#speed-tips-section"
-                className="text-blue-600 dark:text-blue-400 font-semibold underline hover:text-blue-700 dark:hover:text-blue-300 transition-all inline-block animate-pulse"
-              >
-                Read our 1-minute speed optimization tips ⚡
-              </a>
-            </p>
-          </div>
         </div>
 
-        {/* ⭐️ PRO-LEVEL DYNAMIC DISMISSIBLE BOOKMARK WIDGET (FIXED WRAPPING FOR MOBILE) */}
+        {/* ⭐️ PRO-LEVEL DYNAMIC DISMISSIBLE BOOKMARK WIDGET (FULL WRAPPING ON MOBILE) */}
         {showBookmarkBar && (
           <div className="w-full max-w-xl mx-auto bg-gradient-to-r from-blue-500/5 to-indigo-500/5 dark:from-blue-500/10 dark:to-indigo-500/10 border border-blue-500/20 dark:border-blue-500/30 rounded-xl px-3 py-2 flex items-center justify-between gap-3 shadow-sm animate-fadeIn my-1">
             <div className="flex items-center gap-2 text-left min-w-0 flex-1">

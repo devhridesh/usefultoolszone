@@ -659,6 +659,19 @@ export default function CompressorContainer({ initialSize, platform }) {
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
+
+            {/* ⚡ SPEED TIPS LINK (DYNAMICALLY VISIBLE DIRECTLY UNDER PROGRESS BAR DURING COMPRESSION) */}
+            <div className="pt-2 text-center animate-fadeIn">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                Compression running slow?{" "}
+                <a
+                  href="#speed-tips-section"
+                  className="text-blue-600 dark:text-blue-400 font-bold underline hover:text-blue-700 dark:hover:text-blue-300 transition-all inline-block animate-pulse"
+                >
+                  Read our 1-minute speed optimization tips ⚡
+                </a>
+              </p>
+            </div>
           </div>
 
           {/* Network Alert */}
