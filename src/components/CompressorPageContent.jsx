@@ -7,11 +7,6 @@ import Navbar from "@/components/Navbar";
 import Link from "next/link";
 
 export default function CompressPage({ initialSize, platform }) {
-
-
-
-
-
   // 🌐 Safe Client-Side Language Link Preserver
   const [currentLang, setCurrentLang] = React.useState("en");
 
@@ -34,8 +29,8 @@ export default function CompressPage({ initialSize, platform }) {
       };
     }
   }, []);
-  
-// 🎯 Top Ribbon ke liye States
+
+  // 🎯 Top Ribbon ke liye States
   const [showBookmarkBar, setShowBookmarkBar] = React.useState(false);
   const [isEngineDownloaded, setIsEngineDownloaded] = React.useState(false);
 
@@ -52,10 +47,7 @@ export default function CompressPage({ initialSize, platform }) {
     }
   }, []);
 
-
-
-
-  // 🧠 स्मार्ट पेज डिटेक्शन और कम्पलीट एसईओ वैरिएबल्स (Missing dynamicParagraph Engine Re-injected)
+  // 🧠 स्मार्ट पेज डिटेक्शन और कम्पलीट एसईओ वैरिएबल्स
   const isHomepage = !platform && !initialSize;
 
   const currentSlug = isHomepage
@@ -66,18 +58,19 @@ export default function CompressPage({ initialSize, platform }) {
         : platform.toLowerCase()
       : `${initialSize.toString().replace(/[^0-9]/g, "")}mb`;
 
-const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? `/${currentSlug}` : ''}`; // ✅ Correct path
+  const dynamicUrl = `https://usefultoolszone.com/video-compressor${
+    currentSlug ? `/${currentSlug}` : ""
+  }`;
 
-// 🚀 pSEO High-CTR Title Tag Generator
+  // 🚀 pSEO High-CTR Title Tag Generator
   const targetMB = initialSize || "10";
   const dynamicName = isHomepage
     ? "Free Video Compressor Online - 100% Private & Fast"
     : platform && platform !== "Video"
       ? `Compress Video for ${platform} to ${targetMB}MB Online (Free)`
       : `Compress Video to ${targetMB}MB Online - Fast & Offline`;
-  // 🧠 High-Intent Keywords SEO & Social Meta Dictionary
-  
-// 🧠 pSEO High-CTR Meta Description Dictionary (Platform + Exact MB Intent)
+
+  // 🧠 pSEO High-CTR Meta Description Dictionary
   const descriptionDict = {
     "10mb":
       "⚡ Compress video to 10MB online for free. Ideal for Discord free-tier uploads and email attachments without losing pixel clarity. 100% private browser encoding.",
@@ -106,12 +99,12 @@ const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? 
       "📌 Compress Pinterest pin videos under 100MB threshold. Tuned with SSIM algorithms to prevent text or border blurring on active boards.",
   };
 
-const dynamicParagraph = isHomepage
+  const dynamicParagraph = isHomepage
     ? "Process, scale, and compress your video clips directly inside your browser memory sandbox."
     : descriptionDict[currentSlug?.toLowerCase()] ||
       "Process, scale, and compress your high-density video clips directly inside your web browser secure memory sandboxes.";
-  
-      return (
+
+  return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-slate-50 dark:bg-[#060609]">
       <div className="w-full fixed top-0 left-0 right-0 z-50">
         <Navbar />
@@ -119,12 +112,12 @@ const dynamicParagraph = isHomepage
 
       <div className="h-20 w-full"></div>
 
-
-      {/* Main Content Area */}
-      <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col items-center justify-center space-y-6 my-auto px-4">
+      {/* Main Content Container */}
+      <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col items-center justify-center space-y-4 my-auto px-4">
+        
         {/* Header Section (Psychologically optimized typography) */}
-        <div className="text-center space-y-4 max-w-2xl mx-auto">
-         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
             {platform ? (
               <>
                 Compress Video for {platform} <br />
@@ -148,29 +141,34 @@ const dynamicParagraph = isHomepage
               </>
             )}
           </h1>
-       
-          {/* dynamic text block hook for unique SEO value */}
-          <div className="bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 rounded-xl p-3 max-w-xl mx-auto">
-            <p className="text-xs text-blue-600 dark:text-blue-400 font-medium leading-relaxed">
-              ℹ️ {dynamicParagraph}
-            </p>
-          </div>
 
-          {/* Premium Data-Saver Trust Badges */}
-          <div className="flex flex-wrap justify-center gap-2 pt-1 text-[10px] font-extrabold uppercase tracking-wider">
-            <span className="px-2.5 py-1 bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 rounded-full border border-green-100 dark:border-green-900/30 flex items-center gap-1 shadow-sm">
+          {/* Dynamic text block hook for unique SEO value */}
+          {dynamicParagraph && (
+            <div className="bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 rounded-xl p-2.5 max-w-xl mx-auto">
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium leading-relaxed">
+                ℹ️ {dynamicParagraph}
+              </p>
+            </div>
+          )}
+
+          {/* Premium Data-Saver Trust Badges (4 Badges Included) */}
+          <div className="flex flex-wrap justify-center gap-1.5 pt-1 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider">
+            <span className="px-2.5 py-1 bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 rounded-full border border-green-100 dark:border-green-900/30 flex items-center gap-1 shadow-xs">
               🌐 100% Internet Data Saved
             </span>
-            <span className="px-2.5 py-1 bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 rounded-full border border-blue-100 dark:border-blue-900/30 flex items-center gap-1 shadow-sm">
+            <span className="px-2.5 py-1 bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 rounded-full border border-blue-100 dark:border-blue-900/30 flex items-center gap-1 shadow-xs">
               🔒 Zero Cloud Uploads
             </span>
-            <span className="px-2.5 py-1 bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400 rounded-full border border-purple-100 dark:border-purple-900/30 flex items-center gap-1 shadow-sm">
+            <span className="px-2.5 py-1 bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400 rounded-full border border-purple-100 dark:border-purple-900/30 flex items-center gap-1 shadow-xs">
               🚀 True Offline Compression
+            </span>
+            <span className="px-2.5 py-1 bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400 rounded-full border border-amber-100 dark:border-amber-900/30 flex items-center gap-1 shadow-xs">
+              🍪 Zero Tracking Cookies
             </span>
           </div>
 
-          {/* TOP TRIGGER LINK (Instant Landing Visibility on Mobile) */}
-          <div className="pt-2">
+          {/* TOP TRIGGER LINK */}
+          <div className="pt-1">
             <p className="text-xs text-slate-500">
               Compression running slow?{" "}
               <a
@@ -183,103 +181,60 @@ const dynamicParagraph = isHomepage
           </div>
         </div>
 
-{/* ⭐️ PRO-LEVEL DYNAMIC DISMISSIBLE BOOKMARK WIDGET (PC & MOBILE PROMPTS ALWAYS VISIBLE) */}
-{showBookmarkBar && (
-  <div className="w-full max-w-xl mx-auto bg-gradient-to-r from-blue-500/5 to-indigo-500/5 dark:from-blue-500/10 dark:to-indigo-500/10 border border-blue-500/20 dark:border-blue-500/30 rounded-xl px-3 py-1.5 flex items-center justify-between gap-2 shadow-sm animate-fadeIn mb-1">
-    <div className="flex items-center gap-2 text-left min-w-0">
-      <span className="text-sm shrink-0">
-        {isEngineDownloaded ? "⚡" : "⭐️"}
-      </span>
-      <p className="text-[11px] text-slate-700 dark:text-gray-300 font-medium truncate">
-        {isEngineDownloaded ? (
-          <span>
-            <strong className="text-emerald-600 dark:text-emerald-400">Core engine cached!</strong>{" "}
-            <span className="hidden sm:inline">
-              Press <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Ctrl + D</kbd> (Mac: <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Cmd + D</kbd>) to bookmark for 100% offline access.
-            </span>
-            <span className="sm:hidden">
-              Tap <span className="font-bold">⋮</span> / <span className="font-bold">Share</span> → <span className="font-bold text-blue-600 dark:text-blue-400">Add to Home Screen</span> for offline access.
-            </span>
-          </span>
-        ) : (
-          <span>
-            <strong className="text-blue-600 dark:text-blue-400">Bookmark Us:</strong>{" "}
-            <span className="hidden sm:inline">
-              Press <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Ctrl + D</kbd> (Mac: <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Cmd + D</kbd>) for instant access.
-            </span>
-            <span className="sm:hidden">
-              Tap <span className="font-bold">⋮</span> / <span className="font-bold">Share</span> → <span className="font-bold text-blue-600 dark:text-blue-400">Add to Home Screen</span>.
-            </span>
-          </span>
-        )}
-      </p>
-    </div>
+        {/* ⭐️ PRO-LEVEL DYNAMIC DISMISSIBLE BOOKMARK WIDGET (FIXED WRAPPING FOR MOBILE) */}
+        {showBookmarkBar && (
+          <div className="w-full max-w-xl mx-auto bg-gradient-to-r from-blue-500/5 to-indigo-500/5 dark:from-blue-500/10 dark:to-indigo-500/10 border border-blue-500/20 dark:border-blue-500/30 rounded-xl px-3 py-2 flex items-center justify-between gap-3 shadow-sm animate-fadeIn my-1">
+            <div className="flex items-center gap-2 text-left min-w-0 flex-1">
+              <span className="text-sm shrink-0">
+                {isEngineDownloaded ? "⚡" : "⭐️"}
+              </span>
+              <div className="text-[11px] text-slate-700 dark:text-gray-300 font-medium leading-normal">
+                {isEngineDownloaded ? (
+                  <span>
+                    <strong className="text-emerald-600 dark:text-emerald-400">Core engine cached!</strong>{" "}
+                    <span className="hidden sm:inline">
+                      Press <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Ctrl + D</kbd> (Mac: <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Cmd + D</kbd>) to bookmark for 100% offline access.
+                    </span>
+                    <span className="sm:hidden">
+                      Tap <span className="font-bold">⋮</span> / <span className="font-bold">Share</span> → <span className="font-bold text-blue-600 dark:text-blue-400">Add to Home Screen</span> for offline access.
+                    </span>
+                  </span>
+                ) : (
+                  <span>
+                    <strong className="text-blue-600 dark:text-blue-400">Bookmark Us:</strong>{" "}
+                    <span className="hidden sm:inline">
+                      Press <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Ctrl + D</kbd> (Mac: <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Cmd + D</kbd>) for instant access.
+                    </span>
+                    <span className="sm:hidden">
+                      Tap <span className="font-bold">⋮</span> / <span className="font-bold">Share</span> → <span className="font-bold text-blue-600 dark:text-blue-400">Add to Home Screen</span>.
+                    </span>
+                  </span>
+                )}
+              </div>
+            </div>
 
-    <button
-      type="button"
-      onClick={() => {
-        localStorage.setItem("utz_bookmark_dismissed", "true");
-        setShowBookmarkBar(false);
-      }}
-      className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs px-1.5 py-0.5 rounded cursor-pointer shrink-0"
-      title="Close"
-    >
-      ✕
-    </button>
-  </div>
-)}
-        {/* 📊 SEO HEADER SECTION - CLEAN & COMPACT */}
-        <div className="text-center space-y-2 max-w-2xl mx-auto pt-2 border-t border-slate-200/60 dark:border-white/5 w-full">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-            {platform ? (
-              <>
-                Compress Video for {platform}{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                  Limit: {initialSize || "10"} MB
-                </span>
-              </>
-            ) : initialSize ? (
-              <>
-                Compress Video to {initialSize} MB{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                  Instant Offline
-                </span>
-              </>
-            ) : (
-              <>
-                Compress Videos Locally{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
-                  Looks Like Original
-                </span>
-              </>
-            )}
-          </h1>
-
-          {/* 🛡️ 4 COMPACT TRUST BADGES (INCLUDING ZERO TRACKING COOKIES) */}
-          <div className="flex flex-wrap justify-center gap-1.5 pt-1 text-[9px] font-extrabold uppercase tracking-wider">
-            <span className="px-2 py-0.5 bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 rounded-md border border-green-100 dark:border-green-900/30">
-              🌐 100% Internet Data Saved
-            </span>
-            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 rounded-md border border-blue-100 dark:border-blue-900/30">
-              🔒 Zero Cloud Uploads
-            </span>
-            <span className="px-2 py-0.5 bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400 rounded-md border border-purple-100 dark:border-purple-900/30">
-              🚀 True Offline Compression
-            </span>
-            <span className="px-2 py-0.5 bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400 rounded-md border border-amber-100 dark:border-amber-900/30">
-              🍪 Zero Tracking Cookies
-            </span>
+            <button
+              type="button"
+              onClick={() => {
+                localStorage.setItem("utz_bookmark_dismissed", "true");
+                setShowBookmarkBar(false);
+              }}
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs px-1.5 py-0.5 rounded cursor-pointer shrink-0"
+              title="Close"
+            >
+              ✕
+            </button>
           </div>
-        </div>
+        )}
 
         {/* MASTER GRID: Layout for maximum Ad viewability on PC */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start mt-4">
-       {/* LEFT SIDE PC AD */}
-<div className="hidden lg:flex lg:col-span-3 h-[600px] sticky top-24 bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl items-center justify-center text-center p-4">
-  <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-    [ PC SIDEBAR AD 1 <br /> 300X600 ]
-  </span>
-</div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start mt-2">
+          {/* LEFT SIDE PC AD */}
+          <div className="hidden lg:flex lg:col-span-3 h-[600px] sticky top-24 bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl items-center justify-center text-center p-4">
+            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+              [ PC SIDEBAR AD 1 <br /> 300X600 ]
+            </span>
+          </div>
 
           {/* CENTER - The Core Compressor Box */}
           <div className="col-span-1 lg:col-span-6 w-full max-w-2xl mx-auto">
@@ -295,12 +250,12 @@ const dynamicParagraph = isHomepage
             </div>
           </div>
 
-       {/* RIGHT SIDE PC AD */}
-<div className="hidden lg:flex lg:col-span-3 h-[600px] sticky top-24 bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl items-center justify-center text-center p-4">
-  <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-    [ PC SIDEBAR AD 2 <br /> 300X600 ]
-  </span>
-</div>
+          {/* RIGHT SIDE PC AD */}
+          <div className="hidden lg:flex lg:col-span-3 h-[600px] sticky top-24 bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl items-center justify-center text-center p-4">
+            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+              [ PC SIDEBAR AD 2 <br /> 300X600 ]
+            </span>
+          </div>
         </div>
       </div>
 
@@ -374,21 +329,19 @@ const dynamicParagraph = isHomepage
               className:
                 "bg-indigo-50/40 dark:bg-indigo-950/10 border border-indigo-200 dark:border-indigo-900/50 hover:border-indigo-500 text-indigo-600 dark:text-indigo-400 font-bold",
             },
-            
             {
               slug: "gmail",
               label: "Gmail (25MB)",
               className:
                 "bg-rose-50/40 dark:bg-rose-950/10 border border-rose-200 dark:border-rose-900/50 hover:border-rose-500 text-rose-600 dark:text-rose-400 font-bold",
             },
-            
-            { // 📌 PINTEREST GRID BUTTON ADDED HERE
+            {
               slug: "pinterest",
               label: "Pinterest (100MB)",
               className:
                 "bg-rose-50/40 dark:bg-rose-950/10 border border-rose-200 dark:border-rose-900/50 hover:border-rose-500 text-rose-600 dark:text-rose-400 font-bold",
             },
-     ].map((item) => (
+          ].map((item) => (
             <Link
               key={item.slug}
               href={`/video-compressor/${item.slug}?lang=${currentLang}`}
@@ -415,8 +368,7 @@ const dynamicParagraph = isHomepage
               .MP4
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              H.264 / MPEG-4 Baseline, Main & High Profiles for Universal Web
-              Playback.
+              H.264 / MPEG-4 Baseline, Main & High Profiles for Universal Web Playback.
             </p>
           </div>
 
@@ -426,8 +378,7 @@ const dynamicParagraph = isHomepage
               .WEBM
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              VP8 / VP9 Native Web Stream Optimization for Modern HTML5
-              Browsers.
+              VP8 / VP9 Native Web Stream Optimization for Modern HTML5 Browsers.
             </p>
           </div>
 
@@ -437,8 +388,7 @@ const dynamicParagraph = isHomepage
               .MOV
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Apple QuickTime Dynamic Codec Wrappers (Ideal for iOS, Mac &
-              ProRes).
+              Apple QuickTime Dynamic Codec Wrappers (Ideal for iOS, Mac & ProRes).
             </p>
           </div>
 
@@ -448,8 +398,7 @@ const dynamicParagraph = isHomepage
               .MKV
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Matroska Containers for High-Quality Multi-track Audio, Video &
-              Subtitles.
+              Matroska Containers for High-Quality Multi-track Audio, Video & Subtitles.
             </p>
           </div>
 
@@ -459,8 +408,7 @@ const dynamicParagraph = isHomepage
               .AVI
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Audio Video Interleave (Classic high-compatibility Windows legacy
-              container).
+              Audio Video Interleave (Classic high-compatibility Windows legacy container).
             </p>
           </div>
 
@@ -470,8 +418,7 @@ const dynamicParagraph = isHomepage
               .FLV
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Flash Video Stream formats widely used in older streaming legacy
-              ecosystems.
+              Flash Video Stream formats widely used in older streaming legacy ecosystems.
             </p>
           </div>
 
@@ -481,8 +428,7 @@ const dynamicParagraph = isHomepage
               .WMV
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Windows Media Video codec architecture optimized for PC software
-              frameworks.
+              Windows Media Video codec architecture optimized for PC software frameworks.
             </p>
           </div>
 
@@ -492,8 +438,7 @@ const dynamicParagraph = isHomepage
               .3GP
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              3GPP Multimedia mobile stream architecture designed for compact
-              compression.
+              3GPP Multimedia mobile stream architecture designed for compact compression.
             </p>
           </div>
 
@@ -503,8 +448,7 @@ const dynamicParagraph = isHomepage
               .MPEG
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Moving Picture Experts Group format used in digital TV and media
-              broadcast.
+              Moving Picture Experts Group format used in digital TV and media broadcast.
             </p>
           </div>
 
@@ -514,8 +458,7 @@ const dynamicParagraph = isHomepage
               .M4V
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Apple iTunes layout container wrapper mapping enhanced safe
-              chapter options.
+              Apple iTunes layout container wrapper mapping enhanced safe chapter options.
             </p>
           </div>
 
@@ -525,19 +468,17 @@ const dynamicParagraph = isHomepage
               .TS
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              MPEG Transport Stream utilized primarily for real-time live IPTV
-              streaming pipelines.
+              MPEG Transport Stream utilized primarily for real-time live IPTV streaming pipelines.
             </p>
           </div>
 
-          {/* 12. Web Audio / M4A */}
+          {/* 12. Web Audio */}
           <div className="p-4 bg-slate-50/60 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/60 rounded-xl text-center flex flex-col items-center justify-center transition-all duration-300 hover:scale-[1.02] hover:shadow-md hover:border-amber-300 dark:hover:border-amber-900 group">
             <span className="text-sm font-black text-amber-600 dark:text-amber-400 tracking-wide group-hover:animate-pulse">
               Web Audio
             </span>
             <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-medium leading-relaxed">
-              Advanced FFmpeg demuxing arrays supporting structural multi-codec
-              streams flawlessly.
+              Advanced FFmpeg demuxing arrays supporting structural multi-codec streams flawlessly.
             </p>
           </div>
         </div>
@@ -557,27 +498,10 @@ const dynamicParagraph = isHomepage
             How to Compress Videos Online Without Losing Quality?
           </h2>
           <p>
-            In today's digital era, high-definition recording devices, 4K
-            smartphone cameras, and advanced DSLR lenses have made capturing
-            high-quality video easier than ever. However, this massive leap in
-            visual clarity comes with a significant drawback: massive file
-            sizes. Uncompressed or high-bitrate video files consume enormous
-            amounts of storage space on your hard drive, exhaust your monthly
-            cloud storage quotas, and make sharing media across email or social
-            networks nearly impossible. This is exactly where our advanced
-            online video compressor steps in to solve the problem efficiently
-            and securely.
+            In today's digital era, high-definition recording devices, 4K smartphone cameras, and advanced DSLR lenses have made capturing high-quality video easier than ever. However, this massive leap in visual clarity comes with a significant drawback: massive file sizes. Uncompressed or high-bitrate video files consume enormous amounts of storage space on your hard drive, exhaust your monthly cloud storage quotas, and make sharing media across email or social networks nearly impossible. This is exactly where our advanced online video compressor steps in to solve the problem efficiently and securely.
           </p>
           <p>
-            Traditional methods of shrinking video sizes often result in a
-            heavily pixelated, blurry, or unwatchable output. Useful Tools Zone
-            utilizes a next-generation hybrid encoding algorithm that
-            intelligently analyzes the spatial and temporal redundancy within
-            your media. By dynamically adjusting the bitrate and stripping away
-            unnecessary background data bits while preserving the core visual
-            frames, our tool ensures that the compressed output looks exactly
-            like the original. You can easily reduce a 500MB video down to 50MB
-            without any noticeable drop in visual fidelity.
+            Traditional methods of shrinking video sizes often result in a heavily pixelated, blurry, or unwatchable output. Useful Tools Zone utilizes a next-generation hybrid encoding algorithm that intelligently analyzes the spatial and temporal redundancy within your media. By dynamically adjusting the bitrate and stripping away unnecessary background data bits while preserving the core visual frames, our tool ensures that the compressed output looks exactly like the original. You can easily reduce a 500MB video down to 50MB without any noticeable drop in visual fidelity.
           </p>
         </article>
 
@@ -586,25 +510,10 @@ const dynamicParagraph = isHomepage
             The Ultimate Privacy Advantage: 100% Local Browser Processing
           </h2>
           <p>
-            The biggest hidden danger of using conventional free online video
-            compressors is data privacy. When you use standard web tools, they
-            force you to upload your personal, confidential, or sensitive
-            corporate videos to their remote cloud servers. This exposes your
-            private data to potential network interception, unauthorized
-            server-side storage, and third-party data logging. You lose total
-            control over your files the moment you hit the upload button.
+            The biggest hidden danger of using conventional free online video compressors is data privacy. When you use standard web tools, they force you to upload your personal, confidential, or sensitive corporate videos to their remote cloud servers. This exposes your private data to potential network interception, unauthorized server-side storage, and third-party data logging. You lose total control over your files the moment you hit the upload button.
           </p>
           <p>
-            Useful Tools Zone completely revolutionizes this workflow by
-            utilizing cutting-edge Client-Side WebAssembly (Wasm) architecture.
-            When you select a video on our platform, it is never uploaded to the
-            internet. Instead, the video is securely loaded directly into your
-            web browser's isolated memory sandbox. The entire compression
-            process—from frame decoding to bitrate reduction and final
-            encoding—happens locally using your device's own CPU and GPU power.
-            Once the compression is complete, the temporary memory is instantly
-            wiped clean. Zero uploads, zero server storage, and absolute 100%
-            privacy for your digital assets.
+            Useful Tools Zone completely revolutionizes this workflow by utilizing cutting-edge Client-Side WebAssembly (Wasm) architecture. When you select a video on our platform, it is never uploaded to the internet. Instead, the video is securely loaded directly into your web browser's isolated memory sandbox. The entire compression process—from frame decoding to bitrate reduction and final encoding—happens locally using your device's own CPU and GPU power. Once the compression is complete, the temporary memory is instantly wiped clean. Zero uploads, zero server storage, and absolute 100% privacy for your digital assets.
           </p>
         </article>
 
@@ -678,7 +587,7 @@ const dynamicParagraph = isHomepage
         </div>
       </section>
 
-{/* SPEED OPTIMIZATION TIPS */}
+      {/* SPEED OPTIMIZATION TIPS */}
       <div
         id="speed-tips-section"
         className="w-full max-w-xl mx-auto mt-12 mb-12 p-6 bg-white dark:bg-[#0c0c12] rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm scroll-mt-24 px-4"
@@ -693,19 +602,17 @@ const dynamicParagraph = isHomepage
               1. Use Google Chrome or Microsoft Edge
             </h4>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              These browsers make video compression 2x faster than Safari or
-              Firefox due to advanced WebAssembly multi-threading execution.
+              These browsers make video compression 2x faster than Safari or Firefox due to advanced WebAssembly multi-threading execution.
             </p>
           </div>
-          
+
           {/* Point 2 */}
           <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
             <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200">
               2. Turn ON Hardware Acceleration in PC or Laptop
             </h4>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Go to Browser Settings → System → Turn on &quot;Use graphics
-              acceleration when available&quot; to utilize your local GPU hardware cores.
+              Go to Browser Settings → System → Turn on &quot;Use graphics acceleration when available&quot; to utilize your local GPU hardware cores.
             </p>
           </div>
 
@@ -761,12 +668,12 @@ const dynamicParagraph = isHomepage
         </div>
       </div>
 
-{/* BOTTOM LEADERBOARD AD SPACE */}
-<div className="w-full max-w-3xl mx-auto my-8 min-h-[140px] bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl flex items-center justify-center text-center p-4 shadow-sm">
-  <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-    [ BOTTOM LEADERBOARD AD SPACE ]
-  </span>
-</div>
+      {/* BOTTOM LEADERBOARD AD SPACE */}
+      <div className="w-full max-w-3xl mx-auto my-8 min-h-[140px] bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl flex items-center justify-center text-center p-4 shadow-sm">
+        <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+          [ BOTTOM LEADERBOARD AD SPACE ]
+        </span>
+      </div>
 
       {/* PREMIUM FOOTER */}
       <footer className="w-full border-t border-slate-200 dark:border-white/10 bg-white dark:bg-[#060609] mt-10 px-4">
@@ -840,27 +747,27 @@ const dynamicParagraph = isHomepage
                   name: "Why does WhatsApp compress videos and make them blurry?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "WhatsApp compresses videos over 16MB automatically. Pre-compressing your video under 16MB locally using Useful Tools Zone prevents blurriness on WhatsApp status and chats."
-                  }
+                    text: "WhatsApp compresses videos over 16MB automatically. Pre-compressing your video under 16MB locally using Useful Tools Zone prevents blurriness on WhatsApp status and chats.",
+                  },
                 },
                 {
                   "@type": "Question",
                   name: "How long is a 10MB or 50MB video file?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "A 10MB video compressed in HD resolution lasts about 1 to 3 minutes, while a 50MB video can hold 5 to 15 minutes of HD footage depending on framerate and bitrate settings."
-                  }
+                    text: "A 10MB video compressed in HD resolution lasts about 1 to 3 minutes, while a 50MB video can hold 5 to 15 minutes of HD footage depending on framerate and bitrate settings.",
+                  },
                 },
                 {
                   "@type": "Question",
                   name: "How to compress videos for Discord free limit (10MB)?",
                   acceptedAnswer: {
                     "@type": "Answer",
-                    text: "Select our Discord 10MB preset to shrink any large video file under Discord's 10MB free tier cap directly inside your browser memory without quality loss."
-                  }
-                }
-              ]
-            }
+                    text: "Select our Discord 10MB preset to shrink any large video file under Discord's 10MB free tier cap directly inside your browser memory without quality loss.",
+                  },
+                },
+              ],
+            },
           ]),
         }}
       />
