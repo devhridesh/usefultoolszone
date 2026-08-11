@@ -106,12 +106,12 @@ const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? 
       "📌 Compress Pinterest pin videos under 100MB threshold. Tuned with SSIM algorithms to prevent text or border blurring on active boards.",
   };
 
-  const dynamicParagraph = isHomepage
-    ? "Looking for a secure way to shrink heavy files? Our advanced client-side core engine optimizes your video clips instantly inside your browser memory sandbox with pixel-perfect clarity, 100% offline processing, and zero tracking cookies."
-    : descriptionDict[currentSlug.toLowerCase()] ||
+const dynamicParagraph = isHomepage
+    ? "Process, scale, and compress your video clips directly inside your browser memory sandbox."
+    : descriptionDict[currentSlug?.toLowerCase()] ||
       "Process, scale, and compress your high-density video clips directly inside your web browser secure memory sandboxes.";
-
-  return (
+  
+      return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-slate-50 dark:bg-[#060609]">
       <div className="w-full fixed top-0 left-0 right-0 z-50">
         <Navbar />
@@ -148,14 +148,7 @@ const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? 
               </>
             )}
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-            Your videos never leave your device. Fast, secure, and client-side
-            modern encoding that works entirely in your browser memory.
-            <span className="block mt-2 font-bold text-slate-900 dark:text-slate-200">
-              Saves 100% of your internet bandwidth with zero server data usage!
-            </span>
-          </p>
-
+       
           {/* dynamic text block hook for unique SEO value */}
           <div className="bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 rounded-xl p-3 max-w-xl mx-auto">
             <p className="text-xs text-blue-600 dark:text-blue-400 font-medium leading-relaxed">
@@ -190,52 +183,94 @@ const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? 
           </div>
         </div>
 
-
-{/* ⭐️ PRO-LEVEL DYNAMIC DISMISSIBLE BOOKMARK WIDGET */}
-        {showBookmarkBar && (
-          <div className="w-full max-w-2xl mx-auto bg-gradient-to-r from-blue-500/5 to-indigo-500/5 dark:from-blue-500/10 dark:to-indigo-500/10 border border-blue-500/20 dark:border-blue-500/30 rounded-2xl p-4 flex items-center justify-between gap-4 shadow-sm relative animate-fadeIn px-5 mb-4">
-            <div className="flex items-start sm:items-center gap-3 text-left">
-              <span className="text-xl sm:text-2xl mt-0.5 sm:mt-0">
-                {isEngineDownloaded ? "⚡" : "⭐️"}
-              </span>
-              <div>
-                <h4 className="text-sm font-black text-slate-900 dark:text-white tracking-tight">
-                  {isEngineDownloaded ? (
-                    "Core engine is already downloaded on your device! 🚀"
-                  ) : (
-                    "Bookmark Useful Tools Zone for Instant Access!"
-                  )}
-                </h4>
-         <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5 leading-relaxed">
-                  {isEngineDownloaded ? (
-                    <span>You can now compress videos instantly and completely offline. Bookmark this page so you never lose this super fast setup!</span>
-                  ) : (
-                    <span>First-time setup will download a one-time secure video engine (~9MB). Bookmark this page so you don't lose it!</span>
-                  )}
-                  <span className="block mt-1.5 hidden sm:inline text-[11px] text-slate-400">
-                    💻 <strong>PC Shortcut:</strong> Press <kbd className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-sm mx-0.5">Ctrl + D</kbd> (Mac: <kbd className="bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-sm mx-0.5">Cmd + D</kbd>)
-                  </span>
-                  <span className="block mt-1.5 sm:hidden text-[11px] text-slate-400">
-                    📱 <strong>Mobile Guide:</strong> Tap <span className="font-bold">⋮</span> or <span className="font-bold">Share</span> → <span className="text-blue-600 dark:text-blue-400 font-bold">Add to Home Screen</span>
-                  </span>
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                localStorage.setItem("utz_bookmark_dismissed", "true");
-                setShowBookmarkBar(false);
-              }}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-all text-sm p-1 hover:bg-slate-200/50 dark:hover:bg-white/10 rounded-lg cursor-pointer"
-              title="Don't show again"
-            >
-              ✕
-            </button>
-          </div>
+{/* ⭐️ PRO-LEVEL DYNAMIC DISMISSIBLE BOOKMARK WIDGET (PC & MOBILE PROMPTS ALWAYS VISIBLE) */}
+{showBookmarkBar && (
+  <div className="w-full max-w-xl mx-auto bg-gradient-to-r from-blue-500/5 to-indigo-500/5 dark:from-blue-500/10 dark:to-indigo-500/10 border border-blue-500/20 dark:border-blue-500/30 rounded-xl px-3 py-1.5 flex items-center justify-between gap-2 shadow-sm animate-fadeIn mb-1">
+    <div className="flex items-center gap-2 text-left min-w-0">
+      <span className="text-sm shrink-0">
+        {isEngineDownloaded ? "⚡" : "⭐️"}
+      </span>
+      <p className="text-[11px] text-slate-700 dark:text-gray-300 font-medium truncate">
+        {isEngineDownloaded ? (
+          <span>
+            <strong className="text-emerald-600 dark:text-emerald-400">Core engine cached!</strong>{" "}
+            <span className="hidden sm:inline">
+              Press <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Ctrl + D</kbd> (Mac: <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Cmd + D</kbd>) to bookmark for 100% offline access.
+            </span>
+            <span className="sm:hidden">
+              Tap <span className="font-bold">⋮</span> / <span className="font-bold">Share</span> → <span className="font-bold text-blue-600 dark:text-blue-400">Add to Home Screen</span> for offline access.
+            </span>
+          </span>
+        ) : (
+          <span>
+            <strong className="text-blue-600 dark:text-blue-400">Bookmark Us:</strong>{" "}
+            <span className="hidden sm:inline">
+              Press <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Ctrl + D</kbd> (Mac: <kbd className="bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-700 px-1 py-0.5 rounded text-[10px] font-bold shadow-xs">Cmd + D</kbd>) for instant access.
+            </span>
+            <span className="sm:hidden">
+              Tap <span className="font-bold">⋮</span> / <span className="font-bold">Share</span> → <span className="font-bold text-blue-600 dark:text-blue-400">Add to Home Screen</span>.
+            </span>
+          </span>
         )}
+      </p>
+    </div>
 
+    <button
+      type="button"
+      onClick={() => {
+        localStorage.setItem("utz_bookmark_dismissed", "true");
+        setShowBookmarkBar(false);
+      }}
+      className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs px-1.5 py-0.5 rounded cursor-pointer shrink-0"
+      title="Close"
+    >
+      ✕
+    </button>
+  </div>
+)}
+        {/* 📊 SEO HEADER SECTION - CLEAN & COMPACT */}
+        <div className="text-center space-y-2 max-w-2xl mx-auto pt-2 border-t border-slate-200/60 dark:border-white/5 w-full">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+            {platform ? (
+              <>
+                Compress Video for {platform}{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                  Limit: {initialSize || "10"} MB
+                </span>
+              </>
+            ) : initialSize ? (
+              <>
+                Compress Video to {initialSize} MB{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                  Instant Offline
+                </span>
+              </>
+            ) : (
+              <>
+                Compress Videos Locally{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">
+                  Looks Like Original
+                </span>
+              </>
+            )}
+          </h1>
+
+          {/* 🛡️ 4 COMPACT TRUST BADGES (INCLUDING ZERO TRACKING COOKIES) */}
+          <div className="flex flex-wrap justify-center gap-1.5 pt-1 text-[9px] font-extrabold uppercase tracking-wider">
+            <span className="px-2 py-0.5 bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400 rounded-md border border-green-100 dark:border-green-900/30">
+              🌐 100% Internet Data Saved
+            </span>
+            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 rounded-md border border-blue-100 dark:border-blue-900/30">
+              🔒 Zero Cloud Uploads
+            </span>
+            <span className="px-2 py-0.5 bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400 rounded-md border border-purple-100 dark:border-purple-900/30">
+              🚀 True Offline Compression
+            </span>
+            <span className="px-2 py-0.5 bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400 rounded-md border border-amber-100 dark:border-amber-900/30">
+              🍪 Zero Tracking Cookies
+            </span>
+          </div>
+        </div>
 
         {/* MASTER GRID: Layout for maximum Ad viewability on PC */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start mt-4">
