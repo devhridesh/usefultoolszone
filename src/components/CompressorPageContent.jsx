@@ -239,12 +239,12 @@ const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? 
 
         {/* MASTER GRID: Layout for maximum Ad viewability on PC */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start mt-4">
-          {/* LEFT SIDE PC AD - Only visible on Large Screens (PC) */}
-          <div className="hidden lg:block lg:col-span-3 h-[600px] sticky top-24 bg-slate-50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex items-center justify-center text-center">
-            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-              [ PC SIDEBAR AD 1 <br /> 300x600 ]
-            </span>
-          </div>
+       {/* LEFT SIDE PC AD */}
+<div className="hidden lg:flex lg:col-span-3 h-[600px] sticky top-24 bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl items-center justify-center text-center p-4">
+  <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+    [ PC SIDEBAR AD 1 <br /> 300X600 ]
+  </span>
+</div>
 
           {/* CENTER - The Core Compressor Box */}
           <div className="col-span-1 lg:col-span-6 w-full max-w-2xl mx-auto">
@@ -260,12 +260,12 @@ const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? 
             </div>
           </div>
 
-          {/* RIGHT SIDE PC AD - Only visible on Large Screens (PC) */}
-          <div className="hidden lg:block lg:col-span-3 h-[600px] sticky top-24 bg-slate-50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex items-center justify-center text-center">
-            <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-              [ PC SIDEBAR AD 2 <br /> 300x600 ]
-            </span>
-          </div>
+       {/* RIGHT SIDE PC AD */}
+<div className="hidden lg:flex lg:col-span-3 h-[600px] sticky top-24 bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl items-center justify-center text-center p-4">
+  <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+    [ PC SIDEBAR AD 2 <br /> 300X600 ]
+  </span>
+</div>
         </div>
       </div>
 
@@ -726,12 +726,12 @@ const dynamicUrl = `https://usefultoolszone.com/video-compressor${currentSlug ? 
         </div>
       </div>
 
-      {/* BOTTOM AD ZONE */}
-      <div className="w-full max-w-3xl mx-auto mb-10 py-6 bg-slate-100 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl text-center flex items-center justify-center min-h-[120px] shadow-sm">
-        <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase animate-pulse">
-          [ Bottom Auto-Ads Zone ]
-        </span>
-      </div>
+{/* BOTTOM LEADERBOARD AD SPACE */}
+<div className="w-full max-w-3xl mx-auto my-8 min-h-[140px] bg-slate-100/70 dark:bg-white/[0.02] border border-dashed border-slate-300 dark:border-white/10 rounded-2xl flex items-center justify-center text-center p-4 shadow-sm">
+  <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+    [ BOTTOM LEADERBOARD AD SPACE ]
+  </span>
+</div>
 
       {/* PREMIUM FOOTER */}
       <footer className="w-full border-t border-slate-200 dark:border-white/10 bg-white dark:bg-[#060609] mt-10 px-4">
