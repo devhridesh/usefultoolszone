@@ -299,23 +299,22 @@ export default function CompressorContainer({ initialSize, platform }) {
               </p>
             </div>
           ) : (
-            /* SELECTED VIDEO CARD */
-            <div className="p-4 sm:p-5 bg-blue-50/60 dark:bg-blue-950/30 border-2 border-blue-500/40 rounded-xl text-left shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+            <div className="p-3.5 sm:p-4 bg-blue-50/60 dark:bg-blue-950/30 border-2 border-blue-500/40 rounded-xl text-left shadow-sm flex items-center justify-between gap-2 sm:gap-3 animate-fadeIn w-full overflow-hidden">
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 block">
                   Selected Video File
                 </span>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md mt-0.5">
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate w-full mt-0.5">
                   🎬 {selectedFile.name}
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
                   Original Size: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
                 </p>
               </div>
               <button
                 type="button"
                 onClick={handleClearSelectedFile}
-                className="text-xs font-bold text-red-500 hover:text-red-700 hover:underline cursor-pointer self-start sm:self-auto bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 px-3 py-1 rounded-lg transition-all"
+                className="shrink-0 whitespace-nowrap text-xs font-bold text-red-500 hover:text-red-700 hover:underline cursor-pointer bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 px-2.5 py-1 sm:px-3 rounded-lg transition-all"
               >
                 Change Video
               </button>
