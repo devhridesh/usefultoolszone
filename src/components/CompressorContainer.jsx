@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import useVideoCompressor from "../hooks/useVideoCompressor";
-import NoSleep from "nosleep.js"; // 🎯 अल्टीमेट वेक लॉक ब्रह्मास्त्र
+import NoSleep from "nosleep.js";
 
 export default function CompressorContainer({ initialSize, platform }) {
   const {
@@ -15,29 +15,34 @@ export default function CompressorContainer({ initialSize, platform }) {
     isTechnicalFreeze,
   } = useVideoCompressor();
 
+  // Selected file state (Allows file selection BEFORE starting compression)
+  const [selectedFile, setSelectedFile] = useState(null);
   const [targetSize, setTargetSize] = useState(initialSize || "10");
   const [selectedPreset, setSelectedPreset] = useState("");
-  const [isUltrafast, setIsUltrafast] = useState(false); // ⚡ Default mode is unchecked (veryfast active)
-  const [selectedFPS, setSelectedFPS] = useState("recommended"); // 🚀 Defaults to smart recommended mode
-  const [lockFPS, setLockFPS] = useState(true); // 🚀 Recommended fast mode checked by default
-  // 🎥 वीडियो प्रीव्यू स्टेट और ऑटो-क्लीनअप इंजन
+  const [isUltrafast, setIsUltrafast] = useState(false);
+  const [selectedFPS, setSelectedFPS] = useState("recommended");
+  const [lockFPS, setLockFPS] = useState(true);
+
+  // Video preview & UI states
   const [previewUrl, setPreviewUrl] = useState("");
   const [originalFileName, setOriginalFileName] = useState("video");
-  const [validationError, setValidationError] = useState(null); // 👈 Custom banner state
+  const [validationError, setValidationError] = useState(null);
+
+  // Video preview URL cleanup
   useEffect(() => {
     if (compressedBlob) {
       const url = URL.createObjectURL(compressedBlob);
       setPreviewUrl(url);
-      return () => URL.revokeObjectURL(url); // मेमोरी लीक रोकने के लिए
+      return () => URL.revokeObjectURL(url);
     } else {
       setPreviewUrl("");
     }
   }, [compressedBlob]);
 
+  // Native share handler
   const handleShare = async () => {
     if (!compressedBlob) return;
 
-    // 🛑 Browser Security Check: Agar HTTP ya unsecure connection hai
     if (!navigator.share) {
       alert(
         "Native sharing strictly requires an HTTPS (Secure) connection! Please test via HTTPS or Ngrok.",
@@ -74,14 +79,12 @@ export default function CompressorContainer({ initialSize, platform }) {
   const containerRef = useRef(null);
   const noSleepRef = useRef(null);
 
-  // 🔄 🧠 राउटिंग प्रॉप-सिंक इंजन: जब भी नीचे ग्रिड से URL बदलेगा, यह स्टेट्स को ज़बरदस्ती री-सिंक करेगा
+  // Routing prop-sync engine
   useEffect(() => {
-    // ✂️ "40mb" या "20mb" में से अक्षरों को हटाकर सिर्फ शुद्ध संख्या (10, 20, 40, 50, 60) निकालने का फ़िल्टर
     const cleanSize = initialSize
       ? initialSize.toString().replace(/[^0-9]/g, "")
       : "10";
 
-    // 1. इनपुट बॉक्स का साइज तुरंत URL के अनुसार बदलें
     if (
       platform &&
       (platform.toLowerCase().includes("youtube") ||
@@ -89,10 +92,9 @@ export default function CompressorContainer({ initialSize, platform }) {
     ) {
       setTargetSize("60");
     } else {
-      setTargetSize(cleanSize); // 🎯 इनपुट बॉक्स में हमेशा शुद्ध नंबर जाएगा
+      setTargetSize(cleanSize);
     }
 
-    // 2. ड्रॉपडाउन Preset को URL और स्लग के अनुसार फ्लैट चेन में सटीक सिलेक्ट करें
     const p = platform ? platform.toLowerCase() : "";
 
     if (p.includes("whatsapp")) {
@@ -112,19 +114,17 @@ export default function CompressorContainer({ initialSize, platform }) {
     } else if (p.includes("discord")) {
       setSelectedPreset("discord");
     } else if (cleanSize === "60") {
-      setSelectedPreset("youtube-shorts"); // 🎯 अगर डायरेक्ट यूआरएल स्लग 60mb हो
+      setSelectedPreset("youtube-shorts");
     } else if (["10", "20", "40", "50"].includes(cleanSize)) {
-      setSelectedPreset(cleanSize); // 🎯 स्टैंडर्ड 10, 20, 40, 50 MB ग्रिड लिंक्स
+      setSelectedPreset(cleanSize);
     } else if (p.includes("pinterest")) {
-      // 📌 Pinterest URL Router Sync
       setSelectedPreset("pinterest");
-    } else if (cleanSize === "60") {
     } else {
       setSelectedPreset("");
     }
   }, [initialSize, platform]);
 
-  // 1. NoSleep को इनिशियलाइज़ करें
+  // Initialize NoSleep
   useEffect(() => {
     noSleepRef.current = new NoSleep();
     return () => {
@@ -134,7 +134,7 @@ export default function CompressorContainer({ initialSize, platform }) {
     };
   }, []);
 
-  // 2. जब कम्प्रेशन पूरा हो जाए, तो लॉक हटा दें
+  // Disable NoSleep on completion
   useEffect(() => {
     if (!isCompressing && noSleepRef.current) {
       noSleepRef.current.disable();
@@ -142,13 +142,14 @@ export default function CompressorContainer({ initialSize, platform }) {
     }
   }, [isCompressing]);
 
-useEffect(() => {
-  if (compressedBlob && !isCompressing) {
-    downloadFile();
-  }
-}, [compressedBlob, isCompressing]);
+  // Auto-download on complete
+  useEffect(() => {
+    if (compressedBlob && !isCompressing) {
+      downloadFile();
+    }
+  }, [compressedBlob, isCompressing]);
 
-  // 3. ऑटो-स्क्रॉलिंग इंजन (Engine 1: कम्प्रेशन शुरू होने पर)
+  // Auto-scroll engine 1 (During compression)
   useEffect(() => {
     if (isCompressing && containerRef.current) {
       const headerOffset = 140;
@@ -163,16 +164,13 @@ useEffect(() => {
     }
   }, [isCompressing]);
 
-  // 3. ऑटो-स्क्रॉलिंग इंजन (Engine 2: पूरा होने पर स्मार्ट स्लाइड)
+  // Auto-scroll engine 2 (Completion slide)
   useEffect(() => {
     if (!isCompressing && compressedBlob && containerRef.current) {
-      // ⚡ 200ms का छोटा सा डिले ताकि dynamic वीडियो प्लेयर रेंडर होकर अपनी असली हाइट ले सके
       const scrollTimer = setTimeout(() => {
         const rect = containerRef.current.getBoundingClientRect();
         const elementBottom = rect.bottom + window.pageYOffset;
         const viewportHeight = window.innerHeight;
-
-        // पूरे बॉक्स और नीचे के शेयर/डाउनलोड बटन्स को बिना कटे स्क्रीन के निचले हिस्से में फिट करने का गणित
         const targetScrollTop = elementBottom - viewportHeight + 30;
 
         window.scrollTo({
@@ -185,11 +183,11 @@ useEffect(() => {
     }
   }, [isCompressing, compressedBlob]);
 
-  const handleFileSelect = async (e) => {
+  // File selection handler (Does NOT start compression automatically)
+  const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // ✂️ फाइल का असली नाम एक्सटेंशन हटाकर निकालने का लॉजिक
     const cleanName =
       file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
     setOriginalFileName(cleanName);
@@ -205,22 +203,44 @@ useEffect(() => {
       return;
     }
 
-    // 🛑 Strict English Headroom Validation Banner Shield
-    const uploadedSizeMB = file.size / (1024 * 1024);
+    setSelectedFile(file);
+    setValidationError(null);
+  };
+
+  // Dedicated compression trigger handler
+  const handleStartCompression = async () => {
+    if (!selectedFile) return;
+
+    const uploadedSizeMB = selectedFile.size / (1024 * 1024);
     if (uploadedSizeMB <= parseFloat(targetSize)) {
       setValidationError(
-        `The uploaded video (${uploadedSizeMB.toFixed(1)} MB) is already smaller than or equal to your targeted size (${targetSize} MB). Please upload a larger video file to compress.`,
+        `The uploaded video (${uploadedSizeMB.toFixed(1)} MB) is already smaller than or equal to your targeted size (${targetSize} MB). Please upload a larger video file or set a smaller target size.`,
       );
       if (noSleepRef.current) noSleepRef.current.disable();
-      return; // ✋ Stop execution completely
+      return;
     } else {
-      setValidationError(null); // Clear error if valid
+      setValidationError(null);
     }
 
-    // ⚡ Passed explicit selected FPS token to core execution engine
-    await compressVideo(file, parseFloat(targetSize), isUltrafast, selectedFPS);
-    // 🧼 Reset engine state to false for subsequent new video selections as requested
+    if (noSleepRef.current) {
+      noSleepRef.current.enable();
+    }
+
+    await compressVideo(
+      selectedFile,
+      parseFloat(targetSize),
+      isUltrafast,
+      selectedFPS
+    );
     setIsUltrafast(false);
+  };
+
+  const handleClearSelectedFile = () => {
+    setSelectedFile(null);
+    setValidationError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const downloadFile = () => {
@@ -228,10 +248,7 @@ useEffect(() => {
     const url = URL.createObjectURL(compressedBlob);
     const a = document.createElement("a");
     a.href = url;
-
-    // 🎯 आउटपुट ब्रांडिंग नाम: [OriginalName]_compressed_UTZ.mp4
     a.download = `${originalFileName}_compressed_UTZ.mp4`;
-
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -254,7 +271,58 @@ useEffect(() => {
       {/* 🎛️ Input Mode Layout */}
       {!isCompressing && !compressedBlob && (
         <div className="space-y-5 w-full flex-1 flex flex-col justify-between">
-          {/* 🎛️ 100% रेस्पॉन्सिव इनपुट और प्रेसेट्स ग्रिड इंजन */}
+          
+          {/* STEP 1: SELECT VIDEO / DROPZONE (FIRST ACTION AT THE TOP) */}
+          {!selectedFile ? (
+            <div
+              className="text-center p-6 sm:p-8 border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-black/20 rounded-xl hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer flex flex-col justify-center items-center min-h-[120px] transition-all"
+              onClick={() => fileInputRef.current.click()}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                className="hidden"
+                accept="video/*"
+              />
+              <button
+                type="button"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm shadow-blue-500/20 transition-all active:scale-95 cursor-pointer"
+              >
+                Select Video
+              </button>
+              <p className="mt-3 text-slate-500 dark:text-gray-400 text-xs font-medium max-w-md px-4 leading-relaxed">
+                Fully optimized for ultra-smooth operation on mobile devices.
+                <span className="block mt-1 text-blue-600 dark:text-blue-400 font-bold select-none">
+                  🚀 Want 3x multi-core encoding speeds? Switch to Desktop PC for maximum performance!
+                </span>
+              </p>
+            </div>
+          ) : (
+            /* SELECTED VIDEO CARD */
+            <div className="p-4 sm:p-5 bg-blue-50/60 dark:bg-blue-950/30 border-2 border-blue-500/40 rounded-xl text-left shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                  Selected Video File
+                </span>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md mt-0.5">
+                  🎬 {selectedFile.name}
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-0.5">
+                  Original Size: {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleClearSelectedFile}
+                className="text-xs font-bold text-red-500 hover:text-red-700 hover:underline cursor-pointer self-start sm:self-auto bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 px-3 py-1 rounded-lg transition-all"
+              >
+                Change Video
+              </button>
+            </div>
+          )}
+
+          {/* STEP 2: TARGET SIZE & PRESETS (RIGHT BELOW SELECT VIDEO) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-800/60 p-4 rounded-xl border border-gray-200 dark:border-gray-700 w-full">
             {/* Target Size Box */}
             <div className="flex items-center justify-between sm:justify-start gap-3 w-full">
@@ -268,7 +336,7 @@ useEffect(() => {
                   onChange={(e) => {
                     setTargetSize(e.target.value);
                     setSelectedPreset("");
-                    setValidationError(null); // 👈 Target change hote hi warning clear
+                    setValidationError(null);
                   }}
                   className="w-20 px-3 py-1.5 bg-white dark:bg-gray-950 border border-gray-300 dark:border-gray-600 rounded-lg text-center font-bold text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 text-sm"
                   min="1"
@@ -304,7 +372,7 @@ useEffect(() => {
                     wechat: "25",
                     line: "200",
                     discord: "10",
-                    pinterest: "100", // 📌 Pinterest targeting locked to 100MB
+                    pinterest: "100",
                   };
 
                   if (sizeMap[val]) {
@@ -314,21 +382,14 @@ useEffect(() => {
                 className="w-full max-w-[220px] sm:max-w-none px-3 py-1.5 bg-white dark:bg-gray-950 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 truncate"
               >
                 <option value="">Select a Preset</option>
-                {/* 📦 Standard Target Sizes */}
                 <option value="10">Compress to 10 MB</option>
                 <option value="20">Compress to 20 MB</option>
                 <option value="40">Compress to 40 MB</option>
                 <option value="50">Compress to 50 MB</option>
-
-                {/* 📱 Global Social & Chat Apps Verified Unique Slugs */}
                 <option value="tiktok">TikTok Video (Max 72 MB)</option>
-                <option value="instagram">
-                  Instagram Reels / Post (95 MB)
-                </option>
+                <option value="instagram">Instagram Reels / Post (95 MB)</option>
                 <option value="youtube-shorts">YouTube Shorts (60 MB)</option>
-                <option value="whatsapp">
-                  WhatsApp Status/Message (16 MB)
-                </option>
+                <option value="whatsapp">WhatsApp Status/Message (16 MB)</option>
                 <option value="wechat">WeChat Sharing (25 MB)</option>
                 <option value="line">LINE App Video Transfer (200 MB)</option>
                 <option value="discord">Discord Free Upload (10 MB)</option>
@@ -338,26 +399,34 @@ useEffect(() => {
             </div>
           </div>
 
-          <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 text-left space-y-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-              🚀 Why Choose Our Tool?
-            </h4>
-            <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1.5 list-none">
-              <li>
-                🔒 <strong>100% Safe & Private:</strong> Your video is processed
-                purely on-device via local WebAssembly infrastructure.
-              </li>
-              <li>
-                ⚡ <strong>Pure Fast & Offline:</strong> Runs completely
-                isolated within your browser memory sandbox.
-              </li>
-            </ul>
-          </div>
+          {/* ⚠️ Validation Error Banner */}
+          {validationError && (
+            <div className="w-full p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-left animate-fadeIn flex items-start gap-3 shadow-sm select-none">
+              <span className="text-base mt-0.5">⚠️</span>
+              <div className="flex-1">
+                <h5 className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                  Compression Skipped
+                </h5>
+                <p className="text-[11px] text-slate-600 dark:text-gray-300 font-semibold mt-0.5 leading-relaxed">
+                  {validationError}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setValidationError(null)}
+                className="text-[11px] text-amber-600 dark:text-amber-400 font-bold hover:underline cursor-pointer px-2 py-0.5 bg-amber-500/5 rounded-md border border-amber-500/10"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
 
-          {/* ⚡ PREMIUM STYLIZED CHECKBOX INTERFACE (Focus ring aur outlines ko completely disable kiya) */}
+          {/* STEP 3: ADVANCED OPTIONS & SETTINGS */}
+          
+          {/* Ultrafast Checkbox */}
           <div
-            className={`mb-5 flex items-center gap-2.5 px-3.5 py-2 rounded-xl border transition-all duration-300 pointer-events-auto outline-none focus:outline-none select-none ${isUltrafast ? "bg-amber-500/5 border-amber-500/20 dark:bg-amber-500/10" : "bg-white dark:bg-gray-950 border-slate-200 dark:border-slate-800"}`}
-            onClick={(e) => e.stopPropagation()} // 🛡️ Fixes accidental native file selector open triggers
+            className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl border transition-all duration-300 pointer-events-auto outline-none focus:outline-none select-none ${isUltrafast ? "bg-amber-500/5 border-amber-500/20 dark:bg-amber-500/10" : "bg-white dark:bg-gray-950 border-slate-200 dark:border-slate-800"}`}
+            onClick={(e) => e.stopPropagation()}
           >
             <input
               type="checkbox"
@@ -382,7 +451,8 @@ useEffect(() => {
               </span>
             </label>
           </div>
-          {/* 🚀 PERMANENT STRATEGIC RECOMMENDED BENEFITS CARD WITH SSIM HIGHLIGHT */}
+
+          {/* SSIM Smart Mode Card */}
           <div className="p-3.5 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 rounded-xl text-left shadow-sm">
             <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2 flex-wrap">
               <span>🚀 Smart Recommended Mode (Active by Default)</span>
@@ -401,8 +471,8 @@ useEffect(() => {
             </p>
           </div>
 
-          {/* 🎛️ DYNAMIC FRAMERATE TICK SELECTOR GRID */}
-          <div className="mt-1 text-left">
+          {/* Custom Framerate Override */}
+          <div className="text-left">
             <label className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide block mb-2 uppercase">
               ⚙️ Custom Framerate Override Configuration:
             </label>
@@ -444,15 +514,14 @@ useEffect(() => {
               ))}
             </div>
 
-            {/* 📊 DYNAMIC PROS & CONS INTELLIGENT DISPATCHER BAR */}
+            {/* Pros & Cons Bar */}
             <div className="mt-2.5 p-3 bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 rounded-xl text-[11px] leading-relaxed animate-fadeIn">
               {selectedFPS === "recommended" && (
                 <p className="text-slate-600 dark:text-gray-300">
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">
                     ✓ Pros:
                   </span>{" "}
-                  Auto hardware-calibrated compression. Balance parameters
-                  maintain visual quality automatically.
+                  Auto hardware-calibrated compression. Balance parameters maintain visual quality automatically.
                   <br />
                   <span className="font-bold text-rose-600 dark:text-rose-400">
                     ✗ Cons:
@@ -465,14 +534,12 @@ useEffect(() => {
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">
                     ✓ Pros:
                   </span>{" "}
-                  Protects pixels from distortion on ultra-low bitrate targets.
-                  Minimizes file size overhead.
+                  Protects pixels from distortion on ultra-low bitrate targets. Minimizes file size overhead.
                   <br />
                   <span className="font-bold text-rose-600 dark:text-rose-400">
                     ✗ Cons:
                   </span>{" "}
-                  Fluidity might feel slightly lower in high-motion clips or
-                  fast gaming captures due to cinematic limits.
+                  Fluidity might feel slightly lower in high-motion clips.
                 </p>
               )}
               {selectedFPS === "45" && (
@@ -480,14 +547,12 @@ useEffect(() => {
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">
                     ✓ Pros:
                   </span>{" "}
-                  Increases visual fluidity. Smooth rendering for screencasts
-                  and fast-paced software logs.
+                  Increases visual fluidity for screencasts and software logs.
                   <br />
                   <span className="font-bold text-rose-600 dark:text-rose-400">
                     ✗ Cons:
                   </span>{" "}
-                  Spreading the limited MB size budget across more frames can
-                  cause a slight soft pixel blur in dynamic scenes.
+                  Spreading MB budget across more frames can cause slight soft blur.
                 </p>
               )}
               {selectedFPS === "60" && (
@@ -495,83 +560,56 @@ useEffect(() => {
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">
                     ✓ Pros:
                   </span>{" "}
-                  Maximum motion smoothness. Highly suitable for matching
-                  high-end action cameras and gaming clips.
+                  Maximum motion smoothness for gaming and action footage.
                   <br />
                   <span className="font-bold text-rose-600 dark:text-rose-400">
                     ✗ Cons:
                   </span>{" "}
-                  Heavy CPU encoding burden. High distortion risk on low MB
-                  selections. Higher mobile heating risk.
+                  Heavy CPU encoding burden. High distortion risk on low MB targets.
                 </p>
               )}
             </div>
           </div>
 
-          {/* 💡 SPEED TIP CARD */}
-          <div className="mb-4 p-3 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 rounded-xl text-left select-none">
+          {/* Speed Tip */}
+          <div className="p-3 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 rounded-xl text-left select-none">
             <p className="text-[11px] text-slate-600 dark:text-gray-300 font-medium leading-relaxed">
               <span className="font-bold text-blue-600 dark:text-blue-400">
                 ⚡ Speed Tip:
               </span>{" "}
-              Larger video files naturally require more processing power and
-              time. For the fastest compression, keep this tab open and active.
-              You can also check "Ultrafast Mode" above to speed up the process
-              by up to 3x!
+              Larger video files naturally require more processing power and time. Keep this tab open and active for maximum compression speed.
             </p>
           </div>
 
-          {/* ⚠️ Premium Stylized English Warning Banner */}
-          {validationError && (
-            <div className="w-full p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-left animate-fadeIn flex items-start gap-3 shadow-sm select-none">
-              <span className="text-base mt-0.5">⚠️</span>
-              <div className="flex-1">
-                <h5 className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-                  Compression Skipped
-                </h5>
-                <p className="text-[11px] text-slate-600 dark:text-gray-300 font-semibold mt-0.5 leading-relaxed">
-                  {validationError}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setValidationError(null)}
-                className="text-[11px] text-amber-600 dark:text-amber-400 font-bold hover:underline cursor-pointer px-2 py-0.5 bg-amber-500/5 rounded-md border border-amber-500/10"
-              >
-                Dismiss
-              </button>
-            </div>
-          )}
+          {/* Why Choose Our Tool Card */}
+          <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 text-left space-y-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+              🚀 Why Choose Our Tool?
+            </h4>
+            <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1.5 list-none">
+              <li>
+                🔒 <strong>100% Safe & Private:</strong> Your video is processed purely on-device via local WebAssembly infrastructure.
+              </li>
+              <li>
+                ⚡ <strong>Pure Fast & Offline:</strong> Runs completely isolated within your browser memory sandbox.
+              </li>
+            </ul>
+          </div>
 
-          {/* 🔥 CLEAN DASHED DROPZONE */}
-          <div
-            className="text-center p-8 border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-black/20 rounded-xl hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer flex flex-col justify-center items-center min-h-[120px]"
-            onClick={() => {
-              if (noSleepRef.current) noSleepRef.current.enable();
-              fileInputRef.current.click();
-            }}
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-              className="hidden"
-              accept="video/*"
-            />
+          {/* STEP 4: DEDICATED START COMPRESSION BUTTON (VISIBLE WHEN FILE IS SELECTED) */}
+          {selectedFile && (
             <button
               type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm shadow-blue-500/20"
+              onClick={handleStartCompression}
+              className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-sm sm:text-base rounded-xl shadow-xl shadow-blue-500/25 transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 mt-2 animate-fadeIn"
             >
-              Select Video to Start
-            </button>
-            <p className="mt-3 text-slate-500 dark:text-gray-400 text-xs font-medium max-w-md px-4 leading-relaxed">
-              Fully optimized for ultra-smooth operation on mobile devices.
-              <span className="block mt-1 text-blue-600 dark:text-blue-400 font-bold select-none">
-                🚀 Want 3x multi-core encoding speeds? Switch to Desktop PC for
-                maximum performance!
+              <span>🚀 Start Compression Now</span>
+              <span className="text-xs opacity-90 font-bold bg-white/20 px-2 py-0.5 rounded-md">
+                Target: {targetSize} MB
               </span>
-            </p>
-          </div>
+            </button>
+          )}
+
         </div>
       )}
 
@@ -590,7 +628,6 @@ useEffect(() => {
               {statusText}
             </p>
 
-            {/* PROGRESS BAR CONTAINER */}
             <div className="w-full bg-slate-100 dark:bg-slate-900 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-200 dark:border-slate-800 shadow-inner">
               <div
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
@@ -599,19 +636,17 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* 🌐 ALERT A: NETWORK TIMEOUT NOTIFICATION */}
+          {/* Network Alert */}
           {isStuck && !isTechnicalFreeze && (
             <div className="w-full max-w-md p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-left select-none animate-fadeIn">
               <p className="text-[11px] text-red-700 dark:text-red-400 font-medium leading-relaxed">
-                <span className="font-bold">🌐 Network Notice:</span> The secure
-                core engine download is taking longer than expected. Please
-                check your internet connection or reload the tab.
+                <span className="font-bold">🌐 Network Notice:</span> The secure core engine download is taking longer than expected. Please check your connection or reload the tab.
               </p>
               <div className="mt-2 flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition-all shadow-sm"
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
                 >
                   Reload Tab
                 </button>
@@ -619,20 +654,17 @@ useEffect(() => {
             </div>
           )}
 
-          {/* ⚙️ ALERT B: TECHNICAL FREEZE NOTIFICATION */}
+          {/* Technical Freeze Alert */}
           {isTechnicalFreeze && (
             <div className="w-full max-w-md p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-left select-none animate-fadeIn">
               <p className="text-[11px] text-amber-700 dark:text-amber-400 font-medium leading-relaxed">
-                <span className="font-bold">⚙️ Technical Notice:</span> The core
-                engine has successfully initialized, but a temporary browser
-                processing loop glitch occurred. Please reload the tab and
-                re-select your file.
+                <span className="font-bold">⚙️ Technical Notice:</span> The core engine initialized, but a temporary browser processing loop glitch occurred. Please reload and re-select your file.
               </p>
               <div className="mt-2.5 flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] px-4 py-1.5 rounded-lg transition-all shadow-sm"
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] px-4 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
                 >
                   🔄 Reload and Restart
                 </button>
@@ -640,20 +672,19 @@ useEffect(() => {
             </div>
           )}
 
-          {/* 📱 HIGH-REVENUE DYNAMIC AD BANNER ZONE */}
+          {/* Ad Banner Zone */}
           <div className="w-full min-h-[140px] p-4 bg-gray-50 dark:bg-gray-950/50 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center text-center space-y-2 transition-all duration-500 mt-4">
             <span className="text-[10px] font-bold tracking-widest text-blue-600 dark:text-blue-400 uppercase bg-blue-500/10 px-2 py-0.5 rounded shadow-sm">
               🎯 SPONSORED ADVERTISEMENT AREA 🎯
             </span>
             <p className="text-[11px] text-gray-400 max-w-xs leading-relaxed">
-              Place your AdSense/Adsterra layout responsive code here to unlock
-              extreme vertical CTR rates.
+              Place your AdSense/Adsterra layout responsive code here to unlock extreme vertical CTR rates.
             </p>
           </div>
         </div>
       )}
 
-      {/* 🏆 Result Output Mode with Immersive Gallery Video Tile */}
+      {/* 🏆 Result Output Mode */}
       {compressedBlob && !isCompressing && (
         <div className="text-center py-4 space-y-5 flex-1 flex flex-col justify-center items-center animate-fadeIn w-full">
           <div className="space-y-1">
@@ -681,15 +712,14 @@ useEffect(() => {
           )}
 
           <p className="text-xs text-blue-500 dark:text-blue-400 font-bold animate-pulse">
-            ⚡ Your file downloaded automatically! You can also save or share it
-            below.
+            ⚡ Your file downloaded automatically! You can also save or share it below.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full max-w-md mx-auto px-2">
             <button
               type="button"
               onClick={downloadFile}
-              className="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all active:scale-95 shadow-md shadow-indigo-500/20 flex items-center justify-center gap-1.5"
+              className="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all active:scale-95 shadow-md shadow-indigo-500/20 flex items-center justify-center gap-1.5 cursor-pointer"
             >
               📥 Download Video
             </button>
@@ -697,7 +727,7 @@ useEffect(() => {
             <button
               type="button"
               onClick={handleShare}
-              className="w-full sm:flex-1 bg-indigo-50/60 hover:bg-indigo-100/80 dark:bg-indigo-950/30 dark:hover:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 px-5 py-2.5 rounded-xl font-bold text-sm transition-all active:scale-95 border border-indigo-200/80 dark:border-indigo-800 flex items-center justify-center gap-1.5"
+              className="w-full sm:flex-1 bg-indigo-50/60 hover:bg-indigo-100/80 dark:bg-indigo-950/30 dark:hover:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 px-5 py-2.5 rounded-xl font-bold text-sm transition-all active:scale-95 border border-indigo-200/80 dark:border-indigo-800 flex items-center justify-center gap-1.5 cursor-pointer"
             >
               🚀 Share Directly to Apps
             </button>
@@ -724,15 +754,14 @@ useEffect(() => {
               <span className="font-black text-blue-600 dark:text-blue-400">
                 Share
               </span>{" "}
-              and select <span className="font-bold">Add to Home Screen</span>{" "}
-              for instant offline access anytime!
+              and select <span className="font-bold">Add to Home Screen</span> for instant offline access anytime!
             </span>
           </p>
 
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-white underline text-xs pt-1 transition-all font-medium"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-white underline text-xs pt-1 transition-all font-medium cursor-pointer"
           >
             Compress Another Video
           </button>
