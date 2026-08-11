@@ -15,13 +15,16 @@ export default function CompressorContainer({ initialSize, platform }) {
     isTechnicalFreeze,
   } = useVideoCompressor();
 
-  // Selected file state (Allows file selection BEFORE starting compression)
+  // Selected file state
   const [selectedFile, setSelectedFile] = useState(null);
   const [targetSize, setTargetSize] = useState(initialSize || "10");
   const [selectedPreset, setSelectedPreset] = useState("");
   const [isUltrafast, setIsUltrafast] = useState(false);
   const [selectedFPS, setSelectedFPS] = useState("recommended");
   const [lockFPS, setLockFPS] = useState(true);
+
+  // 🎯 Collapsible Accordion State for Technical Options Only
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Video preview & UI states
   const [previewUrl, setPreviewUrl] = useState("");
@@ -183,7 +186,7 @@ export default function CompressorContainer({ initialSize, platform }) {
     }
   }, [isCompressing, compressedBlob]);
 
-  // File selection handler (Does NOT start compression automatically)
+  // File selection handler
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -270,9 +273,9 @@ export default function CompressorContainer({ initialSize, platform }) {
 
       {/* 🎛️ Input Mode Layout */}
       {!isCompressing && !compressedBlob && (
-        <div className="space-y-5 w-full flex-1 flex flex-col justify-between">
+        <div className="space-y-4 w-full flex-1 flex flex-col justify-between">
           
-          {/* STEP 1: SELECT VIDEO / DROPZONE (FIRST ACTION AT THE TOP) */}
+          {/* STEP 1: SELECT VIDEO / DROPZONE */}
           {!selectedFile ? (
             <div
               className="text-center p-6 sm:p-8 border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-black/20 rounded-xl hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer flex flex-col justify-center items-center min-h-[120px] transition-all"
@@ -321,7 +324,7 @@ export default function CompressorContainer({ initialSize, platform }) {
             </div>
           )}
 
-          {/* STEP 2: TARGET SIZE & PRESETS (RIGHT BELOW SELECT VIDEO) */}
+          {/* STEP 2: TARGET SIZE & PRESETS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-800/60 p-4 rounded-xl border border-gray-200 dark:border-gray-700 w-full">
             {/* Target Size Box */}
             <div className="flex items-center justify-between sm:justify-start gap-3 w-full">
@@ -420,158 +423,24 @@ export default function CompressorContainer({ initialSize, platform }) {
             </div>
           )}
 
-          {/* STEP 3: ADVANCED OPTIONS & SETTINGS */}
-          
-          {/* Ultrafast Checkbox */}
-          <div
-            className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl border transition-all duration-300 pointer-events-auto outline-none focus:outline-none select-none ${isUltrafast ? "bg-amber-500/5 border-amber-500/20 dark:bg-amber-500/10" : "bg-white dark:bg-gray-950 border-slate-200 dark:border-slate-800"}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <input
-              type="checkbox"
-              id="ultrafast-checkbox"
-              checked={isUltrafast}
-              onChange={(e) => setIsUltrafast(e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-white dark:bg-gray-950 border-slate-300 dark:border-slate-700 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none outline-none cursor-pointer transition-all"
-            />
-            <label
-              htmlFor="ultrafast-checkbox"
-              className="text-xs font-bold text-slate-700 dark:text-gray-300 cursor-pointer select-none tracking-wide flex items-center gap-1"
-            >
-              ⚡ Ultrafast Mode
-              <span
-                className={`font-medium transition-colors ${
-                  isUltrafast
-                    ? "text-amber-600 dark:text-amber-400 font-bold"
-                    : "text-slate-400 dark:text-slate-500"
-                }`}
+          {/* 🚀 PRIMARY START COMPRESSION BUTTON (HERO ACTION) */}
+          {selectedFile && (
+            <div className="space-y-2 animate-fadeIn pt-1">
+              <button
+                type="button"
+                onClick={handleStartCompression}
+                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-sm sm:text-base rounded-xl shadow-xl shadow-blue-500/25 transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2"
               >
-                (Increases speed up to 3x, but may lower pixel quality slightly)
-              </span>
-            </label>
-          </div>
-
-          {/* SSIM Smart Mode Card */}
-          <div className="p-3.5 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 rounded-xl text-left shadow-sm">
-            <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2 flex-wrap">
-              <span>🚀 Smart Recommended Mode (Active by Default)</span>
-              <span className="bg-emerald-600 dark:bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-md uppercase tracking-wider font-extrabold shadow-sm select-none animate-pulse">
-                SSIM Clarity Tuned
-              </span>
-            </h4>
-            <p className="text-[11px] text-slate-600 dark:text-gray-300 font-medium mt-1.5 leading-relaxed">
-              <span className="font-bold text-blue-600 dark:text-blue-400">
-                Benefits:
-              </span>{" "}
-              Integrates advanced SSIM (Structural Similarity) matrix tuning to
-              preserve sharp object edges and prevent text blurring at low MB
-              targets. Features up to 2x encoding speed boost, dynamic
-              pixel-tearing shield, and absolute device thermal protection.
-            </p>
-          </div>
-
-          {/* Custom Framerate Override */}
-          <div className="text-left">
-            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide block mb-2 uppercase">
-              ⚙️ Custom Framerate Override Configuration:
-            </label>
-
-            <div className="flex flex-wrap gap-2 w-full">
-              {[
-                { id: "recommended", label: "Recommended (30 FPS) ✨" },
-                { id: "24", label: "24 FPS" },
-                { id: "45", label: "45 FPS" },
-                { id: "60", label: "60 FPS" },
-              ].map((fps) => (
-                <div
-                  key={fps.id}
-                  onClick={() => setSelectedFPS(fps.id)}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-xs font-extrabold transition-all duration-200 cursor-pointer select-none flex-1 min-w-[130px] sm:flex-initial ${
-                    fps.id === "recommended"
-                      ? "min-w-[195px] sm:min-w-[210px]"
-                      : ""
-                  } ${
-                    selectedFPS === fps.id
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/25"
-                      : "bg-slate-50 dark:bg-gray-950 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-gray-200 hover:border-slate-300 shadow-sm"
-                  }`}
-                >
-                  <span className="pr-2 select-none tracking-wide text-left block leading-tight">
-                    {fps.label}
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={selectedFPS === fps.id}
-                    onChange={() => setSelectedFPS(fps.id)}
-                    className={`w-4 h-4 rounded-full border cursor-pointer pointer-events-none transition-all shrink-0 ${
-                      selectedFPS === fps.id
-                        ? "bg-white text-blue-600 border-white"
-                        : "bg-white dark:bg-gray-900 border-slate-300 dark:border-slate-700"
-                    }`}
-                  />
-                </div>
-              ))}
+                <span>🚀 Start Compression Now</span>
+                <span className="text-xs opacity-90 font-bold bg-white/20 px-2 py-0.5 rounded-md">
+                  Target: {targetSize} MB
+                </span>
+              </button>
             </div>
+          )}
 
-            {/* Pros & Cons Bar */}
-            <div className="mt-2.5 p-3 bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 rounded-xl text-[11px] leading-relaxed animate-fadeIn">
-              {selectedFPS === "recommended" && (
-                <p className="text-slate-600 dark:text-gray-300">
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    ✓ Pros:
-                  </span>{" "}
-                  Auto hardware-calibrated compression. Balance parameters maintain visual quality automatically.
-                  <br />
-                  <span className="font-bold text-rose-600 dark:text-rose-400">
-                    ✗ Cons:
-                  </span>{" "}
-                  None. Perfect for regular operations.
-                </p>
-              )}
-              {selectedFPS === "24" && (
-                <p className="text-slate-600 dark:text-gray-300">
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    ✓ Pros:
-                  </span>{" "}
-                  Protects pixels from distortion on ultra-low bitrate targets. Minimizes file size overhead.
-                  <br />
-                  <span className="font-bold text-rose-600 dark:text-rose-400">
-                    ✗ Cons:
-                  </span>{" "}
-                  Fluidity might feel slightly lower in high-motion clips.
-                </p>
-              )}
-              {selectedFPS === "45" && (
-                <p className="text-slate-600 dark:text-gray-300">
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    ✓ Pros:
-                  </span>{" "}
-                  Increases visual fluidity for screencasts and software logs.
-                  <br />
-                  <span className="font-bold text-rose-600 dark:text-rose-400">
-                    ✗ Cons:
-                  </span>{" "}
-                  Spreading MB budget across more frames can cause slight soft blur.
-                </p>
-              )}
-              {selectedFPS === "60" && (
-                <p className="text-slate-600 dark:text-gray-300">
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    ✓ Pros:
-                  </span>{" "}
-                  Maximum motion smoothness for gaming and action footage.
-                  <br />
-                  <span className="font-bold text-rose-600 dark:text-rose-400">
-                    ✗ Cons:
-                  </span>{" "}
-                  Heavy CPU encoding burden. High distortion risk on low MB targets.
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Speed Tip */}
-          <div className="p-3 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 rounded-xl text-left select-none">
+          {/* ⚡ Speed Tip (ALWAYS VISIBLE OUTSIDE DROPDOWN) */}
+          <div className="p-3 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 rounded-xl text-left select-none shadow-sm">
             <p className="text-[11px] text-slate-600 dark:text-gray-300 font-medium leading-relaxed">
               <span className="font-bold text-blue-600 dark:text-blue-400">
                 ⚡ Speed Tip:
@@ -580,12 +449,183 @@ export default function CompressorContainer({ initialSize, platform }) {
             </p>
           </div>
 
-          {/* Why Choose Our Tool Card */}
-          <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 text-left space-y-2">
+          {/* ⚙️ COLLAPSIBLE ACCORDION TOGGLE BUTTON */}
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="w-full py-2.5 px-4 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-800/50 dark:hover:bg-slate-800 rounded-xl text-xs font-extrabold text-slate-600 dark:text-slate-300 flex items-center justify-between transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700/80"
+            >
+              <span className="flex items-center gap-1.5">
+                ⚙️ Advanced Settings (FPS & Ultrafast Mode)
+              </span>
+              <span className="text-blue-600 dark:text-blue-400 font-black text-sm">
+                {showAdvanced ? "▲" : "▼"}
+              </span>
+            </button>
+          </div>
+
+          {/* 📦 COLLAPSED ADVANCED TECHNICAL OPTIONS CONTAINER */}
+          {showAdvanced && (
+            <div className="space-y-4 pt-1 animate-fadeIn">
+              
+              {/* Ultrafast Checkbox */}
+              <div
+                className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl border transition-all duration-300 pointer-events-auto outline-none focus:outline-none select-none ${isUltrafast ? "bg-amber-500/5 border-amber-500/20 dark:bg-amber-500/10" : "bg-white dark:bg-gray-950 border-slate-200 dark:border-slate-800"}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <input
+                  type="checkbox"
+                  id="ultrafast-checkbox"
+                  checked={isUltrafast}
+                  onChange={(e) => setIsUltrafast(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 bg-white dark:bg-gray-950 border-slate-300 dark:border-slate-700 rounded focus:ring-0 focus:ring-offset-0 focus:outline-none outline-none cursor-pointer transition-all"
+                />
+                <label
+                  htmlFor="ultrafast-checkbox"
+                  className="text-xs font-bold text-slate-700 dark:text-gray-300 cursor-pointer select-none tracking-wide flex items-center gap-1"
+                >
+                  ⚡ Ultrafast Mode
+                  <span
+                    className={`font-medium transition-colors ${
+                      isUltrafast
+                        ? "text-amber-600 dark:text-amber-400 font-bold"
+                        : "text-slate-400 dark:text-slate-500"
+                    }`}
+                  >
+                    (Increases speed up to 3x, but may lower pixel quality slightly)
+                  </span>
+                </label>
+              </div>
+
+              {/* SSIM Smart Mode Card */}
+              <div className="p-3.5 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 rounded-xl text-left shadow-sm">
+                <h4 className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2 flex-wrap">
+                  <span>🚀 Smart Recommended Mode (Active by Default)</span>
+                  <span className="bg-emerald-600 dark:bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-md uppercase tracking-wider font-extrabold shadow-sm select-none animate-pulse">
+                    SSIM Clarity Tuned
+                  </span>
+                </h4>
+                <p className="text-[11px] text-slate-600 dark:text-gray-300 font-medium mt-1.5 leading-relaxed">
+                  <span className="font-bold text-blue-600 dark:text-blue-400">
+                    Benefits:
+                  </span>{" "}
+                  Integrates advanced SSIM (Structural Similarity) matrix tuning to
+                  preserve sharp object edges and prevent text blurring at low MB
+                  targets. Features up to 2x encoding speed boost, dynamic
+                  pixel-tearing shield, and absolute device thermal protection.
+                </p>
+              </div>
+
+              {/* Custom Framerate Override */}
+              <div className="text-left">
+                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide block mb-2 uppercase">
+                  ⚙️ Custom Framerate Override Configuration:
+                </label>
+
+                <div className="flex flex-wrap gap-2 w-full">
+                  {[
+                    { id: "recommended", label: "Recommended (30 FPS) ✨" },
+                    { id: "24", label: "24 FPS" },
+                    { id: "45", label: "45 FPS" },
+                    { id: "60", label: "60 FPS" },
+                  ].map((fps) => (
+                    <div
+                      key={fps.id}
+                      onClick={() => setSelectedFPS(fps.id)}
+                      className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-xs font-extrabold transition-all duration-200 cursor-pointer select-none flex-1 min-w-[130px] sm:flex-initial ${
+                        fps.id === "recommended"
+                          ? "min-w-[195px] sm:min-w-[210px]"
+                          : ""
+                      } ${
+                        selectedFPS === fps.id
+                          ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/25"
+                          : "bg-slate-50 dark:bg-gray-950 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-gray-200 hover:border-slate-300 shadow-sm"
+                      }`}
+                    >
+                      <span className="pr-2 select-none tracking-wide text-left block leading-tight">
+                        {fps.label}
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={selectedFPS === fps.id}
+                        onChange={() => setSelectedFPS(fps.id)}
+                        className={`w-4 h-4 rounded-full border cursor-pointer pointer-events-none transition-all shrink-0 ${
+                          selectedFPS === fps.id
+                            ? "bg-white text-blue-600 border-white"
+                            : "bg-white dark:bg-gray-900 border-slate-300 dark:border-slate-700"
+                        }`}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pros & Cons Bar */}
+                <div className="mt-2.5 p-3 bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 rounded-xl text-[11px] leading-relaxed animate-fadeIn">
+                  {selectedFPS === "recommended" && (
+                    <p className="text-slate-600 dark:text-gray-300">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        ✓ Pros:
+                      </span>{" "}
+                      Auto hardware-calibrated compression. Balance parameters maintain visual quality automatically.
+                      <br />
+                      <span className="font-bold text-rose-600 dark:text-rose-400">
+                        ✗ Cons:
+                      </span>{" "}
+                      None. Perfect for regular operations.
+                    </p>
+                  )}
+                  {selectedFPS === "24" && (
+                    <p className="text-slate-600 dark:text-gray-300">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        ✓ Pros:
+                      </span>{" "}
+                      Protects pixels from distortion on ultra-low bitrate targets. Minimizes file size overhead.
+                      <br />
+                      <span className="font-bold text-rose-600 dark:text-rose-400">
+                        ✗ Cons:
+                      </span>{" "}
+                      Fluidity might feel slightly lower in high-motion clips.
+                    </p>
+                  )}
+                  {selectedFPS === "45" && (
+                    <p className="text-slate-600 dark:text-gray-300">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        ✓ Pros:
+                      </span>{" "}
+                      Increases visual fluidity for screencasts and software logs.
+                      <br />
+                      <span className="font-bold text-rose-600 dark:text-rose-400">
+                        ✗ Cons:
+                      </span>{" "}
+                      Spreading MB budget across more frames can cause slight soft blur.
+                    </p>
+                  )}
+                  {selectedFPS === "60" && (
+                    <p className="text-slate-600 dark:text-gray-300">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        ✓ Pros:
+                      </span>{" "}
+                      Maximum motion smoothness for gaming and action footage.
+                      <br />
+                      <span className="font-bold text-rose-600 dark:text-rose-400">
+                        ✗ Cons:
+                      </span>{" "}
+                      Heavy CPU encoding burden. High distortion risk on low MB targets.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* 🔒 Why Choose Our Tool Card (ALWAYS VISIBLE AT BOTTOM OF TOOL BOX) */}
+          <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-3.5 text-left space-y-1.5 shadow-sm mt-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
               🚀 Why Choose Our Tool?
             </h4>
-            <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1.5 list-none">
+            <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1 list-none">
               <li>
                 🔒 <strong>100% Safe & Private:</strong> Your video is processed purely on-device via local WebAssembly infrastructure.
               </li>
@@ -594,20 +634,6 @@ export default function CompressorContainer({ initialSize, platform }) {
               </li>
             </ul>
           </div>
-
-          {/* STEP 4: DEDICATED START COMPRESSION BUTTON (VISIBLE WHEN FILE IS SELECTED) */}
-          {selectedFile && (
-            <button
-              type="button"
-              onClick={handleStartCompression}
-              className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-sm sm:text-base rounded-xl shadow-xl shadow-blue-500/25 transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 mt-2 animate-fadeIn"
-            >
-              <span>🚀 Start Compression Now</span>
-              <span className="text-xs opacity-90 font-bold bg-white/20 px-2 py-0.5 rounded-md">
-                Target: {targetSize} MB
-              </span>
-            </button>
-          )}
 
         </div>
       )}
