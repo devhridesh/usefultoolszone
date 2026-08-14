@@ -179,15 +179,18 @@ const headerContent = {
     <div className="w-full min-h-screen flex flex-col items-center justify-start bg-slate-50/60 dark:bg-[#060609] pt-24 pb-12">
       {/* 🏢 ENTERPRISE 3-COLUMN RESPONSIVE LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full max-w-7xl mx-auto items-start px-4 flex-1">
-        {/* 🗺️ LEFT SIDE PC AD */}
-        <div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex-col items-center justify-center text-center p-2 shadow-sm">
-          <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-            [ PC SIDEBAR AD 1 <br /> Skyscraper ]
-          </span>
-          <div className="mt-4 w-full">
-            <AdBanner dataAdSlot="HOMEPAGE_SIDE_LEFT" dataAdFormat="vertical" />
-          </div>
-        </div>
+   
+{/* 🗺️ LEFT SIDE PC AD */}
+<div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white/80 dark:bg-[#0c0c12]/80 border border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl flex-col items-center justify-start text-center p-3 shadow-sm overflow-hidden select-none">
+  <div className="w-full py-1 mb-2 border-b border-slate-100 dark:border-white/5">
+    <span className="text-[9px] font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
+      Ad Zone • Skyscraper
+    </span>
+  </div>
+  <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
+    <AdBanner dataAdSlot="HOMEPAGE_SIDE_LEFT" dataAdFormat="vertical" />
+  </div>
+</div>
 
         {/* 🎯 CENTER MAIN CONTENT MODULE */}
         <main className="col-span-1 lg:col-span-8 w-full flex flex-col items-center justify-start space-y-8">
@@ -430,19 +433,17 @@ const headerContent = {
             </div>
           </div>
         </main>
-
-        {/* 🗺️ RIGHT SIDE PC AD */}
-        <div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-2xl flex-col items-center justify-center text-center p-2 shadow-sm">
-          <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-            [ PC SIDEBAR AD 2 <br /> Skyscraper ]
-          </span>
-          <div className="mt-4 w-full">
-            <AdBanner
-              dataAdSlot="HOMEPAGE_SIDE_RIGHT"
-              dataAdFormat="vertical"
-            />
-          </div>
-        </div>
+{/* 🗺️ RIGHT SIDE PC AD */}
+<div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white/80 dark:bg-[#0c0c12]/80 border border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl flex-col items-center justify-start text-center p-3 shadow-sm overflow-hidden select-none">
+  <div className="w-full py-1 mb-2 border-b border-slate-100 dark:border-white/5">
+    <span className="text-[9px] font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
+      Ad Zone • Skyscraper
+    </span>
+  </div>
+  <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
+    <AdBanner dataAdSlot="HOMEPAGE_SIDE_RIGHT" dataAdFormat="vertical" />
+  </div>
+</div>
       </div>
     </div>
   );

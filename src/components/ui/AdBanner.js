@@ -56,12 +56,12 @@ export default function AdBanner({ dataAdSlot, dataAdFormat = 'auto', fullWidthR
   }, [pathname, dataAdSlot, isOnline]); // 👈 isOnline add hone se net aate hi ad auto-reload ho jayega
 
   return (
-    <div className="w-full text-center my-4 overflow-hidden min-h-[90px]">
+    <div className="w-full text-center overflow-hidden flex items-center justify-center [&_iframe]:border-none [&_iframe]:outline-none [&_iframe]:overflow-hidden">
       {isOnline ? (
         <ins
           ref={adRef}
-          className="adsbygoogle"
-          style={{ display: 'block' }}
+          className="adsbygoogle w-full block overflow-hidden border-0 outline-none"
+          style={{ display: 'block', border: 'none', overflow: 'hidden' }}
           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Apna Publisher ID yahan verify karein
           data-ad-slot={dataAdSlot}
           data-ad-format={dataAdFormat}
