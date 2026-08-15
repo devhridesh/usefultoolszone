@@ -562,7 +562,10 @@ function VideoSplitterContent({ forcedPlatform }) {
         </div>
 
         <div className="space-y-8">
-          <div className="text-center space-y-3">
+    <div className="text-center space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40 shadow-sm">
+              <span>🚀</span> WORLD&apos;S 1ST VIRAL VIDEO SPLITTER
+            </div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
               Smart Splitter for{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">

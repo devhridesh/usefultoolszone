@@ -89,12 +89,12 @@ export default async function MasterHomepage({ searchParams }) {
       icon: "✍️",
       categories: ["pro", "video"],
     },
-    {
+   {
       title: "Smart Video Splitter",
       description:
-        "Split long videos into perfect 30s/60s parts for WhatsApp Status & Reels without breaking your voice flow or speech continuity.",
+        "World's 1st advanced, viral & user-friendly tool to split long videos into seamless 30s/60s parts for WhatsApp Status & Reels with zero voice cuts.",
       link: "/video-splitter",
-      badge: "⚡ ZERO VOICE CUTS",
+      badge: "🚀 WORLD'S 1ST VIRAL VIDEO SPLITTER",
       badgeColor:
         "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/40",
       btnText: "Launch Smart Splitter ✂️",
