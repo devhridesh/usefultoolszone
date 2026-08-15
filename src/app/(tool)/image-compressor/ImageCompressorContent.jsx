@@ -218,13 +218,22 @@ useEffect(() => {
         blob,
       });
 
-      setProgress(Math.round(((i + 1) / images.length) * 100));
+setProgress(Math.round(((i + 1) / images.length) * 100));
     }
 
     setProcessedImages(results);
     setIsProcessing(false);
+
+    // Auto-download logic added here
+    results.forEach((img) => {
+      const a = document.createElement("a");
+      a.href = img.url;
+      a.download = img.name;
+      a.click();
+    });
   };
-const compressSingleImage = (file, targetBytes, mimeFormat) => {
+  
+  const compressSingleImage = (file, targetBytes, mimeFormat) => {
     return new Promise((resolve) => {
       const img = new Image();
       img.src = URL.createObjectURL(file);

@@ -315,14 +315,16 @@ export default function PdfContent({ forcedSlug }) {
         .toISOString()
         .replace(/[:.]/g, "-")
         .slice(11, 19);
+        
+      // 🚀 100% Instant Client-Side Auto Download Trigger
       doc.save(`UTZ_${targetSize}${sizeUnit}_${dynamicTimeToken}.pdf`);
 
       setProgress(100);
-      setStatusText("Complete!");
+      setStatusText("Complete! Auto-downloaded to your device.");
       setTimeout(() => {
         setIsGenerating(false);
         setProgress(0);
-      }, 2000);
+      }, 2500);
     } catch (err) {
       console.error(err);
       setIsGenerating(false);
@@ -342,8 +344,15 @@ export default function PdfContent({ forcedSlug }) {
         </div>
 
         <main className="w-full flex flex-col items-center justify-start space-y-6">
-          {/* HIGH-ATTRACTION CONVERSION TRUST HEADERS */}
-          <div className="text-center space-y-2 max-w-2xl mx-auto animate-fadeIn">
+   {/* HIGH-ATTRACTION CONVERSION TRUST HEADERS */}
+          <div className="text-center space-y-2 max-w-2xl mx-auto animate-fadeIn flex flex-col items-center">
+            
+            {/* 🔥 WORLD'S 1ST RESPONSIVE PILL BADGE */}
+            <div className="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 px-3.5 py-1 sm:py-1.5 rounded-full border border-blue-200/80 dark:border-blue-800/40 bg-blue-50/80 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-sm text-center leading-tight mb-1">
+              <span>🔥 WORLD'S 1ST</span>
+              <span>2-IN-1 SERVERLESS ENGINE</span>
+            </div>
+
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               {contentState.h1.split(" - ")[0]} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold">

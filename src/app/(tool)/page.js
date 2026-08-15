@@ -106,9 +106,9 @@ export default async function MasterHomepage({ searchParams }) {
       description:
         "Convert and compress multiple graphic layouts into a highly optimized PDF document instantly at One Place Locally.",
       link: "/merge-images-compress-pdf-at-one-place",
-      badge: "SERVERLESS ENGINE",
+      badge: "🔥 WORLD'S 1ST 2-IN-1 SERVERLESS ENGINE",
       badgeColor:
-        "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/40",
+        "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/40",
       btnText: "Launch Converter 📄",
       icon: "📄",
       categories: ["pro", "pdf"],
@@ -150,16 +150,16 @@ export default async function MasterHomepage({ searchParams }) {
       categories: ["image"],
     },
     {
-      title: "YouTube Thumbnail Downloader",
+      title: "YouTube Meta & Thumbnail Downloader",
       description:
-        "Download high-resolution YouTube thumbnails (1080p, 4K) and extract video metadata instantly. 100% free and secure.",
+        "World's 1st client-side suite to download Ultra HD 4K thumbnails and extract viral SEO tags, titles & descriptions at one place instantly.",
       link: "/youtube-thumbnail-and-metadata-extractor",
-      badge: "HD EXTRACT",
+      badge: "🔥 WORLD'S 1ST 2-IN-1 EXTRACTOR",
       badgeColor:
-        "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 border border-red-200/60 dark:border-red-800/40",
-      btnText: "Launch Downloader 📸",
+        "bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800/40",
+      btnText: "Launch Meta & Thumbnail Suite 📸",
       icon: "📸",
-      categories: ["video"],
+      categories: ["pro", "video"],
     },
   ];
 

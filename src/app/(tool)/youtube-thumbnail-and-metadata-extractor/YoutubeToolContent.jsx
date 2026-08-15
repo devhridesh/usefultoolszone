@@ -294,8 +294,14 @@ export default function YoutubeToolContent({ forcedSlug }) {
         {/* CENTER MAIN CONTENT MODULE */}
         <main className="w-full flex flex-col items-center justify-start space-y-6">
           
-          {/* Header Section (Dynamic pSEO Headings) */}
+          {/* Header Section (Dynamic pSEO Headings & Top Card Pill) */}
           <div className="text-center space-y-2 max-w-2xl mx-auto animate-fadeIn">
+            
+            {/* Top Pill Badge (Matches Home Card) */}
+            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50/80 text-blue-600 dark:bg-blue-950/40 dark:border-blue-800/60 dark:text-blue-400 text-[11px] font-black uppercase tracking-wider shadow-sm mb-1 select-none">
+              <span>🔥</span> WORLD&apos;S 1ST 2-IN-1 EXTRACTOR
+            </div>
+
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               {content.h1} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold">
@@ -306,7 +312,7 @@ export default function YoutubeToolContent({ forcedSlug }) {
               {content.desc}
             </p>
 
-            {/* Dynamic Badges */}
+            {/* Dynamic Trust Badges */}
             <div className="flex flex-wrap justify-center gap-2 pt-2 text-[10px] font-extrabold uppercase tracking-wider select-none">
               <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 rounded-full border border-emerald-100 dark:border-emerald-900/30 flex items-center gap-1 shadow-sm">
                 {content.topBadge}

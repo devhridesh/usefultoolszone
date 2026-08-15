@@ -1,17 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 
-// Simple GlassCard Container Component
-const GlassCard = ({ children, className = "", style = {} }) => (
-  <div
-    className={`backdrop-blur-md rounded-3xl ${className}`}
-    style={style}
-  >
-    {children}
-  </div>
+// 🌟 GlassCard Container Component with forwardRef for Smooth Scrolling & Highlighting
+const GlassCard = React.forwardRef(
+  ({ children, className = "", style = {} }, ref) => (
+    <div
+      ref={ref}
+      className={`backdrop-blur-md rounded-3xl ${className}`}
+      style={style}
+    >
+      {children}
+    </div>
+  )
 );
+GlassCard.displayName = "GlassCard";
 
 // 👑 Royal & Light Book-Reader Color Presets
 const PRESET_PALETTES = [
@@ -55,9 +59,14 @@ export default function BookGridContent({ initialTitle }) {
   // 2. Selfie / Profile State
   const [hasSelfie, setHasSelfie] = useState(true);
   const [profileName, setProfileName] = useState("Reader's Vault");
-  const [profileHandle, setProfileHandle] = useState("@bookworm");
+const [profileHandle, setProfileHandle] = useState("");  
   const [selfieSrc, setSelfieSrc] = useState(null);
   const [selfieShape, setSelfieShape] = useState("circle");
+
+  // 🌟 Smart Profile Highlight & Prompt States
+  const profileSectionRef = useRef(null);
+  const [isHighlighted, setIsHighlighted] = useState(false);
+  const [showProfilePrompt, setShowProfilePrompt] = useState(false);
 
   // 3. Card Title & Aesthetics (pSEO Initial Title + Fallback)
   const [cardTitle, setCardTitle] = useState(
@@ -279,6 +288,7 @@ export default function BookGridContent({ initialTitle }) {
     }
   };
 
+  // 🚀 CORE CANVAS EXPORT ENGINE
   const handleExportPNG = async () => {
     const activeBooks = books.filter((item) => item.cover || item.title);
     const count = activeBooks.length || 1;
@@ -484,11 +494,11 @@ export default function BookGridContent({ initialTitle }) {
 
       ctx.fillStyle = subTextColor;
       ctx.font = "bold 19px system-ui, sans-serif";
-      ctx.fillText(
-        `${profileHandle} • usefultoolszone.com/book-grid-generator`,
-        footerX + 140,
-        footerY + 86
-      );
+ctx.fillText(
+  `${profileHandle || "@socialhandle"} • usefultoolszone.com/book-grid-generator`,
+  footerX + 140,
+  footerY + 86
+);
     } else {
       ctx.textAlign = "center";
       ctx.fillStyle = primaryTextColor;
@@ -505,6 +515,41 @@ export default function BookGridContent({ initialTitle }) {
     link.download = `UTZ_Book_Grid_${Date.now()}.png`;
     link.href = dataUrl;
     link.click();
+  };
+
+  // 🌟 SMART DOWNLOAD CLICK VERIFICATION HANDLER
+  const handleDownloadClick = () => {
+    const isDefaultProfile =
+      hasSelfie &&
+      (!selfieSrc ||
+        profileName === "Reader's Vault" ||
+        profileHandle === "@bookworm" ||
+        !profileHandle.trim());
+
+    if (isDefaultProfile) {
+      setShowProfilePrompt(true);
+    } else {
+      handleExportPNG();
+    }
+  };
+
+  // 🌟 SMOOTH SCROLL & ELECTRIC BLUE HIGHLIGHT TRIGGER
+  const handleGoToProfile = () => {
+    setShowProfilePrompt(false);
+    if (profileSectionRef.current) {
+      profileSectionRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      setIsHighlighted(true);
+      setTimeout(() => setIsHighlighted(false), 2500);
+    }
+  };
+
+  // 🌟 FORCE DOWNLOAD ANYWAY
+  const handleDownloadAnyway = () => {
+    setShowProfilePrompt(false);
+    handleExportPNG();
   };
 
   return (
@@ -532,8 +577,15 @@ export default function BookGridContent({ initialTitle }) {
           {/* LEFT COLUMN: CONTROLS */}
           <div className="lg:col-span-5 space-y-6">
             
-            {/* 1. Profile & Card Type */}
-            <GlassCard className="p-5 space-y-5 bg-white/90 dark:bg-black/80 border border-slate-200 dark:border-white/10 rounded-3xl">
+            {/* 1. Profile & Card Type (With Ref and Dynamic Electric Blue Highlight) */}
+            <GlassCard
+              ref={profileSectionRef}
+              className={`p-5 space-y-5 bg-white/90 dark:bg-black/80 border rounded-3xl transition-all duration-500 ${
+                isHighlighted
+                  ? "ring-4 ring-blue-500 border-blue-500 shadow-2xl shadow-blue-500/20 scale-[1.01]"
+                  : "border-slate-200 dark:border-white/10"
+              }`}
+            >
               <h3 className="text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400">
                 1. Profile & Card Type
               </h3>
@@ -574,7 +626,7 @@ export default function BookGridContent({ initialTitle }) {
                     />
                     <input
                       type="text"
-                      placeholder="@handle"
+                      placeholder="@socialhandle"
                       value={profileHandle}
                       onChange={(e) => setProfileHandle(e.target.value)}
                       className="px-3 py-2 bg-slate-50 dark:bg-gray-950 border border-slate-200 dark:border-gray-800 rounded-xl text-xs font-bold text-slate-900 dark:text-white"
@@ -821,15 +873,15 @@ export default function BookGridContent({ initialTitle }) {
                       >
                         {profileName}
                       </h4>
-                      <p
-                        className="text-xs font-bold tracking-wide"
-                        style={{ color: selectedPreset.isDark ? "rgba(255, 255, 255, 0.8)" : "rgba(28, 25, 23, 0.8)" }}
-                      >
-                        {profileHandle} •{" "}
-                        <span style={{ color: selectedPreset.accent }} className="font-black">
-                          usefultoolszone.com/book-grid-generator
-                        </span>
-                      </p>
+                  <p
+  className="text-xs font-bold tracking-wide"
+  style={{ color: selectedPreset.isDark ? "rgba(255, 255, 255, 0.8)" : "rgba(28, 25, 23, 0.8)" }}
+>
+  {profileHandle || "@socialhandle"} •{" "}
+  <span style={{ color: selectedPreset.accent }} className="font-black">
+    usefultoolszone.com/book-grid-generator
+  </span>
+</p>
                     </div>
                   </div>
                 ) : (
@@ -850,7 +902,7 @@ export default function BookGridContent({ initialTitle }) {
             <div className="space-y-2 pt-2">
               <button
                 type="button"
-                onClick={handleExportPNG}
+                onClick={handleDownloadClick}
                 className="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-sm rounded-2xl shadow-xl shadow-indigo-500/20 transition-all active:scale-98 cursor-pointer flex flex-col items-center justify-center gap-0.5"
               >
                 <span>📥 Download HD Book Card (PNG)</span>
@@ -901,7 +953,45 @@ export default function BookGridContent({ initialTitle }) {
           </div>
         </div>
 
-        {/* Modal Dialog for Editing Slot # */}
+        {/* 📸 MODAL 1: SMART PROFILE DETAILS MISSING PROMPT */}
+        {showProfilePrompt && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
+            <div className="bg-white dark:bg-[#0c0c12] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center mx-auto text-2xl">
+                📸
+              </div>
+
+              <div className="space-y-1.5">
+                <h3 className="text-base font-black text-slate-900 dark:text-white">
+                  Add your photo & social handle?
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                  Your card currently has placeholder profile details. Adding your own photo and handle makes it look authentic when sharing!
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <button
+                  type="button"
+                  onClick={handleGoToProfile}
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-black rounded-xl shadow-md transition active:scale-95 cursor-pointer"
+                >
+                  ✨ Add My Photo & Handle
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadAnyway}
+                  className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition cursor-pointer"
+                >
+                  Download Card Anyway 📥
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 📚 MODAL 2: EDITING SLOT # DIALOG */}
         {activeSlot !== null && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white dark:bg-[#0c0c12] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-5 shadow-2xl">
@@ -1049,51 +1139,52 @@ export default function BookGridContent({ initialTitle }) {
                     </div>
                   </div>
                 )}
-{/* STEP-BY-STEP GUIDANCE BOX */}
-              <div className="p-3.5 bg-blue-50/90 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/80 rounded-2xl space-y-2.5 my-2 text-left shadow-sm">
-                <p className="text-[11px] font-black text-blue-950 dark:text-blue-200 flex items-center gap-1.5 uppercase tracking-wide">
-                  💡 How to copy correct book cover photo link:
-                </p>
 
-                {/* PC / LAPTOP INSTRUCTIONS */}
-                <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
-                    <span>🖥️</span> <span>For PC / Laptop Users:</span>
-                  </div>
-                  <ol className="text-[11px] font-bold text-slate-700 dark:text-slate-300 space-y-1 list-decimal list-inside pl-1">
-                    <li>Search book cover on <b>Google Images, Amazon, or Flipkart</b>.</li>
-                    <li><b>Right-click</b> directly on the book cover photo.</li>
-                    <li>Click on <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Copy image address</code> (or <i>Copy Image Link</i>).</li>
-                  </ol>
-                  <p className="text-[10px] font-bold text-amber-800 dark:text-amber-300 pt-1 border-t border-blue-100 dark:border-blue-900/40 flex items-start gap-1">
-                    <span className="shrink-0">⚠️</span>
-                    <span><b>PC Common Mistake:</b> Do NOT copy the web page URL from your browser's top address bar.</span>
+                {/* STEP-BY-STEP GUIDANCE BOX */}
+                <div className="p-3.5 bg-blue-50/90 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/80 rounded-2xl space-y-2.5 my-2 text-left shadow-sm">
+                  <p className="text-[11px] font-black text-blue-950 dark:text-blue-200 flex items-center gap-1.5 uppercase tracking-wide">
+                    💡 How to copy correct book cover photo link:
                   </p>
-                </div>
 
-                {/* MOBILE INSTRUCTIONS */}
-                <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
-                    <span>📱</span> <span>For Mobile Users:</span>
+                  {/* PC / LAPTOP INSTRUCTIONS */}
+                  <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
+                      <span>🖥️</span> <span>For PC / Laptop Users:</span>
+                    </div>
+                    <ol className="text-[11px] font-bold text-slate-700 dark:text-slate-300 space-y-1 list-decimal list-inside pl-1">
+                      <li>Search book cover on <b>Google Images, Amazon, or Flipkart</b>.</li>
+                      <li><b>Right-click</b> directly on the book cover photo.</li>
+                      <li>Click on <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Copy image address</code> (or <i>Copy Image Link</i>).</li>
+                    </ol>
+                    <p className="text-[10px] font-bold text-amber-800 dark:text-amber-300 pt-1 border-t border-blue-100 dark:border-blue-900/40 flex items-start gap-1">
+                      <span className="shrink-0">⚠️</span>
+                      <span><b>PC Common Mistake:</b> Do NOT copy the web page URL from your browser's top address bar.</span>
+                    </p>
                   </div>
-                  <ol className="text-[11px] font-bold text-slate-700 dark:text-slate-300 space-y-1 list-decimal list-inside pl-1">
-                    <li>Long-press cover photo &rarr; tap <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Open image in new tab</code> &rarr; Go to the new opened tab & copy top address bar URL.</li>
-                    <li><b>Easiest Way:</b> Tap <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Download image</code> & upload using button below.</li>
-                  </ol>
-                </div>
-              </div>
 
-              {/* SELECT PHOTO FROM DEVICE BUTTON */}
-              <label className="block w-full text-center py-2.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer transition mt-2">
-                📁 Or Select Photo From Device
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleCustomCoverUpload}
-                />
-              </label>
-            </div>
+                  {/* MOBILE INSTRUCTIONS */}
+                  <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-blue-100 dark:border-blue-900/60 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-black text-blue-700 dark:text-blue-300">
+                      <span>📱</span> <span>For Mobile Users:</span>
+                    </div>
+                    <ol className="text-[11px] font-bold text-slate-700 dark:text-slate-300 space-y-1 list-decimal list-inside pl-1">
+                      <li>Long-press cover photo &rarr; tap <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Open image in new tab</code> &rarr; Go to the new opened tab & copy top address bar URL.</li>
+                      <li><b>Easiest Way:</b> Tap <code className="bg-blue-100 dark:bg-blue-900/80 text-blue-900 dark:text-blue-100 font-extrabold px-1.5 py-0.5 rounded text-[10px]">Download image</code> & upload using button below.</li>
+                    </ol>
+                  </div>
+                </div>
+
+                {/* SELECT PHOTO FROM DEVICE BUTTON */}
+                <label className="block w-full text-center py-2.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer transition mt-2">
+                  📁 Or Select Photo From Device
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleCustomCoverUpload}
+                  />
+                </label>
+              </div>
 
               {/* Option 3: Clear Current Slot */}
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
