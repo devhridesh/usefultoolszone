@@ -113,20 +113,20 @@ export default async function MasterHomepage({ searchParams }) {
       icon: "📄",
       categories: ["pro", "pdf"],
     },
-    {
+{
       title: "Visual Book Grid Generator",
       description:
         "Create aesthetic 3x3 book grid cards, auto-fetch covers by book name or ISBN, and customize selfie branding cards.",
       link: "/book-grid-generator",
-      badge: "BOOK GRID",
+      badge: "🔥 WORLD'S 1ST ADVANCED LINK & VIRAL BOOK GRID ENGINE",
       badgeColor:
-        "bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400 border border-purple-200/60 dark:border-purple-800/40",
+        "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/40",
       btnText: "Launch Grid Generator 📚",
       icon: "📚",
       categories: ["pro", "book"],
     },
     {
-      title: "Compress Videos Locally",
+      title: "Video Compressor",
       description:
         "Compress video size instantly with zero quality loss. Works 100% offline inside your browser sandbox for absolute privacy.",
       link: "/video-compressor",

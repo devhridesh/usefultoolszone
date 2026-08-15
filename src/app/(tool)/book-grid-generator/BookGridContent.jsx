@@ -556,20 +556,26 @@ ctx.fillText(
     <div className="w-full min-h-screen flex flex-col items-center justify-start bg-slate-50/60 dark:bg-[#060609] pt-24 pb-12 px-4">
       <div className="max-w-6xl w-full mx-auto space-y-8">
         
-        {/* Page Header (Dynamic H1 for pSEO) */}
-        <div className="text-center space-y-2 max-w-2xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight">
-            {initialTitle ? `${initialTitle} Grid` : "Visual Book Grid Generator"} <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold">
-              {initialTitle ? "Instant 3x3 Cover Auto-Fetch & Card Maker" : "Instant Cover Auto-Fetch & Custom Cards"}
-            </span>
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            {initialTitle
-              ? `Create and download custom 3x3 book grid cards for ${initialTitle.toLowerCase()}.`
-              : "Scan ISBN or search titles to generate 3x3 social media book grids."}
-          </p>
-        </div>
+     {/* Page Header (Dynamic H1 for pSEO) */}
+<div className="text-center space-y-2 max-w-2xl mx-auto">
+  {/* 🔥 World's 1st Viral Badge */}
+  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/90 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/80 text-blue-700 dark:text-blue-300 text-[10px] sm:text-xs font-black tracking-wider uppercase mb-1 shadow-sm">
+    <span>🔥</span>
+    <span>WORLD&apos;S 1ST ADVANCED LINK & VIRAL BOOK GRID ENGINE </span>
+  </div>
+
+  <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight">
+    {initialTitle ? `${initialTitle} Grid` : "Visual Book Grid Generator"} <br />
+    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold">
+      {initialTitle ? "Instant 3x3 Cover Auto-Fetch & Card Maker" : "Instant Cover Auto-Fetch & Custom Cards"}
+    </span>
+  </h1>
+  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+    {initialTitle
+      ? `Create and download custom 3x3 book grid cards for ${initialTitle.toLowerCase()}.`
+      : "Scan ISBN or search titles to generate 3x3 social media book grids."}
+  </p>
+</div>
 
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
