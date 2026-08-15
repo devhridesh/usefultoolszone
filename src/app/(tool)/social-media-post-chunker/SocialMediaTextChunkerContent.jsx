@@ -927,10 +927,15 @@ const [shortTeaserText, setShortTeaserText] = useState("");
         {/* Main Content Area */}
         <main className="w-full flex flex-col items-center justify-start space-y-6">
           {/* Header */}
-          <div className="text-center space-y-2 max-w-2xl mx-auto animate-fadeIn">
+          <div className="text-center space-y-2.5 max-w-2xl mx-auto animate-fadeIn">
+            {/* 🔥 WORLD'S 1ST FLAGSHIP BADGE PILL */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/50 shadow-xs select-none">
+              <span>🔥</span> WORLD&apos;S 1ST VIRAL SLIDES MAKER
+            </div>
+
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               Chunk Text for {currentPlatformName} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 font-extrabold">
                 Target Limit: {customLimit} Chars
               </span>
             </h1>

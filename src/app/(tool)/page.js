@@ -14,8 +14,9 @@ export const metadata = {
     "pdf merge and compress local",
     "video compressor offline",
     "smart video splitter online",
-    "image converter resizer",
     "social media text chunker",
+    "world's 1st whatsapp text to png slide maker",
+    "image converter resizer",
     "zero upload media encoder",
     "serverless privacy utility hub",
   ],
@@ -45,87 +46,94 @@ export default async function MasterHomepage({ searchParams }) {
   const activeTab = params?.tab || "all";
 
   // Dynamic UI Header content dictionary based on selected tab state
-// app/(tool)/page.js ke andar:
-
-const headerContent = {
-  all: {
-    sub: "Next-Gen Serverless Utilities at One Place Locally",
-    desc: "Professional grade media optimization tools executing 100% client-side inside a secure isolated sandbox.",
-  },
-  pro: {
-    sub: "High-Impact Pro Workflows at One Place Locally",
-    desc: "Advanced multi-step serverless tools designed for content creators, viral text chunking, and PDF layout merging.",
-  },
-  video: {
-    sub: "Compress & Split Videos at One Place Locally",
-    desc: "High-performance browser client encoders to optimize and slash video footprints with zero data leakage.",
-  },
-
-  // 👇 YAHAN PE PASTE KARNA HAI 👇
-  book: {
-    sub: "Aesthetic Reader & Book Utilities Locally",
-    desc: "Create 3x3 book grid cards, auto-fetch covers via ISBN or Title, and generate high-impact reading cards.",
-  },
-
-  pdf: {
-    sub: "Merge Images & Compress PDF at One Place Locally",
-    desc: "Convert multiple document sheets and graphic logs into clean, highly compressed PDF files instantly.",
-  },
-  image: {
-    sub: "Optimize, Resize & Convert Images Locally",
-    desc: "Natively transform graphic assets, scale layouts, and convert next-gen formats with zero privacy compromise.",
-  },
-};
+  const headerContent = {
+    all: {
+      sub: "Next-Gen Serverless Utilities at One Place Locally",
+      desc: "Professional grade media optimization tools executing 100% client-side inside a secure isolated sandbox.",
+    },
+    pro: {
+      sub: "High-Impact Pro Workflows at One Place Locally",
+      desc: "Advanced multi-step serverless tools designed for content creators, viral text chunking, and PDF layout merging.",
+    },
+    video: {
+      sub: "Compress & Split Videos at One Place Locally",
+      desc: "High-performance browser client encoders to optimize and slash video footprints with zero data leakage.",
+    },
+    book: {
+      sub: "Aesthetic Reader & Book Utilities Locally",
+      desc: "Create 3x3 book grid cards, auto-fetch covers via ISBN or Title, and generate high-impact reading cards.",
+    },
+    pdf: {
+      sub: "Merge Images & Compress PDF at One Place Locally",
+      desc: "Convert multiple document sheets and graphic logs into clean, highly compressed PDF files instantly.",
+    },
+    image: {
+      sub: "Optimize, Resize & Convert Images Locally",
+      desc: "Natively transform graphic assets, scale layouts, and convert next-gen formats with zero privacy compromise.",
+    },
+  };
 
   const currentHeader = headerContent[activeTab] || headerContent.all;
 
   // Tools Data Array (Updated with multi-category support)
   const tools = [
     {
-      title: "Social Media Post Chunker & Video Hooks",
+      title: "Social Media Post Chunker",
       description:
-        "Split long posts & scripts into viral, platform-ready chunks for WhatsApp Status, Threads & Reels with high-CTR attention hooks.",
+        "World's 1st SaaS tool to convert long WhatsApp posts & thoughts into viral 9:16 PNG status slides with high-CTR hooks.",
       link: "/social-media-post-chunker",
-      badge: "High-CTR Hooks",
+      badge: "🔥 WORLD'S 1ST VIRAL SLIDES MAKER",
       badgeColor:
-        "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400",
-      btnText: "Launch Post Chunker",
+        "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/40",
+      btnText: "Launch Slide Chunker 🚀",
       icon: "✍️",
-      categories: ["pro", "video"], // 👈 Shows in Pro & Video
+      categories: ["pro", "video"],
+    },
+    {
+      title: "Smart Video Splitter",
+      description:
+        "Split long videos into perfect 30s/60s parts for WhatsApp Status & Reels without breaking your voice flow or speech continuity.",
+      link: "/video-splitter",
+      badge: "⚡ ZERO VOICE CUTS",
+      badgeColor:
+        "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/40",
+      btnText: "Launch Smart Splitter ✂️",
+      icon: "✂️",
+      categories: ["pro", "video"],
     },
     {
       title: "Merge Images & Compress PDF",
       description:
         "Convert and compress multiple graphic layouts into a highly optimized PDF document instantly at One Place Locally.",
       link: "/merge-images-compress-pdf-at-one-place",
-      badge: "Serverless Engine",
+      badge: "SERVERLESS ENGINE",
       badgeColor:
-        "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400",
-      btnText: "Launch Converter",
+        "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/40",
+      btnText: "Launch Converter 📄",
       icon: "📄",
-      categories: ["pro", "pdf"], // 👈 Shows in Pro & PDF
+      categories: ["pro", "pdf"],
     },
     {
-      title: "Smart Video Splitter",
+      title: "Visual Book Grid Generator",
       description:
-        "Split long videos into perfect parts for WhatsApp Status & Reels without breaking your voice flow or losing content continuity.",
-      link: "/video-splitter",
-      badge: "Zero Voice Cuts",
+        "Create aesthetic 3x3 book grid cards, auto-fetch covers by book name or ISBN, and customize selfie branding cards.",
+      link: "/book-grid-generator",
+      badge: "BOOK GRID",
       badgeColor:
-        "bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400",
-      btnText: "Launch Splitter",
-      icon: "✂️",
-      categories: ["pro", "video"], // 👈 Shows in Pro & Video
+        "bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400 border border-purple-200/60 dark:border-purple-800/40",
+      btnText: "Launch Grid Generator 📚",
+      icon: "📚",
+      categories: ["pro", "book"],
     },
     {
       title: "Compress Videos Locally",
       description:
         "Compress video size instantly with zero quality loss. Works 100% offline inside your browser sandbox for absolute privacy.",
       link: "/video-compressor",
-      badge: "100% Private",
+      badge: "100% PRIVATE",
       badgeColor:
-        "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400",
-      btnText: "Launch Compressor",
+        "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40",
+      btnText: "Launch Compressor 📉",
       icon: "📉",
       categories: ["video"],
     },
@@ -134,10 +142,10 @@ const headerContent = {
       description:
         "Compress multiple images to exact KB/MB sizes offline instantly inside your browser memory sandbox.",
       link: "/image-compressor",
-      badge: "Batch Mode",
+      badge: "BATCH MODE",
       badgeColor:
-        "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400",
-      btnText: "Launch Image Compressor",
+        "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40",
+      btnText: "Launch Image Compressor 🖼️",
       icon: "🖼️",
       categories: ["image"],
     },
@@ -146,51 +154,31 @@ const headerContent = {
       description:
         "Download high-resolution YouTube thumbnails (1080p, 4K) and extract video metadata instantly. 100% free and secure.",
       link: "/youtube-thumbnail-and-metadata-extractor",
-      badge: "HD Extract",
-      badgeColor: "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400",
-      btnText: "Launch Downloader",
+      badge: "HD EXTRACT",
+      badgeColor:
+        "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 border border-red-200/60 dark:border-red-800/40",
+      btnText: "Launch Downloader 📸",
       icon: "📸",
       categories: ["video"],
     },
-
-   {
-      title: "Visual Book Grid Generator",
-      description:
-        "Create aesthetic 3x3 book grid cards, auto-fetch covers by book name or ISBN, and customize selfie branding cards.",
-      link: "/book-grid-generator",
-      badge: "Book Grid",
-      badgeColor:
-        "bg-purple-50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-400",
-      btnText: "Launch Grid Generator",
-      icon: "📚",
-      categories: ["pro", "book"], // 👈 Pehle ["pro", "image"] tha, ise ["pro", "book"] kar dein
-    },
   ];
-  // Multi-Category Filter Logic Fix
-  const filteredTools = tools.filter((tool) => {
-    if (activeTab === "all") return true;
-    if (Array.isArray(tool.categories)) {
-      return tool.categories.includes(activeTab);
-    }
-    return tool.category === activeTab;
-  });
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-start bg-slate-50/60 dark:bg-[#060609] pt-24 pb-12">
       {/* 🏢 ENTERPRISE 3-COLUMN RESPONSIVE LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full max-w-7xl mx-auto items-start px-4 flex-1">
-   
-{/* 🗺️ LEFT SIDE PC AD */}
-<div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white/80 dark:bg-[#0c0c12]/80 border border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl flex-col items-center justify-start text-center p-3 shadow-sm overflow-hidden select-none">
-  <div className="w-full py-1 mb-2 border-b border-slate-100 dark:border-white/5">
-    <span className="text-[9px] font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
-      Ad Zone • Skyscraper
-    </span>
-  </div>
-  <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
-    <AdBanner dataAdSlot="HOMEPAGE_SIDE_LEFT" dataAdFormat="vertical" />
-  </div>
-</div>
+        
+        {/* 🗺️ LEFT SIDE PC AD */}
+        <div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white/80 dark:bg-[#0c0c12]/80 border border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl flex-col items-center justify-start text-center p-3 shadow-sm overflow-hidden select-none">
+          <div className="w-full py-1 mb-2 border-b border-slate-100 dark:border-white/5">
+            <span className="text-[9px] font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
+              Ad Zone • Skyscraper
+            </span>
+          </div>
+          <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
+            <AdBanner dataAdSlot="HOMEPAGE_SIDE_LEFT" dataAdFormat="vertical" />
+          </div>
+        </div>
 
         {/* 🎯 CENTER MAIN CONTENT MODULE */}
         <main className="col-span-1 lg:col-span-8 w-full flex flex-col items-center justify-start space-y-8">
@@ -198,7 +186,7 @@ const headerContent = {
           <div className="text-center space-y-3 max-w-2xl mx-auto mb-2 animate-fadeIn">
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               Useful Tools Zone <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-extrabold text-2xl sm:text-3xl block mt-1.5">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 font-extrabold text-2xl sm:text-3xl block mt-1.5">
                 {currentHeader.sub}
               </span>
             </h1>
@@ -206,20 +194,22 @@ const headerContent = {
               {currentHeader.desc}
             </p>
 
-            {/* 🌟 PREMIUM PILL HIGHLIGHTING BADGES */}
+            {/* 🌟 3 HIGH-AUTHORITY HERO TRUST BADGES */}
             <div className="flex flex-wrap items-center justify-center gap-2 pt-3 select-none">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/40 shadow-sm transition-all duration-200">
-                <span>🔒</span> Your data never leaves your device
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/40 shadow-xs transition-all duration-200">
+                <span>🔒</span> 100% Client-Side Privacy
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/70 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/40 shadow-sm transition-all duration-200">
-                <span>🛡️</span> No uploads, no limits
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/70 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/40 shadow-xs transition-all duration-200">
+                <span>🛡️</span> Zero Uploads, No Limits
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800/40 shadow-xs transition-all duration-200">
+                <span>⚡</span> Instant Auto-Download
               </span>
             </div>
           </div>
 
-{/* 🔘 TRUSTED TAB FILTER BAR */}
+          {/* 🔘 TRUSTED TAB FILTER BAR */}
           <div className="w-full border-b border-slate-200 dark:border-white/5 pb-3">
-            {/* 🎯 justify-center se second line ke buttons hamesha bilkul center (mid) me rahenge */}
             <div className="w-full flex flex-wrap items-center justify-center gap-2.5 px-2">
               {[
                 { id: "all", label: "All Tools" },
@@ -240,7 +230,7 @@ const headerContent = {
                     className={`px-4 py-2 text-[10px] sm:text-xs font-bold rounded-xl tracking-wider uppercase whitespace-nowrap transition-all duration-150 ${
                       isActive
                         ? isPro
-                          ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md scale-105"
+                          ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white shadow-md scale-105"
                           : "bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm"
                         : isPro
                           ? "bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 border border-indigo-200/80 hover:bg-indigo-100 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800/50"
@@ -254,7 +244,7 @@ const headerContent = {
             </div>
           </div>
 
-{/* 📂 CATEGORIZED TOOLS SECTIONS (Yellow Zone Fix) */}
+          {/* 📂 CATEGORIZED TOOLS SECTIONS */}
           <div className="w-full space-y-12 mb-16 pt-2">
             {[
               { id: "pro", title: "⚡ Pro Level Utilities", desc: "High-impact creator & multi-step serverless workflows" },
@@ -273,7 +263,7 @@ const headerContent = {
 
                 return (
                   <section key={section.id} id={section.id} className="space-y-4 text-left w-full">
-                    {/* 🏷️ Section Header (Yellow Marked Area) */}
+                    {/* 🏷️ Section Header */}
                     <div className="border-b border-slate-200/80 dark:border-white/10 pb-3 flex items-center justify-between">
                       <div>
                         <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
@@ -288,23 +278,23 @@ const headerContent = {
                       </span>
                     </div>
 
-                    {/* 🎴 Category Tools Grid */}
+                    {/* 🎴 Category Tools Grid (Smooth Hover Animation Match) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full items-stretch pt-1">
                       {sectionTools.map((tool, index) => (
                         <div
                           key={index}
-                          className="relative group transition-all duration-300 hover:-translate-y-1 rounded-3xl flex"
+                          className="relative group transition-all duration-300 hover:-translate-y-1.5 rounded-3xl flex"
                         >
-                          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur opacity-15 group-hover:opacity-35 transition duration-300"></div>
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 rounded-3xl blur opacity-15 group-hover:opacity-35 transition duration-300"></div>
 
-                          <GlassCard className="relative w-full p-5 z-10 border border-slate-200/60 dark:border-white/5 shadow-sm bg-white dark:bg-[#0c0c12] rounded-3xl flex flex-col justify-between">
+                          <GlassCard className="relative w-full p-5 z-10 border border-slate-200/60 dark:border-white/5 shadow-sm hover:shadow-md bg-white dark:bg-[#0c0c12] rounded-3xl flex flex-col justify-between transition-all duration-300">
                             <div className="space-y-4">
-                              <div className="flex items-center justify-between">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-2xl">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-2xl shrink-0">
                                   {tool.icon}
                                 </div>
                                 <span
-                                  className={`px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md ${tool.badgeColor}`}
+                                  className={`px-2.5 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider rounded-lg text-right ${tool.badgeColor}`}
                                 >
                                   {tool.badge}
                                 </span>
@@ -323,7 +313,7 @@ const headerContent = {
                             <div className="pt-5">
                               <Link
                                 href={tool.link}
-                                className="block w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-center font-bold text-xs rounded-xl shadow-sm transition-all duration-150 active:scale-[0.98]"
+                                className="block w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:brightness-110 text-white text-center font-bold text-xs rounded-xl shadow-sm hover:shadow transition-all duration-150 active:scale-[0.98]"
                               >
                                 {tool.btnText}
                               </Link>
@@ -433,17 +423,18 @@ const headerContent = {
             </div>
           </div>
         </main>
-{/* 🗺️ RIGHT SIDE PC AD */}
-<div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white/80 dark:bg-[#0c0c12]/80 border border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl flex-col items-center justify-start text-center p-3 shadow-sm overflow-hidden select-none">
-  <div className="w-full py-1 mb-2 border-b border-slate-100 dark:border-white/5">
-    <span className="text-[9px] font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
-      Ad Zone • Skyscraper
-    </span>
-  </div>
-  <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
-    <AdBanner dataAdSlot="HOMEPAGE_SIDE_RIGHT" dataAdFormat="vertical" />
-  </div>
-</div>
+
+        {/* 🗺️ RIGHT SIDE PC AD */}
+        <div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white/80 dark:bg-[#0c0c12]/80 border border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl flex-col items-center justify-start text-center p-3 shadow-sm overflow-hidden select-none">
+          <div className="w-full py-1 mb-2 border-b border-slate-100 dark:border-white/5">
+            <span className="text-[9px] font-bold tracking-widest text-slate-400 dark:text-slate-500 uppercase">
+              Ad Zone • Skyscraper
+            </span>
+          </div>
+          <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
+            <AdBanner dataAdSlot="HOMEPAGE_SIDE_RIGHT" dataAdFormat="vertical" />
+          </div>
+        </div>
       </div>
     </div>
   );
