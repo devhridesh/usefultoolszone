@@ -1789,7 +1789,91 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                 </p>
               </div>
             </div>
-          </section>z
+          </section>
+
+{/* 📖 SMART STEP-BY-STEP GUIDE (PURE TEXT TO PNG & VIDEO STORYBOARDS) */}
+<div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
+  <div className="space-y-1">
+    <div className="flex flex-wrap items-center gap-2">
+      <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400">
+        Quick User Guide
+      </span>
+      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/40">
+        📝 Pure Text ➔ 🖼️ HD PNG Slides & 🎬 Video Storyboards
+      </span>
+    </div>
+    <h3 className="text-base font-black text-slate-900 dark:text-white tracking-tight">
+      How to Split Long Text & Turn It into Viral PNG Slides
+    </h3>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+    {/* STEP 1 */}
+    <div className="p-4 bg-slate-50 dark:bg-black/40 border border-slate-200/70 dark:border-white/5 rounded-2xl flex flex-col justify-between space-y-3">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="w-7 h-7 rounded-xl bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+            1
+          </span>
+          <span className="text-lg">📋</span>
+        </div>
+        <h4 className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">
+          Paste Text & Pick Platform
+        </h4>
+        <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+          Paste your long article or script into the text area. Select your target network (<strong>WhatsApp, X, Threads, Reels, LinkedIn</strong>) or set a custom character limit per slide.
+        </p>
+      </div>
+      <div className="pt-2 border-t border-slate-200/50 dark:border-white/5 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+        💡 Tip: Choose <em>Pure Text</em> or <em>Video Storyboard</em> mode above.
+      </div>
+    </div>
+
+    {/* STEP 2 */}
+    <div className="p-4 bg-slate-50 dark:bg-black/40 border border-slate-200/70 dark:border-white/5 rounded-2xl flex flex-col justify-between space-y-3">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="w-7 h-7 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+            2
+          </span>
+          <span className="text-lg">🎨</span>
+        </div>
+        <h4 className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">
+          Set Hooks, Triggers & Theme
+        </h4>
+        <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+          Select an attention-grabbing hook on Slide 1, check <strong>Hold Screen to Read</strong> for storyboards, and pick your favorite slide background color from the 20+ color palette.
+        </p>
+      </div>
+      <div className="pt-2 border-t border-slate-200/50 dark:border-white/5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
+        🎨 Tip: Tap palette swatches to live-preview background colors.
+      </div>
+    </div>
+
+    {/* STEP 3 */}
+    <div className="p-4 bg-slate-50 dark:bg-black/40 border border-slate-200/70 dark:border-white/5 rounded-2xl flex flex-col justify-between space-y-3">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="w-7 h-7 rounded-xl bg-pink-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+            3
+          </span>
+          <span className="text-lg">🚀</span>
+        </div>
+        <h4 className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">
+          Generate PNG Slides & Share
+        </h4>
+        <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+          Click <strong>Generate PNG Slides</strong> to turn raw text into clean, high-definition 9:16 mobile cards. Use <strong>1-Click Multi-Export</strong> to batch download on PC or share directly to mobile status.
+        </p>
+      </div>
+      <div className="pt-2 border-t border-slate-200/50 dark:border-white/5 text-[10px] font-semibold text-pink-600 dark:text-pink-400">
+        ⚡ Tip: Use <em>Serial Copy</em> if you only need plain text chunks.
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
           {/* Bottom Leaderboard Ad */}
           <div className="w-full min-h-[90px] bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-xl flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold p-2 text-center shadow-sm mt-6">
