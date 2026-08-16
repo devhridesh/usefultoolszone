@@ -1791,7 +1791,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
             </div>
           </section>
 
-{/* 📖 SMART STEP-BY-STEP GUIDE (PURE TEXT TO PNG & VIDEO STORYBOARDS) */}
+{/* 📖 SMART STEP-BY-STEP USER GUIDE */}
 <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
   <div className="space-y-1">
     <div className="flex flex-wrap items-center gap-2">
@@ -1818,14 +1818,22 @@ const [shortTeaserText, setShortTeaserText] = useState("");
           <span className="text-lg">📋</span>
         </div>
         <h4 className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">
-          Paste Text & Pick Platform
+          Add Content & Choose Platform
         </h4>
-        <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-          Paste your long article or script into the text area. Select your target network (<strong>WhatsApp, X, Threads, Reels, LinkedIn</strong>) or set a custom character limit per slide.
-        </p>
+        <div className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 space-y-1.5">
+          <p>
+            • <strong>Text Mode:</strong> Simply paste your long text or article into the box.
+          </p>
+          <p>
+            • <strong>Photo / Video Mode:</strong> Click the <strong>&quot;Attach Photo / Video&quot;</strong> button or paste media directly.
+          </p>
+          <p>
+            Then select your target social network (<strong>WhatsApp, X, Threads, Reels, LinkedIn</strong>) or set a custom character limit.
+          </p>
+        </div>
       </div>
       <div className="pt-2 border-t border-slate-200/50 dark:border-white/5 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
-        💡 Tip: Choose <em>Pure Text</em> or <em>Video Storyboard</em> mode above.
+        💡 Tip: Select your preferred mode from the top radio toggle.
       </div>
     </div>
 
@@ -1842,11 +1850,11 @@ const [shortTeaserText, setShortTeaserText] = useState("");
           Set Hooks, Triggers & Theme
         </h4>
         <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-          Select an attention-grabbing hook on Slide 1, check <strong>Hold Screen to Read</strong> for storyboards, and pick your favorite slide background color from the 20+ color palette.
+          Pick an attention-grabbing hook for Slide 1, enable <strong>Hold Screen to Read</strong> for storyboards, and pick your favorite background color from the 20+ color palette.
         </p>
       </div>
       <div className="pt-2 border-t border-slate-200/50 dark:border-white/5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
-        🎨 Tip: Tap palette swatches to live-preview background colors.
+        🎨 Tip: Click color circles to live-preview new background themes.
       </div>
     </div>
 
@@ -1863,16 +1871,15 @@ const [shortTeaserText, setShortTeaserText] = useState("");
           Generate PNG Slides & Share
         </h4>
         <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-          Click <strong>Generate PNG Slides</strong> to turn raw text into clean, high-definition 9:16 mobile cards. Use <strong>1-Click Multi-Export</strong> to batch download on PC or share directly to mobile status.
+          Click <strong>Generate PNG Slides</strong> to turn your content into high-definition 9:16 vertical cards. Use <strong>1-Click Multi-Export</strong> to download on PC or share directly to mobile apps.
         </p>
       </div>
       <div className="pt-2 border-t border-slate-200/50 dark:border-white/5 text-[10px] font-semibold text-pink-600 dark:text-pink-400">
-        ⚡ Tip: Use <em>Serial Copy</em> if you only need plain text chunks.
+        ⚡ Tip: Use <em>Serial Copy</em> if you only need raw text parts.
       </div>
     </div>
   </div>
 </div>
-
 
 
           {/* Bottom Leaderboard Ad */}
