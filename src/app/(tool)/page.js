@@ -178,10 +178,10 @@ export default async function MasterHomepage({ searchParams }) {
           </div>
         </div>
 
-        {/* 🎯 CENTER MAIN CONTENT MODULE */}
+{/* 🎯 CENTER MAIN CONTENT MODULE */}
         <main className="col-span-1 lg:col-span-8 w-full flex flex-col items-center justify-start space-y-8">
          
-{/* Header Section */}
+          {/* Header Section */}
           <div className="text-center space-y-3 max-w-2xl mx-auto mb-2 animate-fadeIn">
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               Useful Tools Zone <br />
@@ -192,51 +192,73 @@ export default async function MasterHomepage({ searchParams }) {
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl mx-auto font-medium">
               {currentHeader.desc}
             </p>
-
-            {/* 🚀 PRODUCT HUNT OFFICIAL NEUTRAL BADGE */}
-            <div className="pt-3 flex justify-center items-center">
-              <a
-                href="https://www.producthunt.com/products/useful-tools-zone?utm_source=badge-featured"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center justify-between gap-3 px-3.5 py-1.5 bg-white/90 dark:bg-[#0c0c12]/90 border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs hover:shadow-md hover:border-indigo-400/60 hover:-translate-y-0.5 transition-all duration-200 select-none"
-              >
-                {/* Product Hunt Monogram */}
-                <div className="w-6 h-6 rounded-full bg-[#ff6154] flex items-center justify-center text-white font-black text-xs shadow-xs">
-                  P
-                </div>
-
-                {/* Text Label */}
-                <div className="text-left flex flex-col justify-center leading-tight">
-                  <span className="text-[8px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                    FIND US ON
-                  </span>
-                  <span className="text-[12px] font-extrabold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    Product Hunt
-                  </span>
-                </div>
-
-                {/* Upvote Pill */}
-                <div className="ml-1 pl-2.5 border-l border-slate-100 dark:border-white/10 flex items-center gap-1 text-[#ff6154]">
-                  <span className="text-[11px] font-black leading-none">▲</span>
-                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">Featured</span>
-                </div>
-              </a>
-            </div>
           </div>
 
-            {/* 🌟 3 HIGH-AUTHORITY HERO TRUST BADGES */}
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-3 select-none">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/40 shadow-xs transition-all duration-200">
-                <span>🔒</span> 100% Client-Side Privacy
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/70 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/40 shadow-xs transition-all duration-200">
-                <span>🛡️</span> Zero Uploads, No Limits
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800/40 shadow-xs transition-all duration-200">
-                <span>⚡</span> Instant 1-Click Output
-              </span>
-            </div>
+          {/* 🌟 3 HIGH-AUTHORITY HERO TRUST BADGES */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-3 select-none">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/40 shadow-xs transition-all duration-200">
+              <span>🔒</span> 100% Client-Side Privacy
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200/70 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/40 shadow-xs transition-all duration-200">
+              <span>🛡️</span> Zero Uploads, No Limits
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800/40 shadow-xs transition-all duration-200">
+              <span>⚡</span> Instant 1-Click Output
+            </span>
+          </div>
+
+          {/* 🚀 DUAL SOCIAL PROOF BADGES (PRODUCT HUNT + TRUSTPILOT) */}
+          <div className="pt-3 flex flex-wrap justify-center items-center gap-3">
+            {/* 1. Product Hunt Badge */}
+            <a
+              href="https://www.producthunt.com/products/useful-tools-zone?utm_source=badge-featured"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center justify-between gap-3 px-3.5 py-1.5 bg-white/90 dark:bg-[#0c0c12]/90 border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs hover:shadow-md hover:border-indigo-400/60 hover:-translate-y-0.5 transition-all duration-200 select-none"
+            >
+              <div className="w-6 h-6 rounded-full bg-[#ff6154] flex items-center justify-center text-white font-black text-xs shadow-xs">
+                P
+              </div>
+              <div className="text-left flex flex-col justify-center leading-tight">
+                <span className="text-[8px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                  FIND US ON
+                </span>
+                <span className="text-[12px] font-extrabold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  Product Hunt
+                </span>
+              </div>
+              <div className="ml-1 pl-2.5 border-l border-slate-100 dark:border-white/10 flex items-center gap-1 text-[#ff6154]">
+                <span className="text-[11px] font-black leading-none">▲</span>
+                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">Featured</span>
+              </div>
+            </a>
+
+            {/* 2. Trustpilot Review Badge */}
+            <a
+              href="https://www.trustpilot.com/review/usefultoolszone.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center justify-between gap-3 px-3.5 py-1.5 bg-white/90 dark:bg-[#0c0c12]/90 border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs hover:shadow-md hover:border-emerald-500/60 hover:-translate-y-0.5 transition-all duration-200 select-none"
+            >
+              <div className="w-6 h-6 rounded-full bg-[#00b67a] flex items-center justify-center text-white font-black text-xs shadow-xs">
+                ★
+              </div>
+              <div className="text-left flex flex-col justify-center leading-tight">
+                <span className="text-[8px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                  REVIEW US ON
+                </span>
+                <span className="text-[12px] font-extrabold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  Trustpilot
+                </span>
+              </div>
+              <div className="ml-1 pl-2.5 border-l border-slate-100 dark:border-white/10 flex items-center gap-1 text-[#00b67a]">
+                <span className="text-[10px] tracking-tight font-black leading-none">★★★★★</span>
+                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">Rate Us</span>
+              </div>
+            </a>
+          </div>
+
+          {/* 🔘 TRUSTED TAB FILTER BAR */}
 
           {/* 🔘 TRUSTED TAB FILTER BAR */}
           <div className="w-full border-b border-slate-200 dark:border-white/5 pb-3">
