@@ -1,7 +1,8 @@
+// 🌐 SOCIAL MEDIA POST CHUNKER - OPTIMIZED SEO METADATA
 export const metadata = {
-  title: "Social Media Text Chunker & Video Hook Generator | Useful Tools Zone",
+  title: "Social Media Text Chunker & Video Hook Generator | UTZ",
   description:
-    "Split long text into clean character-limited chunks for WhatsApp, Twitter Threads, Instagram Reels, LinkedIn, and Telegram. Inject high-CTR video text hooks & hold-to-read triggers offline.",
+    "Split long text into clean chunks for WhatsApp, Twitter, Reels & LinkedIn. Create high-CTR video hooks & hold-to-read overlays with zero uploads.",
   keywords: [
     "social media text chunker",
     "whatsapp status text splitter",
@@ -11,22 +12,22 @@ export const metadata = {
     "read more whatsapp text generator",
     "linkedin post chunker",
   ],
-alternates: {
-    canonical: "https://usefultoolszone.com/social-media-post-chunker",
+  alternates: {
+    canonical: "https://www.usefultoolszone.com/social-media-post-chunker",
   },
   openGraph: {
-    title: "Social Media Post Chunker & Video Hook Generator | Useful Tools Zone",
+    title: "Social Media Text Chunker & Video Hook Generator | Useful Tools Zone",
     description:
-      "Format and split long text into clean chunks & generate attention-grabbing video overlays with zero data logging.",
-    url: "https://usefultoolszone.com/social-media-post-chunker",
+      "Split long text into clean chunks for WhatsApp, Twitter, Reels & LinkedIn. Create high-CTR video hooks & hold-to-read overlays with zero uploads.",
+    url: "https://www.usefultoolszone.com/social-media-post-chunker",
     siteName: "Useful Tools Zone",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Social Media Text Chunker & Video Hook Generator",
+    title: "Social Media Text Chunker & Video Hook Generator | Useful Tools Zone",
     description:
-      "Format and chunk your text for video overlays, WhatsApp status, Twitter threads, and Reels.",
+      "Split long text into clean chunks for WhatsApp, Twitter, Reels & LinkedIn. Create high-CTR video hooks & hold-to-read overlays with zero uploads.",
   },
 };
 
