@@ -89,7 +89,7 @@ export default async function MasterHomepage({ searchParams }) {
       icon: "✍️",
       categories: ["pro", "video"],
     },
-   {
+    {
       title: "Smart Video Splitter",
       description:
         "World's 1st advanced, viral & user-friendly tool to split long videos into seamless 30s/60s parts for WhatsApp Status & Reels with zero voice cuts.",
@@ -113,7 +113,7 @@ export default async function MasterHomepage({ searchParams }) {
       icon: "📄",
       categories: ["pro", "pdf"],
     },
-{
+    {
       title: "Visual Book Grid Generator",
       description:
         "Create aesthetic 3x3 book grid cards, auto-fetch covers by book name or ISBN, and customize selfie branding cards.",
@@ -167,7 +167,6 @@ export default async function MasterHomepage({ searchParams }) {
     <div className="w-full min-h-screen flex flex-col items-center justify-start bg-slate-50/60 dark:bg-[#060609] pt-24 pb-12">
       {/* 🏢 ENTERPRISE 3-COLUMN RESPONSIVE LAYOUT */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full max-w-7xl mx-auto items-start px-4 flex-1">
-        
         {/* 🗺️ LEFT SIDE PC AD */}
         <div className="hidden lg:flex lg:col-span-2 min-h-[600px] sticky top-24 bg-white/80 dark:bg-[#0c0c12]/80 border border-dashed border-slate-200/80 dark:border-white/10 rounded-2xl flex-col items-center justify-start text-center p-3 shadow-sm overflow-hidden select-none">
           <div className="w-full py-1 mb-2 border-b border-slate-100 dark:border-white/5">
@@ -182,7 +181,8 @@ export default async function MasterHomepage({ searchParams }) {
 
         {/* 🎯 CENTER MAIN CONTENT MODULE */}
         <main className="col-span-1 lg:col-span-8 w-full flex flex-col items-center justify-start space-y-8">
-          {/* Header Section */}
+         
+{/* Header Section */}
           <div className="text-center space-y-3 max-w-2xl mx-auto mb-2 animate-fadeIn">
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               Useful Tools Zone <br />
@@ -194,6 +194,38 @@ export default async function MasterHomepage({ searchParams }) {
               {currentHeader.desc}
             </p>
 
+            {/* 🚀 PRODUCT HUNT OFFICIAL NEUTRAL BADGE */}
+            <div className="pt-3 flex justify-center items-center">
+              <a
+                href="https://www.producthunt.com/products/useful-tools-zone?utm_source=badge-featured"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center justify-between gap-3 px-3.5 py-1.5 bg-white/90 dark:bg-[#0c0c12]/90 border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs hover:shadow-md hover:border-indigo-400/60 hover:-translate-y-0.5 transition-all duration-200 select-none"
+              >
+                {/* Product Hunt Monogram */}
+                <div className="w-6 h-6 rounded-full bg-[#ff6154] flex items-center justify-center text-white font-black text-xs shadow-xs">
+                  P
+                </div>
+
+                {/* Text Label */}
+                <div className="text-left flex flex-col justify-center leading-tight">
+                  <span className="text-[8px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                    FIND US ON
+                  </span>
+                  <span className="text-[12px] font-extrabold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    Product Hunt
+                  </span>
+                </div>
+
+                {/* Upvote Pill */}
+                <div className="ml-1 pl-2.5 border-l border-slate-100 dark:border-white/10 flex items-center gap-1 text-[#ff6154]">
+                  <span className="text-[11px] font-black leading-none">▲</span>
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">Featured</span>
+                </div>
+              </a>
+            </div>
+          </div>
+
             {/* 🌟 3 HIGH-AUTHORITY HERO TRUST BADGES */}
             <div className="flex flex-wrap items-center justify-center gap-2 pt-3 select-none">
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/40 shadow-xs transition-all duration-200">
@@ -203,10 +235,9 @@ export default async function MasterHomepage({ searchParams }) {
                 <span>🛡️</span> Zero Uploads, No Limits
               </span>
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-800/40 shadow-xs transition-all duration-200">
-                <span>⚡</span> Instant Auto-Download
+                <span>⚡</span> Instant 1-Click Output
               </span>
             </div>
-          </div>
 
           {/* 🔘 TRUSTED TAB FILTER BAR */}
           <div className="w-full border-b border-slate-200 dark:border-white/5 pb-3">
@@ -247,22 +278,48 @@ export default async function MasterHomepage({ searchParams }) {
           {/* 📂 CATEGORIZED TOOLS SECTIONS */}
           <div className="w-full space-y-12 mb-16 pt-2">
             {[
-              { id: "pro", title: "⚡ Pro Level Utilities", desc: "High-impact creator & multi-step serverless workflows" },
-              { id: "video", title: "🎬 Video Utilities", desc: "Compress & split videos 100% locally with zero quality loss" },
-              { id: "pdf", title: "📄 PDF Utilities", desc: "Merge graphic layouts and compress PDF documents instantly" },
-              { id: "image", title: "🖼️ Image Utilities", desc: "Batch resize, convert and optimize web graphics natively" },
-              { id: "book", title: "📖 Reader & Book Utilities", desc: "Create aesthetic book grid cards and branding graphics" },
+              {
+                id: "pro",
+                title: "⚡ Pro Level Utilities",
+                desc: "High-impact creator & multi-step serverless workflows",
+              },
+              {
+                id: "video",
+                title: "🎬 Video Utilities",
+                desc: "Compress & split videos 100% locally with zero quality loss",
+              },
+              {
+                id: "pdf",
+                title: "📄 PDF Utilities",
+                desc: "Merge graphic layouts and compress PDF documents instantly",
+              },
+              {
+                id: "image",
+                title: "🖼️ Image Utilities",
+                desc: "Batch resize, convert and optimize web graphics natively",
+              },
+              {
+                id: "book",
+                title: "📖 Reader & Book Utilities",
+                desc: "Create aesthetic book grid cards and branding graphics",
+              },
             ]
-              .filter((section) => activeTab === "all" || activeTab === section.id)
+              .filter(
+                (section) => activeTab === "all" || activeTab === section.id,
+              )
               .map((section) => {
                 const sectionTools = tools.filter((t) =>
-                  t.categories?.includes(section.id)
+                  t.categories?.includes(section.id),
                 );
 
                 if (sectionTools.length === 0) return null;
 
                 return (
-                  <section key={section.id} id={section.id} className="space-y-4 text-left w-full">
+                  <section
+                    key={section.id}
+                    id={section.id}
+                    className="space-y-4 text-left w-full"
+                  >
                     {/* 🏷️ Section Header */}
                     <div className="border-b border-slate-200/80 dark:border-white/10 pb-3 flex items-center justify-between">
                       <div>
@@ -274,7 +331,8 @@ export default async function MasterHomepage({ searchParams }) {
                         </p>
                       </div>
                       <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/10">
-                        {sectionTools.length} {sectionTools.length === 1 ? 'Tool' : 'Tools'}
+                        {sectionTools.length}{" "}
+                        {sectionTools.length === 1 ? "Tool" : "Tools"}
                       </span>
                     </div>
 
@@ -432,7 +490,10 @@ export default async function MasterHomepage({ searchParams }) {
             </span>
           </div>
           <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
-            <AdBanner dataAdSlot="HOMEPAGE_SIDE_RIGHT" dataAdFormat="vertical" />
+            <AdBanner
+              dataAdSlot="HOMEPAGE_SIDE_RIGHT"
+              dataAdFormat="vertical"
+            />
           </div>
         </div>
       </div>
