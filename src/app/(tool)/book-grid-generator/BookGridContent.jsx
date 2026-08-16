@@ -920,6 +920,140 @@ ctx.fillText(
           </div>
         </div>
 
+{/* 📖 HOW TO USE STEP-BY-STEP CARDS SECTION */}
+        <div className="w-full pt-10 border-t border-slate-200/80 dark:border-white/10 space-y-6 text-left">
+          <div className="text-center space-y-1.5 max-w-xl mx-auto">
+            <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/60 px-3 py-1 rounded-full">
+              Quick Guide
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              How to Create Your Viral 3x3 Book Grid
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              Create aesthetic reading tier lists and shareable social media cards in 4 simple steps.
+            </p>
+          </div>
+
+          {/* 4 Steps Grid Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            {/* Step 1: Branding Mode (With Selfie vs Clean Mode) */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0c0c12] border border-slate-200/80 dark:border-white/10 shadow-sm space-y-3 flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-black text-xs flex items-center justify-center border border-blue-200 dark:border-blue-800/60">
+                    01
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                    Step 1
+                  </span>
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white">
+                  Choose Branding Mode
+                </h3>
+                <div className="space-y-2 text-[11px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                  <div className="p-2 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 space-y-1">
+                    <p className="font-bold text-blue-900 dark:text-blue-300">
+                      📸 With Selfie Mode:
+                    </p>
+                    <p className="text-[10px]">
+                      Upload your profile photo, choose shapes (● Circle, ▢ Square, ⬢ Hexagon), and add your Name & @socialhandle for personal branding.
+                    </p>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800 space-y-1">
+                    <p className="font-bold text-slate-800 dark:text-slate-300">
+                      ✨ No Selfie (Clean) Mode:
+                    </p>
+                    <p className="text-[10px]">
+                      Hides profile pictures and personal info for a minimal, anonymous 3x3 reading tier list.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2: Auto-Fetch or Upload Book Covers */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0c0c12] border border-slate-200/80 dark:border-white/10 shadow-sm space-y-3 flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-black text-xs flex items-center justify-center border border-indigo-200 dark:border-indigo-800/60">
+                    02
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                    Step 2
+                  </span>
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white">
+                  Add 1 to 9 Book Covers
+                </h3>
+                <ul className="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed list-disc list-inside">
+                  <li>Click any <b>Slot (1-9)</b> in the preview grid[cite: 5].</li>
+                  <li><b>Search Database:</b> Type any title or 10/13-digit ISBN to auto-fetch official covers[cite: 5].</li>
+                  <li><b>Web Links:</b> Paste direct cover links from Google Images, Amazon, or Flipkart[cite: 5].</li>
+                  <li><b>Upload:</b> Or select cover photos directly from your device[cite: 5].</li>
+                </ul>
+              </div>
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                ⚡ Flexible: Works with 1 to 9 books!
+              </div>
+            </div>
+
+            {/* Step 3: Themes & Custom Titles */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0c0c12] border border-slate-200/80 dark:border-white/10 shadow-sm space-y-3 flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 font-black text-xs flex items-center justify-center border border-purple-200 dark:border-purple-800/60">
+                    03
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                    Step 3
+                  </span>
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white">
+                  Customize Aesthetics
+                </h3>
+                <ul className="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed list-disc list-inside">
+                  <li>Pick from <b>12 Royal Palettes</b> like Vintage Paper, Obsidian Gold, or Lavender Linen[cite: 5].</li>
+                  <li>Set custom card headings or click preset chips like <i>&quot;My Top Reads&quot;</i> or <i>&quot;2026 Reading List&quot;</i>[cite: 5].</li>
+                  <li>Toggle anti-crop diagonal watermark for protection[cite: 5].</li>
+                </ul>
+              </div>
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] font-bold text-purple-600 dark:text-purple-400">
+                🎨 Real-time live card preview[cite: 5]
+              </div>
+            </div>
+
+            {/* Step 4: 1-Click Client-Side Export */}
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0c0c12] border border-slate-200/80 dark:border-white/10 shadow-sm space-y-3 flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-black text-xs flex items-center justify-center border border-emerald-200 dark:border-emerald-800/60">
+                    04
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                    Step 4
+                  </span>
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white">
+                  Download HD PNG Card
+                </h3>
+                <ul className="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed list-disc list-inside">
+                  <li>Click <b>&quot;Download HD Book Card (PNG)&quot;</b>[cite: 5].</li>
+                  <li>Smart verification checks if you missed your custom photo or handle[cite: 5].</li>
+                  <li>Instant 1080px high-resolution PNG rendered locally in your browser[cite: 5].</li>
+                  <li><b>100% Private:</b> Zero files uploaded to any server[cite: 5].</li>
+                </ul>
+              </div>
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                🔒 100% Client-Side & Free
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+
         {/* 🚀 pSEO Internal Linking Footer Section */}
         <div className="pt-12 border-t border-slate-200 dark:border-slate-800 text-center space-y-4">
           <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
