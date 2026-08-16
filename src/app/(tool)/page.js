@@ -3,11 +3,11 @@ import Link from "next/link";
 import GlassCard from "@/components/ui/GlassCard";
 import AdBanner from "@/components/ui/AdBanner";
 
-// 🌐 PREMIUM ROOT SEO METADATA (Google Bot Friendly Architecture)
+// 🌐 PREMIUM ROOT SEO METADATA (Google & Bing Friendly Architecture)
 export const metadata = {
-  title: "Useful Tools Zone | 100% Private Next-Gen Serverless Utilities",
+  title: "Useful Tools Zone | 100% Private Serverless Utilities",
   description:
-    "Free 100% private client-side web utilities. Compress & split videos, merge & compress PDFs, optimize images, chunk social media text, and access next-gen serverless tools directly inside your browser sandbox with zero uploads.",
+    "Free 100% private client-side utilities. Compress & split videos, merge PDFs, optimize images & chunk text inside your browser sandbox with zero uploads.",
   keywords: [
     "useful tools zone",
     "private local browser tools",
@@ -20,23 +20,22 @@ export const metadata = {
     "zero upload media encoder",
     "serverless privacy utility hub",
   ],
-  metadataBase: new URL("https://usefultoolszone.com"),
   alternates: {
-    canonical: "https://usefultoolszone.com",
+    canonical: "https://www.usefultoolszone.com",
   },
   openGraph: {
-    title: "Useful Tools Zone | 100% Private Serverless Utility Hub",
+    title: "Useful Tools Zone | 100% Private Serverless Utilities",
     description:
-      "Free 100% private client-side web utilities. Compress & split videos, merge & compress PDFs, optimize images, chunk text, and access next-gen serverless tools directly inside your browser sandbox with zero uploads.",
-    url: "https://usefultoolszone.com",
+      "Free 100% private client-side utilities. Compress & split videos, merge PDFs, optimize images & chunk text inside your browser sandbox with zero uploads.",
+    url: "https://www.usefultoolszone.com",
     siteName: "Useful Tools Zone",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Useful Tools Zone | 100% Private Serverless Utility Hub",
+    title: "Useful Tools Zone | 100% Private Serverless Utilities",
     description:
-      "Free 100% private client-side web utilities. Compress & split videos, merge & compress PDFs, optimize images, and access next-gen tools natively.",
+      "Free 100% private client-side utilities. Compress & split videos, merge PDFs, optimize images & chunk text inside your browser sandbox with zero uploads.",
   },
 };
 
