@@ -73,33 +73,31 @@ const HOOK_PRESETS = [
   "⚡ The Secret Strategy Revealed in 30 Seconds:",
 ];
 // WhatsApp Authentic Unique Status Colors (No Repeats)
+// Premium Aesthetic Status Colors with Auto Text Color Contrast
+// 🟢 15 Handcrafted High-Contrast Pro Aesthetic Colors (5 per page × 3 full pages)
 const SLIDE_THEMES = [
-  { id: "sky-blue", name: "Sky Blue", color: "#00a8f3" },
-  { id: "deep-magenta", name: "Deep Magenta", color: "#6b1539" },
-  { id: "crimson-wine", name: "Wine Red", color: "#741928" },
-  { id: "slate-dark", name: "Dark Slate", color: "#374247" },
-  { id: "whatsapp-green", name: "WhatsApp Green", color: "#25d366" },
-  { id: "soft-lavender", name: "Soft Lavender", color: "#9770b0" },
-  { id: "warm-taupe", name: "Warm Taupe", color: "#7b675e" },
-  { id: "bright-cyan", name: "Bright Cyan", color: "#00a2db" },
-  { id: "coral-pink", name: "Coral Pink", color: "#d75065" },
-  { id: "deep-violet", name: "Deep Violet", color: "#512160" },
-  { id: "dark-teal", name: "Dark Teal", color: "#075e54" },
-  { id: "mustard-gold", name: "Mustard Gold", color: "#8d781e" },
-  { id: "royal-blue", name: "Royal Blue", color: "#3761a1" },
-  { id: "slate-grey", name: "Slate Grey", color: "#637075" },
-  { id: "vibrant-pink", name: "Vibrant Pink", color: "#e54a7b" },
-  { id: "olive-green", name: "Olive Green", color: "#4c5d33" },
-  { id: "ice-blue", name: "Ice Blue", color: "#5aa4c7" },
-  { id: "deep-purple", name: "Deep Purple", color: "#391a48" },
-  { id: "dusty-plum", name: "Dusty Plum", color: "#7a547b" },
-  { id: "yellow-green", name: "Yellow Green", color: "#a7b32f" },
-  { id: "aqua-teal", name: "Aqua Teal", color: "#4ba4b4" },
-  { id: "steel-blue", name: "Steel Blue", color: "#516877" },
-  { id: "burgundy", name: "Burgundy", color: "#4a1424" },
-];
+  // --- PAGE 1: Executive & Luxury Dark Tones ---
+  { id: "midnight-navy", name: "Midnight Navy", color: "#0F172A", textColor: "#FFFFFF" },
+  { id: "deep-emerald", name: "Deep Emerald", color: "#064E3B", textColor: "#FFFFFF" },
+  { id: "royal-sapphire", name: "Royal Sapphire", color: "#1E3A8A", textColor: "#FFFFFF" },
+  { id: "rich-burgundy", name: "Rich Burgundy", color: "#4C0519", textColor: "#FFFFFF" },
+  { id: "charcoal-matte", name: "Charcoal Matte", color: "#18181B", textColor: "#FFFFFF" },
 
-// Smart Auto-Fit PNG Slide Generator (Auto Scales Font to Fit 100% Text)
+  // --- PAGE 2: Earthy, Coffee & Warm Sunset Tones ---
+  { id: "coffee-espresso", name: "Coffee Espresso", color: "#2C1A14", textColor: "#FEF3C7" },
+  { id: "warm-terracotta", name: "Warm Terracotta", color: "#9A3412", textColor: "#FFFFFF" },
+  { id: "plum-violet", name: "Plum Violet", color: "#4A1D6D", textColor: "#FFFFFF" },
+  { id: "slate-blue", name: "Slate Blue", color: "#1E293B", textColor: "#F8FAFC" },
+  { id: "forest-green", name: "Forest Green", color: "#14532D", textColor: "#FFFFFF" },
+
+  // --- PAGE 3: Vibrant Modern & Editorial Tones ---
+  { id: "ocean-teal", name: "Ocean Teal", color: "#0E7490", textColor: "#FFFFFF" },
+  { id: "steel-indigo", name: "Steel Indigo", color: "#3730A3", textColor: "#FFFFFF" },
+  { id: "crimson-velvet", name: "Crimson Velvet", color: "#831843", textColor: "#FFFFFF" },
+  { id: "deep-cyan", name: "Deep Cyan", color: "#047857", textColor: "#FFFFFF" },
+  { id: "midnight-purple", name: "Midnight Purple", color: "#3B0764", textColor: "#FFFFFF" },
+];
+// Smart Auto-Fit PNG Slide Generator (Auto Scales Font & Adapts Text Color)
 async function generatePngSlideBlob(
   textChunk,
   slideNumber,
@@ -112,8 +110,13 @@ async function generatePngSlideBlob(
     canvas.height = 1920;
     const ctx = canvas.getContext("2d");
 
-    const bgColor = theme?.color || "#25d366";
-
+    const bgColor = theme?.color || "#0F172A";
+    const primaryText = theme?.textColor || "#FFFFFF";
+  // 🟢 Smart Contrast Logic:
+    const isDarkText = primaryText !== "#FFFFFF" && primaryText !== "#F8FAFC" && primaryText !== "#CCFBF1" && primaryText !== "#FEF3C7";
+    const boxBg = isDarkText ? "rgba(0, 0, 0, 0.06)" : "rgba(0, 0, 0, 0.25)";
+    const boxBorder = isDarkText ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.35)";
+    const frameBorder = isDarkText ? "rgba(0, 0, 0, 0.1)" : "rgba(255, 255, 255, 0.35)";
     // 1. Background Solid Fill
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -123,20 +126,20 @@ async function generatePngSlideBlob(
     const frameWidth = canvas.width - frameMargin * 2;
     const frameHeight = canvas.height - frameMargin * 2;
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.strokeStyle = frameBorder;
     ctx.lineWidth = 14;
     ctx.strokeRect(frameMargin, frameMargin, frameWidth, frameHeight);
 
     // ---------------- TOP HEADER ROW ----------------
-    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.fillStyle = boxBg;
     ctx.beginPath();
     ctx.roundRect(75, 75, 210, 54, 16);
     ctx.fill();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.strokeStyle = boxBorder;
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = primaryText;
     ctx.font = "bold 24px system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(`SLIDE ${slideNumber}/${totalSlides}`, 180, 110);
@@ -144,15 +147,15 @@ async function generatePngSlideBlob(
     const wmWidth = 640;
     const wmX = canvas.width - 75 - wmWidth;
 
-    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.fillStyle = boxBg;
     ctx.beginPath();
     ctx.roundRect(wmX, 75, wmWidth, 54, 16);
     ctx.fill();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.strokeStyle = boxBorder;
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = primaryText;
     ctx.font = "bold 19px system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(
@@ -162,28 +165,25 @@ async function generatePngSlideBlob(
     );
 
     // ---------------- MAIN CONTENT AREA (Smart Auto-Fit Scaling) ----------------
-
     let cleanText = (textChunk || "")
       .replace(/\[\d+\/\d+\]/g, "")
       .replace(/\u200B{10,}\n\.\.\.Read More/g, "")
       .replace(/\.\.\.Read More/g, "")
       .trim();
 
-    const maxWidth = canvas.width - 180; // 900px line width
+    const maxWidth = canvas.width - 180;
     const startY = 190;
-    const maxTextY = 1780; // Safe bottom boundary
+    const maxTextY = 1780;
     const availableHeight = maxTextY - startY;
-
     const words = cleanText ? cleanText.split(/\s+/) : [];
 
-    // 🟢 DYNAMIC FONT SCALING: 42px से शुरू करेगा और टेक्स्ट लंबा होने पर ऑटोमैटिक एडजस्ट करेगा
     let fontSize = 42;
     let lineHeight = fontSize + 20;
     let lines = [];
 
     for (let currentFont = 42; currentFont >= 30; currentFont -= 1) {
       fontSize = currentFont;
-      lineHeight = fontSize + 16; // Tighter line height when text is long
+      lineHeight = fontSize + 16;
       ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
 
       lines = [];
@@ -191,8 +191,6 @@ async function generatePngSlideBlob(
 
       for (let n = 0; n < words.length; n++) {
         let word = words[n];
-
-        // Long URL auto character break
         if (ctx.measureText(word).width > maxWidth) {
           if (line.trim()) {
             lines.push(line.trim());
@@ -221,14 +219,11 @@ async function generatePngSlideBlob(
       }
       if (line.trim()) lines.push(line.trim());
 
-      // अगर सारी लाइनें Available Height के अंदर आ गई हैं, तो लूप यही रोक दें
-      if (lines.length * lineHeight <= availableHeight) {
-        break;
-      }
+      if (lines.length * lineHeight <= availableHeight) break;
     }
 
-    // 🔴 100% Guaranteed Line Drawing (No text omitted!)
-    ctx.fillStyle = "#ffffff";
+    // 🔴 Render Dynamic Text Color
+    ctx.fillStyle = primaryText;
     ctx.textAlign = "left";
     ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
 
@@ -247,16 +242,17 @@ async function generatePngSlideBlob(
       ctx.fillStyle = bgColor;
       ctx.fillRect(ctaX - 10, borderY - 26, ctaW + 20, 52);
 
-      ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+      // Bottom CTA Box color logic
+      ctx.fillStyle = isDarkText ? "rgba(255, 255, 255, 0.85)" : "rgba(0, 0, 0, 0.65)";
       ctx.beginPath();
       ctx.roundRect(ctaX, borderY - 26, ctaW, 52, 16);
       ctx.fill();
 
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.strokeStyle = isDarkText ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.8)";
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = primaryText;
       ctx.font = "bold 22px system-ui, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(
@@ -272,18 +268,20 @@ async function generatePngSlideBlob(
       ctx.fillStyle = bgColor;
       ctx.fillRect(tagX - 10, borderY - 22, tagW + 20, 44);
 
-      ctx.fillStyle = "rgba(0, 0, 0, 0.68)";
+      ctx.fillStyle = isDarkText ? "rgba(255, 255, 255, 0.85)" : "rgba(0, 0, 0, 0.68)";
       ctx.beginPath();
       ctx.roundRect(tagX, borderY - 22, tagW, 44, 14);
       ctx.fill();
 
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.strokeStyle = isDarkText ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.75)";
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      ctx.fillStyle = "#ffffff";
-      ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
-      ctx.shadowBlur = 4;
+      ctx.fillStyle = primaryText;
+      if (!isDarkText) {
+          ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+          ctx.shadowBlur = 4;
+      }
       ctx.font = "bold 18px system-ui, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(endText, canvas.width / 2, borderY + 6);
@@ -296,7 +294,6 @@ async function generatePngSlideBlob(
     }, "image/png");
   });
 }
-
 
 export default function SocialMediaTextChunkerContent({ forcedSlug }) {
   // 1. Media Upload Handler
@@ -1250,7 +1247,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                 </div>
               )}
 
-              {/* MEDIA ATTACH & PNG PROCESS CONTROL WITH COLOR THEME & PREVIEW TILE */}
+{/* MEDIA ATTACH & PNG PROCESS CONTROL WITH COLOR THEME & PREVIEW TILE */}
               <div className="p-4 bg-slate-100 dark:bg-gray-900/80 rounded-2xl border border-slate-200 dark:border-gray-800 space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <label className="cursor-pointer text-xs font-bold bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 hover:border-indigo-500 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm">
@@ -1268,7 +1265,6 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                     />
                   </label>
 
-                  {/* 👇 YE NAYA BUTTON YAHAN ADD KAREIN 👇 */}
                   {mediaFile && (
                     <button
                       type="button"
@@ -1280,53 +1276,50 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                       Want to generate slide for this also? Click here
                     </button>
                   )}
-                  {/* HD WHATSAPP PALETTE SWITCHER & STABLE PAGINATED DOTS */}
+
+                  {/* HD PALETTE SWITCHER & STABLE PAGINATED DOTS */}
                   <div className="flex flex-wrap items-center gap-3">
-                    {/* HD Interactive Palette Button */}
+                    {/* Interactive Palette Button */}
                     <button
                       type="button"
                       onClick={handleNextTheme}
                       className="relative group flex items-center gap-2.5 px-4 py-2 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 dark:from-gray-900 dark:via-indigo-950 dark:to-gray-900 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/20 border border-indigo-500/40 hover:border-indigo-400 transition-all active:scale-95 cursor-pointer overflow-hidden"
                       title="Click to cycle next background color"
                     >
-                      {/* Subtle Animated Gradient Glow Effect */}
                       <span className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-400 opacity-20 group-hover:opacity-40 blur-sm transition-opacity"></span>
 
-                      {/* Animated Palette Icon */}
                       <span className="relative flex items-center justify-center w-6 h-6 rounded-lg bg-white/10 group-hover:scale-110 transition-transform">
                         <span className="text-sm">🎨</span>
                       </span>
 
                       <div className="relative text-left">
                         <span className="text-[9px] uppercase tracking-wider text-indigo-300 font-extrabold block leading-none mb-0.5">
-                          Click to Switch ⚡
+                          Click here to Switch ⚡
                         </span>
                         <span className="text-xs font-black text-white block leading-none">
                           {selectedSlideTheme.name}
                         </span>
                       </div>
 
-                      {/* Cycle Arrow Symbol */}
                       <span className="relative text-indigo-300 group-hover:rotate-180 transition-transform duration-300 text-xs ml-1">
                         🔄
                       </span>
                     </button>
 
-                    {/* STABLE 5-DOT PAGINATED SWATCH CONTAINER (Zero Jumpiness) */}
+                    {/* STABLE 5-DOT PAGINATED SWATCH CONTAINER */}
                     <div className="flex items-center gap-2 p-1.5 bg-white dark:bg-gray-950 rounded-2xl border border-slate-200 dark:border-gray-800 shadow-inner">
                       {(() => {
-                        // Page calculation: Keeps 5 dots locked in place until cycling past the 5th dot
                         const pageSize = 5;
                         const pageStart =
                           Math.floor(themeIndex / pageSize) * pageSize;
                         const currentWindow = SLIDE_THEMES.slice(
                           pageStart,
-                          pageStart + pageSize,
+                          pageStart + pageSize
                         );
 
                         return currentWindow.map((theme) => {
                           const realIdx = SLIDE_THEMES.findIndex(
-                            (t) => t.id === theme.id,
+                            (t) => t.id === theme.id
                           );
                           const isActive = selectedSlideTheme.id === theme.id;
                           return (
@@ -1334,16 +1327,16 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                               key={theme.id}
                               type="button"
                               onClick={() => handleSelectTheme(theme, realIdx)}
-                              className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative ${
+                              className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative shrink-0 border border-black/10 dark:border-white/10 ${
                                 isActive
                                   ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-950 scale-125 shadow-md z-10"
-                                  : "opacity-60 hover:opacity-100 hover:scale-110"
+                                  : "opacity-80 hover:opacity-100 hover:scale-110"
                               }`}
                               style={{ backgroundColor: theme.color }}
                               title={`${theme.name} (Click to select)`}
                             >
                               {isActive && (
-                                <span className="absolute inset-0 flex items-center justify-center text-[10px] text-white font-black drop-shadow-md">
+                                <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black drop-shadow-md text-white">
                                   ✓
                                 </span>
                               )}
@@ -1359,36 +1352,38 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                       </span>
                     </div>
                   </div>
-       {chunks.length > 0 && (
+
+              {chunks.length > 0 && (
   <button
     type="button"
     disabled={isProcessing}
     onClick={() => handleGeneratePngSlides(selectedSlideTheme)}
-    className="relative group overflow-hidden px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/30 border border-white/20 transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0"
+    className="relative group overflow-hidden px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/30 border-0 outline-none transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0 isolate"
   >
     {/* Background Shine Effect */}
-    <span className="absolute -inset-full top-0 block w-1/2 h-full bg-white/20 transform -skew-x-12 group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out"></span>
+    <span className="absolute -inset-full top-0 block w-1/2 h-full bg-white/20 transform -skew-x-12 group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out pointer-events-none"></span>
 
     <span className="relative flex items-center justify-center gap-2">
       {isProcessing ? (
         <>
           <span className="animate-spin text-sm">⏳</span>
-         <span>Generating HD Slides...</span>
-            </>
-          ) : (
-            <>
-              <span className="text-sm">🖼️</span>
-              <span>Generate PNG Slides</span>
-            </>
-          )}
-        </span>
-      </button>
-    )}
-  </div>
+          <span>Generating HD Slides...</span>
+        </>
+      ) : (
+        <>
+          <span className="text-sm">🖼️</span>
+          <span>Generate PNG Slides</span>
+        </>
+      )}
+    </span>
+  </button>
+)}
+                </div>
+
                 {/* VISUAL ATTACHED MEDIA PREVIEW TILE */}
                 {mediaPreviewUrl && (
                   <div className="flex items-center gap-3 p-2.5 bg-white dark:bg-gray-950 rounded-2xl border border-emerald-500/40 shadow-sm relative animate-fadeIn max-w-sm">
-                    <div className="w-14 h-14 bg-black rounded-xl overflow-hidden shrink-0 border border-slate-300 dark:border-gray-800">
+                    <div className="w-14 h-14 bg-black rounded-lg overflow-hidden shrink-0 border border-slate-300 dark:border-gray-800">
                       {mediaType === "video" ? (
                         <video
                           src={mediaPreviewUrl}
