@@ -12,19 +12,19 @@ export const metadata = {
     "offline image size reducer"
   ],
   alternates: {
-    canonical: "https://usefultoolszone.com/image-compressor",
+    canonical: "https://usefultoolszone.com/batch-image-compressor",
     languages: {
-      "en": "https://usefultoolszone.com/image-compressor",
-      "es": "https://usefultoolszone.com/image-compressor?lang=es",
-      "pt": "https://usefultoolszone.com/image-compressor?lang=pt",
-      "hi": "https://usefultoolszone.com/image-compressor?lang=hi",
-      "x-default": "https://usefultoolszone.com/image-compressor",
+      "en": "https://usefultoolszone.com/batch-image-compressor",
+      "es": "https://usefultoolszone.com/batch-image-compressor?lang=es",
+      "pt": "https://usefultoolszone.com/batch-image-compressor?lang=pt",
+      "hi": "https://usefultoolszone.com/batch-image-compressor?lang=hi",
+      "x-default": "https://usefultoolszone.com/batch-image-compressor",
     },
   },
   openGraph: {
     title: "Batch Image Compressor Online - 100% Private | Useful Tools Zone",
     description: "Compress multiple images to exact KB/MB sizes offline instantly. Zero cloud uploads, no registration required.",
-    url: "https://usefultoolszone.com/image-compressor",
+    url: "https://usefultoolszone.com/batch-image-compressor",
     siteName: "Useful Tools Zone",
     type: "website",
   },

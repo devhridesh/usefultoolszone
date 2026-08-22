@@ -8,9 +8,10 @@ export const metadata = {
   title: "Useful Tools Zone | 100% Private Serverless Utilities",
   description:
     "Free 100% private client-side utilities. Compress & split videos, merge PDFs, optimize images & chunk text inside your browser sandbox with zero uploads.",
-  keywords: [
+ keywords: [
     "useful tools zone",
     "private local browser tools",
+    "batch image compressor online",
     "pdf merge and compress local",
     "video compressor offline",
     "smart video splitter online",
@@ -140,7 +141,7 @@ export default async function MasterHomepage({ searchParams }) {
       title: "Batch Image Compressor",
       description:
         "Compress multiple images to exact KB/MB sizes offline instantly inside your browser memory sandbox.",
-      link: "/image-compressor",
+      link: "/batch-image-compressor",
       badge: "BATCH MODE",
       badgeColor:
         "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40",

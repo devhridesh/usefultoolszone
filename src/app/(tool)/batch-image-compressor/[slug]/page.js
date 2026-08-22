@@ -48,7 +48,7 @@ export async function generateMetadata({ params }) {
   const p = await params;
   const slug = p?.slug || "";
   const meta = parseSlugMetadata(slug);
-  const targetUrl = `https://usefultoolszone.com/image-compressor/${slug}`;
+  const targetUrl = `https://usefultoolszone.com/batch-image-compressor/${slug}`;
 
   return {
     title: meta.title,

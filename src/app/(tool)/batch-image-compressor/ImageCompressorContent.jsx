@@ -164,10 +164,10 @@ useEffect(() => {
     }
   }, [activeSlug]);
 
-  const handlePresetChange = (slug) => {
+const handlePresetChange = (slug) => {
     const langParam = searchParams.get("lang");
     const langQuery = langParam ? `?lang=${langParam}` : "";
-    router.push(`/image-compressor/${slug}${langQuery}`);
+    router.push(`/batch-image-compressor/${slug}${langQuery}`);
   };
 
   const handleFileSelect = (e) => {
@@ -750,7 +750,7 @@ setProgress(Math.round(((i + 1) / images.length) * 100));
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: content.h1,
-              url: `https://usefultoolszone.com/image-compressor/${activeSlug === "custom" ? "" : activeSlug}`,
+              url: `https://usefultoolszone.com/batch-image-compressor/${activeSlug === "custom" ? "" : activeSlug}`,
               operatingSystem: "All",
               applicationCategory: "GraphicsApplication",
               description: content.desc,
