@@ -6,18 +6,18 @@ import GlassCard from "@/components/ui/GlassCard";
 
 const PLATFORM_LIMITS = {
   whatsapp: {
-    name: "WhatsApp Status / Msg",
-    limit: 700,
+    name: "WhatsApp Status & Slides",
+    limit: 700, // 🟢 700 Chars fills 9:16 Full HD digital screen perfectly
     icon: "💬",
     slug: "whatsapp-status-formatter",
-    desc: "Optimized 700-character chunks for clean WhatsApp status & chat delivery.",
+    desc: "Optimized 700-character chunks for clean WhatsApp status & Full HD slides.",
   },
   pinterest: {
-    name: "Pinterest Carousel / Pin",
-    limit: 400,
+    name: "Pinterest Carousel (2:3)",
+    limit: 450, // 🟢 Best 2:3 Pinterest Pin density
     icon: "📌",
     slug: "pinterest-carousel-generator",
-    desc: "Ultra-crisp 2:3 HD retina slides (Max 400 chars) for zero-blur Pinterest carousels.",
+    desc: "Ultra-crisp 2:3 HD retina slides (450 chars) for zero-blur Pinterest carousels.",
   },
   twitter: {
     name: "Twitter / X Thread",
@@ -31,28 +31,28 @@ const PLATFORM_LIMITS = {
     limit: 500,
     icon: "🧵",
     slug: "threads-post-generator",
-    desc: "Split long posts into 500-character Meta Threads posts cleanly.",
+    desc: "Split long posts into 500-character Meta Threads slides cleanly.",
   },
   instagram: {
-    name: "Instagram Reels & Slides",
-    limit: 150,
+    name: "Instagram Slides / Reels",
+    limit: 450,
     icon: "📸",
     slug: "instagram-reels-text-hooks",
-    desc: "Short 150-character bite-sized chunks for high-CTR Reels text overlays.",
+    desc: "450-character bite-sized chunks for high-CTR carousel slides & reels overlays.",
   },
   linkedin: {
-    name: "LinkedIn Post",
-    limit: 3000,
+    name: "LinkedIn Document Carousel",
+    limit: 600,
     icon: "💼",
     slug: "linkedin-post-splitter",
-    desc: "Format & chunk professional LinkedIn articles with high readability.",
+    desc: "Format & chunk 600-character professional LinkedIn document slides.",
   },
   telegram: {
-    name: "Telegram Channel",
-    limit: 4096,
+    name: "Telegram Channel Slides",
+    limit: 700,
     icon: "✈️",
     slug: "telegram-message-chunker",
-    desc: "Large 4096-character telegram channel post formatting.",
+    desc: "Large 700-character Telegram slide formatting.",
   },
 };
 
@@ -337,35 +337,34 @@ async function generatePngSlideBlob(
       ctx.strokeRect(frameMargin, frameMargin, canvas.width - frameMargin * 2, canvas.height - frameMargin * 2);
     }
 
-    // ---------------- 2. TOP HEADER ROW ----------------
+// ---------------- 2. TOP HEADER ROW ----------------
     const headerTop = Math.round(75 * scaleFactor);
     const badgeH = Math.round(54 * scaleFactor);
 
     if (isPaper) {
       ctx.fillStyle = primaryText;
-      ctx.font = `${activeWeight} ${Math.round(26 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+      ctx.font = `${activeWeight} ${Math.round(24 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
       ctx.textAlign = "left";
       ctx.fillText(
         `Page ${slideNumber} of ${totalSlides}`,
         Math.round(80 * scaleFactor),
-        headerTop + badgeH * 0.6
+        headerTop + badgeH * 0.55
       );
 
-     // 🟢 Elegant Stationery Print Branding Watermark (No clickable link look)
-      ctx.font = `500 ${Math.round(15 * scaleFactor)}px system-ui, -apple-system, sans-serif`;
+      ctx.font = `500 ${Math.round(14 * scaleFactor)}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = "right";
       ctx.fillStyle = "rgba(0, 0, 0, 0.38)";
       ctx.fillText(
         "useful tools zone / social media post chunker",
         canvas.width - Math.round(80 * scaleFactor),
-        headerTop + badgeH * 0.6
+        headerTop + badgeH * 0.55
       );
 
       ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
       ctx.lineWidth = 1 * scaleFactor;
       ctx.beginPath();
-      ctx.moveTo(Math.round(60 * scaleFactor), headerTop + badgeH + 10);
-      ctx.lineTo(canvas.width - Math.round(60 * scaleFactor), headerTop + badgeH + 10);
+      ctx.moveTo(Math.round(60 * scaleFactor), headerTop + badgeH + 5);
+      ctx.lineTo(canvas.width - Math.round(60 * scaleFactor), headerTop + badgeH + 5);
       ctx.stroke();
     } else {
       const isDarkText =
@@ -404,38 +403,38 @@ async function generatePngSlideBlob(
       ctx.stroke();
 
       ctx.fillStyle = primaryText;
-      ctx.font = `bold ${Math.round(19 * scaleFactor)}px system-ui, sans-serif`;
+      ctx.font = `bold ${Math.round(18 * scaleFactor)}px system-ui, sans-serif`;
       ctx.textAlign = "center";
       ctx.fillText(
-        "chunked on www.usefultoolszone.com/social-media-post-chunker",
+        "useful tools zone / social media post chunker",
         wmX + wmWidth / 2,
         headerTop + badgeH * 0.63
       );
     }
 
-// ---------------- 3. MAIN CONTENT (Keep Emojis & Apply Sketch Filter) ----------------
+    // ---------------- 3. MAIN CONTENT (Platform-Aware Sizing & Spacing) ----------------
     let cleanText = (textChunk || "")
       .replace(/\[\d+\/\d+\]/g, "")
       .replace(/\u200B{10,}\n\.\.\.Read More/g, "")
       .replace(/\.\.\.Read More/g, "");
 
     if (isPaper) {
-      // 🟢 1. Normalize unicode bold back to standard text
       cleanText = normalizeUnicodeText(cleanText);
-      // 🟢 We do NOT strip emojis here. We keep their original shapes.
     }
     cleanText = cleanText.trim();
 
-    // ... [Note: Keep your existing maxWidth/lines loop code exactly as is here] ...
     const textPaddingLeft = Math.round((isPaper && theme.ruled ? 175 : 90) * scaleFactor);
     const maxWidth = canvas.width - textPaddingLeft - Math.round(80 * scaleFactor);
     const words = cleanText ? cleanText.split(/\s+/) : [];
 
-    let fontSize = isPaper
-      ? Math.round((isPinterest ? 46 : 38) * scaleFactor)
-      : Math.round((isPinterest ? 56 : 40) * scaleFactor);
+    // 🟢 Optimal Typography Scaling
+    const fontSize = isPaper
+      ? Math.round(38 * scaleFactor)
+      : Math.round((platform === "pinterest" ? 44 : 42) * scaleFactor);
 
-    let currentLineHeight = isPaper && theme.ruled ? lineGap : fontSize + Math.round(18 * scaleFactor);
+    const currentLineHeight = isPaper && theme.ruled 
+      ? lineGap 
+      : fontSize + Math.round(22 * scaleFactor);
 
     const fontStack = isPaper
       ? `"${handwritingFont}", "Kalam", cursive, sans-serif`
@@ -478,20 +477,18 @@ async function generatePngSlideBlob(
 
     const maxAllowedLines = isPaper && theme.ruled
       ? Math.floor((endLineY - startLineY) / lineGap)
-      : Math.floor((endLineY - Math.round(200 * scaleFactor)) / currentLineHeight);
+      : Math.floor((endLineY - Math.round(180 * scaleFactor)) / currentLineHeight);
 
     const printableLines = lines.slice(0, maxAllowedLines);
-// 🔴 Draw Text exactly sitting ON the Blue Line (Baseline Snap)
+
+    // 🔴 Draw Content
     ctx.fillStyle = primaryText;
     ctx.textAlign = "left";
     ctx.font = `${activeWeight} ${fontSize}px ${fontStack}`;
 
-    // 🟢 BRIGHT SKETCH PEN EFFECT: Makes emojis look like vibrant highlighters/markers!
     if (isPaper) {
-      ctx.globalCompositeOperation = "multiply"; // Blends color into the paper
-      ctx.globalAlpha = 0.9; // Keeps it highly visible
-      // saturate(300%) makes colors pop out brilliantly compared to the dark typing ink.
-      // drop-shadow gives the slight ink-bleed edge effect of a marker.
+      ctx.globalCompositeOperation = "multiply";
+      ctx.globalAlpha = 0.9;
       ctx.filter = "saturate(300%) contrast(120%) drop-shadow(1px 1px 0px rgba(0,0,0,0.15))";
     }
 
@@ -500,14 +497,11 @@ async function generatePngSlideBlob(
       if (isPaper && theme.ruled) {
         currentY = startLineY + (idx + 1) * lineGap - Math.round(8 * scaleFactor);
       } else {
-        currentY = Math.round(200 * scaleFactor) + idx * currentLineHeight + fontSize;
+        currentY = Math.round(195 * scaleFactor) + idx * currentLineHeight + fontSize;
       }
-      
-      // Draw Text and Emojis
       ctx.fillText(l.trim(), textPaddingLeft, currentY);
     });
 
-    // 🟢 Reset Canvas Filters before drawing the footer
     if (isPaper) {
       ctx.globalCompositeOperation = "source-over";
       ctx.filter = "none";
@@ -523,7 +517,6 @@ async function generatePngSlideBlob(
       ctx.fillStyle = primaryText;
 
       if (totalSlides > 1 && slideNumber < totalSlides) {
-        // 🟢 Authentic Hindi Classic Novel / Diary Turn-Page Indicator
         ctx.fillText(`~ क्रमशः अगले पन्ने पर (भाग ${slideNumber + 1}) 👉 ~`, canvas.width / 2, borderY);
       } else {
         ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
@@ -829,21 +822,27 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       );
     }
 
-const platformCap = currentPlatformObj.limit;
+// 🟢 SMART PLATFORM & THEME CHUNKER LIMIT ENGINE
+    const platformCap = currentPlatformObj.limit;
     const userLimit = Math.min(Number(customLimit) || platformCap, platformCap);
 
     let effectiveLimit = userLimit;
+
     if (viewMode === "png_slides") {
-      if (selectedPlatform === "pinterest") {
-        effectiveLimit = Math.min(userLimit, 350);
-      } else if (selectedSlideTheme?.isPaper) {
-        // 🟢 360 Chars: Perfectly balances text across the compact 2:3 diary page
-        effectiveLimit = Math.min(userLimit, 360);
-      } else if (["instagram", "twitter", "threads", "linkedin"].includes(selectedPlatform)) {
+      if (selectedSlideTheme?.isPaper) {
+        // 🟢 Paper Mode: Strict 420 chars cap to prevent overflow on ruled notebook lines
+        effectiveLimit = Math.min(userLimit, 420);
+      } else if (selectedPlatform === "pinterest") {
+        // 🟢 Pinterest: 450 chars max for 2:3 vertical pins
         effectiveLimit = Math.min(userLimit, 450);
+      } else if (["instagram", "threads", "linkedin"].includes(selectedPlatform)) {
+        // 🟢 Feed 4:5 carousels: 500 chars max
+        effectiveLimit = Math.min(userLimit, 500);
+      } else if (selectedPlatform === "twitter") {
+        effectiveLimit = Math.min(userLimit, 280);
       } else {
-        const defaultPngLimit = isMobile ? 850 : 600;
-        effectiveLimit = Math.min(userLimit, defaultPngLimit);
+        // 🟢 Digital Full HD (WhatsApp / Telegram 9:16): Allows full 700 chars!
+        effectiveLimit = userLimit; 
       }
     }
 
@@ -1438,8 +1437,7 @@ const platformCap = currentPlatformObj.limit;
                   >
                     {Object.keys(PLATFORM_LIMITS).map((key) => (
                       <option key={key} value={key}>
-                        {PLATFORM_LIMITS[key].icon} {PLATFORM_LIMITS[key].name}{" "}
-                        ({PLATFORM_LIMITS[key].limit} Chars)
+                        {PLATFORM_LIMITS[key].icon} {PLATFORM_LIMITS[key].name}
                       </option>
                     ))}
                   </select>
@@ -2155,13 +2153,13 @@ const platformCap = currentPlatformObj.limit;
                 {
                   key: "whatsapp",
                   slug: "whatsapp-status-formatter",
-                  label: "WhatsApp (700)",
+                  label: "WhatsApp",
                   color: "text-green-600 border-green-200 bg-green-50/40",
                 },
                 {
                   key: "pinterest",
                   slug: "pinterest-carousel-generator",
-                  label: "Pinterest (400)",
+                  label: "Pinterest",
                   color: "text-red-600 border-red-200 bg-red-50/40",
                 },
                 {
@@ -2173,7 +2171,7 @@ const platformCap = currentPlatformObj.limit;
                 {
                   key: "threads",
                   slug: "threads-post-generator",
-                  label: "Threads (500)",
+                  label: "Threads",
                   color: "text-purple-600 border-purple-200 bg-purple-50/40",
                 },
                 {
@@ -2185,13 +2183,13 @@ const platformCap = currentPlatformObj.limit;
                 {
                   key: "linkedin",
                   slug: "linkedin-post-splitter",
-                  label: "LinkedIn (3000)",
+                  label: "LinkedIn",
                   color: "text-blue-600 border-blue-200 bg-blue-50/40",
                 },
                 {
                   key: "telegram",
                   slug: "telegram-message-chunker",
-                  label: "Telegram (4096)",
+                  label: "Telegram",
                   color: "text-indigo-600 border-indigo-200 bg-indigo-50/40",
                 },
               ].map((item) => (
