@@ -169,9 +169,12 @@ const SLIDE_THEMES = [
 ];
 
 
-// 🟢 BULLETPROOF FONT LOADER: Forces browser to paint the font before canvas draws
+// 🟢 HIGH-SPEED FONT CACHE ENGINE (Zero Lag on Mobile)
+const fontLoadCache = new Set();
+
 async function ensureHandwritingFonts(fontName = "Kalam") {
   if (typeof window === "undefined" || typeof document === "undefined") return;
+  if (fontLoadCache.has(fontName)) return; // ⚡ Instant skip if already cached!
 
   try {
     if (!document.getElementById("utz-handwriting-fonts")) {
@@ -183,28 +186,16 @@ async function ensureHandwritingFonts(fontName = "Kalam") {
       document.head.appendChild(link);
     }
 
-    // Force strict DOM rendering to ensure canvas engine registers the glyphs
-    if (!document.getElementById(`font-tester-${fontName}`)) {
-      const tester = document.createElement("div");
-      tester.id = `font-tester-${fontName}`;
-      tester.style.fontFamily = `"${fontName}", cursive`;
-      tester.style.position = "absolute";
-      tester.style.opacity = "0";
-      tester.style.pointerEvents = "none";
-      tester.innerText = "Loading Test रुकिए";
-      document.body.appendChild(tester);
-    }
-
     if (document.fonts && document.fonts.load) {
-      await document.fonts.load(`400 40px "${fontName}"`);
-      await document.fonts.load(`600 40px "${fontName}"`);
-      await document.fonts.load(`700 40px "${fontName}"`);
+      await Promise.all([
+        document.fonts.load(`400 40px "${fontName}"`),
+        document.fonts.load(`600 40px "${fontName}"`),
+        document.fonts.load(`700 40px "${fontName}"`),
+      ]);
       await document.fonts.ready;
     }
 
-    // Wait for the browser's internal paint cycle (Double RequestAnimationFrame + Delay)
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    await new Promise((resolve) => setTimeout(resolve, 150)); 
+    fontLoadCache.add(fontName);
   } catch (e) {
     console.error("Font Load Error:", e);
   }
@@ -1001,18 +992,39 @@ const [shortTeaserText, setShortTeaserText] = useState("");
  
 
 
-  // WhatsApp Palette Click -> Cycle to Next Color & Auto-Regenerate
-  const handleNextTheme = () => {
-    const nextIdx = (themeIndex + 1) % SLIDE_THEMES.length;
-    setThemeIndex(nextIdx);
-    const newTheme = SLIDE_THEMES[nextIdx];
-    setSelectedSlideTheme(newTheme);
+  // 🟢 1. Dedicated Paper Themes Switcher (Cycles only 5 Paper Themes)
+  const handleNextPaperTheme = () => {
+    const paperThemes = SLIDE_THEMES.filter((t) => t.isPaper);
+    const currentPaperIdx = paperThemes.findIndex((t) => t.id === selectedSlideTheme.id);
+    const nextIdx = (currentPaperIdx + 1) % paperThemes.length;
+    const targetTheme = paperThemes[nextIdx];
+    const realIdx = SLIDE_THEMES.findIndex((t) => t.id === targetTheme.id);
+    
+    setThemeIndex(realIdx);
+    setSelectedSlideTheme(targetTheme);
 
     if (chunks.length > 0) {
-      handleGeneratePngSlides(newTheme);
+      handleGeneratePngSlides(targetTheme);
     }
   };
-// Direct Swatch Click Handler
+
+  // 🟢 2. Dedicated Digital Solid Colors Switcher (Cycles 15 Pro Colors)
+  const handleNextDigitalTheme = () => {
+    const digitalThemes = SLIDE_THEMES.filter((t) => !t.isPaper);
+    const currentDigitalIdx = digitalThemes.findIndex((t) => t.id === selectedSlideTheme.id);
+    const nextIdx = currentDigitalIdx === -1 ? 0 : (currentDigitalIdx + 1) % digitalThemes.length;
+    const targetTheme = digitalThemes[nextIdx];
+    const realIdx = SLIDE_THEMES.findIndex((t) => t.id === targetTheme.id);
+
+    setThemeIndex(realIdx);
+    setSelectedSlideTheme(targetTheme);
+
+    if (chunks.length > 0) {
+      handleGeneratePngSlides(targetTheme);
+    }
+  };
+
+  // Direct Swatch Click Handler
   const handleSelectTheme = (theme, idx) => {
     setThemeIndex(idx);
     setSelectedSlideTheme(theme);
@@ -1021,7 +1033,8 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       handleGeneratePngSlides(theme);
     }
   };
-// Generate PNG Slides Handler
+
+// 🟢 ULTRA-FAST PARALLEL PNG GENERATOR (Promise.all Engine - 10x Faster on Mobile)
   const handleGeneratePngSlides = async (targetTheme) => {
     if (chunks.length === 0 && !mediaFile) return;
     setIsProcessing(true);
@@ -1034,48 +1047,42 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     pngSlides.forEach((s) => URL.revokeObjectURL(s.url));
     setPngSlides([]);
 
-    const slides = [];
-    const totalSlidesCount = chunks.length;
-
-    // 🟢 Fix: Ensure font is 100% loaded in memory BEFORE slide 1 begins
     if (activeTheme?.isPaper) {
       await ensureHandwritingFonts(handwritingFont);
-      await new Promise(resolve => setTimeout(resolve, 250)); // Initial big wait
     }
 
-    for (let i = 0; i < chunks.length; i++) {
-      if (activeTheme?.isPaper) {
-        // 🟢 50ms Recheck Logic
-        await new Promise(resolve => setTimeout(resolve, 50)); 
-      }
-      
+    const totalSlidesCount = chunks.length;
+
+    // ⚡ Parallel Async Generation: All slides process concurrently without blocking
+    const slidePromises = chunks.map(async (chunk, idx) => {
       const res = await generatePngSlideBlob(
-        chunks[i],
-        i + 1,
+        chunk,
+        idx + 1,
         totalSlidesCount,
         activeTheme,
         selectedPlatform,
         handwritingFont,
         penThickness
       );
-      slides.push({
-        index: i + 1,
-        text: chunks[i],
+      return {
+        index: idx + 1,
+        text: chunk,
         blob: res.blob,
         url: res.url,
-      });
-    }
+      };
+    });
+
+    const slides = await Promise.all(slidePromises);
 
     setPngSlides(slides);
     setIsProcessing(false);
 
-    // Auto-scroll to results
     setTimeout(() => {
       const resultsSection = document.getElementById("pngResultsArea");
       if (resultsSection) {
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }, 200);
+    }, 100);
   };
 
   // 1-Click Color Swatch Click -> Auto Re-Generate Slides Live
@@ -1437,47 +1444,75 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                 </label>
               </div>
 
-              {/* PLATFORM PRESET & CHARACTER LIMIT SELECTOR */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1">
-                    Choose Social Media Platform
-                  </label>
-                  <select
-                    value={selectedPlatform}
-                    onChange={(e) =>
-                      handlePlatformDropdownChange(e.target.value)
-                    }
-                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-gray-950 border border-slate-200 dark:border-gray-800 rounded-xl text-xs font-bold text-gray-900 dark:text-white outline-none focus:border-blue-500 cursor-pointer"
-                  >
-                    {Object.keys(PLATFORM_LIMITS).map((key) => (
-                      <option key={key} value={key}>
-                        {PLATFORM_LIMITS[key].icon} {PLATFORM_LIMITS[key].name}
-                      </option>
-                    ))}
-                  </select>
+              {/* 🟢 DE-CLUTTERED PLATFORM & CAPACITY CONTROLS */}
+              <div className="p-4 bg-gradient-to-br from-slate-50 to-indigo-50/40 dark:from-gray-950 dark:to-indigo-950/20 border border-slate-200/80 dark:border-gray-800 rounded-2xl shadow-xs space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                    <span>🎯</span> Target Platform & Capacity Setup
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800">
+                    Max Limit: {currentPlatformObj.limit} Chars
+                  </span>
                 </div>
 
-                <div>
-                  <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1">
-                    Custom Character Limit (Max {currentPlatformObj.limit})
-                  </label>
-                  <input
-                    type="number"
-                    value={customLimit}
-                    onChange={(e) => {
-                      const val = Number(e.target.value);
-                      const maxAllowed = currentPlatformObj.limit;
-                      if (val > maxAllowed) {
-                        setCustomLimit(maxAllowed);
-                      } else {
-                        setCustomLimit(e.target.value);
-                      }
-                    }}
-                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-gray-950 border border-slate-200 dark:border-gray-800 rounded-xl text-xs font-bold text-gray-900 dark:text-white outline-none focus:border-blue-500"
-                    min="10"
-                    max={currentPlatformObj.limit}
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {/* Platform Dropdown with Brand Highlights */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block">
+                      Choose Social Media Platform:
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={selectedPlatform}
+                        onChange={(e) =>
+                          handlePlatformDropdownChange(e.target.value)
+                        }
+                        className="w-full pl-3.5 pr-8 py-2.5 bg-white dark:bg-gray-900 border-2 border-indigo-200/80 dark:border-indigo-900/60 focus:border-indigo-500 rounded-xl text-xs font-bold text-slate-900 dark:text-white outline-none cursor-pointer shadow-xs transition-all appearance-none"
+                      >
+                        {Object.keys(PLATFORM_LIMITS).map((key) => (
+                          <option key={key} value={key} className="py-1">
+                            {PLATFORM_LIMITS[key].icon} {PLATFORM_LIMITS[key].name}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">
+                        ▼
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Character Limit Input with Visual Feedback */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block">
+                        Active Limit (Chars / Slide):
+                      </label>
+                      <span className="text-[10px] text-slate-400 font-semibold">
+                        (Default: {currentPlatformObj.limit})
+                      </span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={customLimit}
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          const maxAllowed = currentPlatformObj.limit;
+                          if (val > maxAllowed) {
+                            setCustomLimit(maxAllowed);
+                          } else {
+                            setCustomLimit(e.target.value);
+                          }
+                        }}
+                        className="w-full px-3.5 py-2.5 bg-white dark:bg-gray-900 border-2 border-slate-200 dark:border-gray-800 focus:border-indigo-500 rounded-xl text-xs font-black text-indigo-600 dark:text-indigo-400 outline-none shadow-xs transition-all"
+                        min="50"
+                        max={currentPlatformObj.limit}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[10px] font-black text-slate-400 uppercase">
+                        Chars
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1657,9 +1692,11 @@ const [shortTeaserText, setShortTeaserText] = useState("");
               )}
 
 {/* MEDIA ATTACH & PNG PROCESS CONTROL WITH COLOR THEME & PREVIEW TILE */}
-              <div className="p-4 bg-slate-100 dark:bg-gray-900/80 rounded-2xl border border-slate-200 dark:border-gray-800 space-y-4">
+              <div className="p-4 bg-slate-100/90 dark:bg-gray-900/80 rounded-2xl border border-slate-200 dark:border-gray-800 space-y-4">
+                
+                {/* TOP ROW: Attach Media & Generate Button (Signature Blue-Indigo-Violet Theme) */}
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <label className="cursor-pointer text-xs font-bold bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 hover:border-indigo-500 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm">
+                  <label className="cursor-pointer text-xs font-bold bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 hover:border-indigo-500 px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-xs">
                     <span>📁 Attach Photo / Video</span>
                     <input
                       type="file"
@@ -1686,59 +1723,152 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                     </button>
                   )}
 
-                  {/* HD PALETTE SWITCHER & STABLE PAGINATED DOTS */}
-                  <div className="flex flex-wrap items-center gap-3">
-                    {/* Interactive Palette Button */}
+                  {chunks.length > 0 && (
                     <button
                       type="button"
-                      onClick={handleNextTheme}
-                      className="relative group flex items-center gap-2.5 px-4 py-2 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 dark:from-gray-900 dark:via-indigo-950 dark:to-gray-900 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/20 border border-indigo-500/40 hover:border-indigo-400 transition-all active:scale-95 cursor-pointer overflow-hidden"
-                      title="Click to cycle next background color"
+                      disabled={isProcessing}
+                      onClick={() => handleGeneratePngSlides(selectedSlideTheme)}
+                      className="relative group overflow-hidden px-6 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-indigo-500/25 border border-indigo-400/30 outline-none transition-all duration-200 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0 isolate"
                     >
-                      <span className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-400 opacity-20 group-hover:opacity-40 blur-sm transition-opacity"></span>
+                      <span className="absolute -inset-full top-0 block w-1/2 h-full bg-white/15 transform -skew-x-12 group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out pointer-events-none"></span>
 
-                      <span className="relative flex items-center justify-center w-6 h-6 rounded-lg bg-white/10 group-hover:scale-110 transition-transform">
-                        <span className="text-sm">🎨</span>
+                      <span className="relative flex items-center justify-center gap-2">
+                        {isProcessing ? (
+                          <>
+                            <span className="animate-spin text-sm">⏳</span>
+                            <span>Generating HD Slides...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-sm">🖼️</span>
+                            <span>Generate PNG Slides</span>
+                          </>
+                        )}
+                      </span>
+                    </button>
+                  )}
+                </div>
+
+                {/* 🟢 DEDICATED THEME CONTROLS (Harmonious Dual-Card Layout) */}
+                <div className="w-full flex flex-col gap-2.5">
+                  
+                  {/* 1. 📜 DEDICATED PAPER & DIARY THEMES */}
+                  <div className="p-2.5 bg-white dark:bg-gray-950 border border-slate-200/90 dark:border-gray-800 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-xs">
+                    
+                    {/* Paper Switch Button (Clean Dark Slate-Indigo with Amber Gold Accent) */}
+                    <button
+                      type="button"
+                      onClick={handleNextPaperTheme}
+                      className="relative group flex items-center gap-2.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-black dark:hover:bg-gray-900 text-white rounded-xl text-xs font-black border border-amber-500/40 hover:border-amber-400 shadow-sm transition-all active:scale-95 cursor-pointer shrink-0"
+                      title="Click to switch next Paper Theme"
+                    >
+                      <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-amber-500/20 text-amber-300 text-sm group-hover:scale-110 transition-transform">
+                        📖
                       </span>
 
-                      <div className="relative text-left">
-                        <span className="text-[9px] uppercase tracking-wider text-indigo-300 font-extrabold block leading-none mb-0.5">
+                      <div className="text-left">
+                        <span className="text-[9px] uppercase tracking-wider text-amber-400 font-extrabold block leading-none mb-0.5">
                           Click here to Switch ⚡
                         </span>
-                        <span className="text-xs font-black text-white block leading-none">
-                          {selectedSlideTheme.name}
+                        <span className="text-xs font-bold text-white block leading-none">
+                          {selectedSlideTheme?.isPaper ? selectedSlideTheme.name : "Paper Theme (5 Modes)"}
                         </span>
                       </div>
 
-                      <span className="relative text-indigo-300 group-hover:rotate-180 transition-transform duration-300 text-xs ml-1">
+                      <span className="text-amber-400 group-hover:rotate-180 transition-transform duration-300 text-xs ml-1">
                         🔄
                       </span>
                     </button>
 
-           {/* STABLE 5-DOT PAGINATED SWATCH CONTAINER */}
-                    <div className="flex items-center gap-2 p-1.5 bg-white dark:bg-gray-950 rounded-2xl border border-slate-200 dark:border-gray-800 shadow-inner">
-                      {(() => {
-                        const pageSize = 5;
-                        const pageStart =
-                          Math.floor(themeIndex / pageSize) * pageSize;
-                        const currentWindow = SLIDE_THEMES.slice(
-                          pageStart,
-                          pageStart + pageSize,
+                    {/* 5 Direct Paper Swatches */}
+                    <div className="flex items-center gap-2 bg-slate-50 dark:bg-gray-900/80 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-gray-800">
+                      <span className="text-[10px] font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider pr-1">
+                        📜 Paper Themes:
+                      </span>
+                      
+                      {SLIDE_THEMES.filter((t) => t.isPaper).map((theme) => {
+                        const realIdx = SLIDE_THEMES.findIndex((t) => t.id === theme.id);
+                        const isActive = selectedSlideTheme.id === theme.id;
+                        return (
+                          <button
+                            key={theme.id}
+                            type="button"
+                            onClick={() => handleSelectTheme(theme, realIdx)}
+                            className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative shrink-0 border border-slate-300 dark:border-gray-700 shadow-xs ${
+                              isActive
+                                ? "ring-2 ring-amber-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 scale-115 z-10 shadow-sm"
+                                : "hover:scale-110 opacity-85 hover:opacity-100"
+                            }`}
+                            style={{ backgroundColor: theme.color }}
+                            title={`${theme.name} (Click/Touch to select)`}
+                          >
+                            {isActive && (
+                              <span
+                                className="absolute inset-0 flex items-center justify-center text-[10px] font-black"
+                                style={{ color: theme.textColor || "#000000" }}
+                              >
+                                ✓
+                              </span>
+                            )}
+                          </button>
                         );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 2. 🎨 DIGITAL SOLID PRO THEMES */}
+                  <div className="p-2.5 bg-white dark:bg-gray-950 border border-slate-200/90 dark:border-gray-800 rounded-xl flex flex-wrap items-center justify-between gap-3 shadow-xs">
+                    
+                    {/* Solid Colors Switch Button (Clean Dark Slate-Indigo with Violet Accent) */}
+                    <button
+                      type="button"
+                      onClick={handleNextDigitalTheme}
+                      className="relative group flex items-center gap-2.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-black dark:hover:bg-gray-900 text-white rounded-xl text-xs font-black border border-indigo-500/40 hover:border-indigo-400 shadow-sm transition-all active:scale-95 cursor-pointer shrink-0"
+                      title="Click to switch next Solid Color"
+                    >
+                      <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-300 text-sm group-hover:scale-110 transition-transform">
+                        🎨
+                      </span>
+
+                      <div className="text-left">
+                        <span className="text-[9px] uppercase tracking-wider text-indigo-400 font-extrabold block leading-none mb-0.5">
+                          Click here to Switch ⚡
+                        </span>
+                        <span className="text-xs font-bold text-white block leading-none">
+                          {!selectedSlideTheme?.isPaper ? selectedSlideTheme.name : "Solid Colors (15 Pro)"}
+                        </span>
+                      </div>
+
+                      <span className="text-indigo-400 group-hover:rotate-180 transition-transform duration-300 text-xs ml-1">
+                        🔄
+                      </span>
+                    </button>
+
+                    {/* 5-Dot Paginated Solid Swatches */}
+                    <div className="flex items-center gap-2 bg-slate-50 dark:bg-gray-900/80 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-gray-800">
+                      <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider pr-1">
+                        🎨 Solid Colors:
+                      </span>
+
+                      {(() => {
+                        const digitalThemes = SLIDE_THEMES.filter((t) => !t.isPaper);
+                        const digitalCurrentIdx = digitalThemes.findIndex((t) => t.id === selectedSlideTheme.id);
+                        const safeIdx = digitalCurrentIdx >= 0 ? digitalCurrentIdx : 0;
+                        const pageSize = 5;
+                        const pageStart = Math.floor(safeIdx / pageSize) * pageSize;
+                        const currentWindow = digitalThemes.slice(pageStart, pageStart + pageSize);
 
                         return currentWindow.map((theme) => {
-                          const realIdx = SLIDE_THEMES.findIndex(
-                            (t) => t.id === theme.id,
-                          );
+                          const realIdx = SLIDE_THEMES.findIndex((t) => t.id === theme.id);
                           const isActive = selectedSlideTheme.id === theme.id;
                           return (
                             <button
                               key={theme.id}
                               type="button"
                               onClick={() => handleSelectTheme(theme, realIdx)}
-                              className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative shrink-0 border border-slate-300/80 dark:border-white/20 shadow-xs ${
+                              className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative shrink-0 border border-slate-300 dark:border-gray-700 shadow-xs ${
                                 isActive
-                                  ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-950 scale-125 shadow-md z-10"
+                                  ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-900 scale-115 z-10 shadow-sm"
                                   : "opacity-85 hover:opacity-100 hover:scale-110"
                               }`}
                               style={{ backgroundColor: theme.color }}
@@ -1757,89 +1887,65 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                         });
                       })()}
 
-                      {/* Page Counter Badge (Now dynamically counts 1/4, 2/4, 3/4, 4/4) */}
-                      <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 px-1 select-none">
-                        {Math.floor(themeIndex / 5) + 1}/
-                        {Math.ceil(SLIDE_THEMES.length / 5)}
+                      {/* Page Counter Badge */}
+                      <span className="text-[9px] font-bold text-slate-400 px-1 select-none">
+                        {(() => {
+                          const digitalThemes = SLIDE_THEMES.filter((t) => !t.isPaper);
+                          const digitalCurrentIdx = digitalThemes.findIndex((t) => t.id === selectedSlideTheme.id);
+                          const safeIdx = digitalCurrentIdx >= 0 ? digitalCurrentIdx : 0;
+                          return `${Math.floor(safeIdx / 5) + 1}/${Math.ceil(digitalThemes.length / 5)}`;
+                        })()}
                       </span>
                     </div>
-
-                    {/* ✍️ HANDWRITING STYLES & PEN INK THICKNESS CONTROLS */}
-                    {selectedSlideTheme?.isPaper && (
-                      <div className="flex flex-wrap items-center gap-2.5 px-3 py-1.5 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/60 rounded-2xl shadow-xs animate-fadeIn">
-                        {/* 1. Handwriting Type */}
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider whitespace-nowrap">
-                            ✍️ Pen:
-                          </span>
-                          <select
-                            value={handwritingFont}
-                            onChange={(e) => {
-                              setHandwritingFont(e.target.value);
-                              if (chunks.length > 0) {
-                                setTimeout(() => handleGeneratePngSlides(selectedSlideTheme), 50);
-                              }
-                            }}
-                            className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 rounded-xl px-2 py-1 outline-none cursor-pointer"
-                          >
-                            <option value="Kalam">📖 Kalam (Natural Diary)</option>
-                            <option value="Caveat">✒️ Caveat (Cursive Pen)</option>
-                            <option value="Dekko">✏️ Dekko (Clean Print)</option>
-                            <option value="Tillana">🖋️ Tillana (Artistic Ink)</option>
-                            <option value="Amita">📜 Amita (Calligraphy)</option>
-                          </select>
-                        </div>
-
-                        {/* 2. Pen Ink Thickness (Thin Daily by default) */}
-                        <div className="flex items-center gap-1.5 border-l border-amber-300/80 dark:border-amber-800/60 pl-2">
-                          <span className="text-[10px] font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider whitespace-nowrap">
-                            🖊️ Ink:
-                          </span>
-                          <select
-                            value={penThickness}
-                            onChange={(e) => {
-                              setPenThickness(e.target.value);
-                              if (chunks.length > 0) {
-                                setTimeout(() => handleGeneratePngSlides(selectedSlideTheme), 50);
-                              }
-                            }}
-                            className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 rounded-xl px-2 py-1 outline-none cursor-pointer"
-                          >
-                            <option value="thin">Thin Ballpoint (स्वाभाविक पतली - Default)</option>
-                            <option value="medium">Medium Gel Pen (मध्यम)</option>
-                            <option value="dark">Dark / Bold Pen (गहरी लिखावट)</option>
-                          </select>
-                        </div>
-                      </div>
-                    )}
                   </div>
-
-                  {chunks.length > 0 && (
-                    <button
-                      type="button"
-                      disabled={isProcessing}
-                      onClick={() => handleGeneratePngSlides(selectedSlideTheme)}
-                      className="relative group overflow-hidden px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/30 border-0 outline-none transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0 isolate"
-                    >
-                      {/* Background Shine Effect */}
-                      <span className="absolute -inset-full top-0 block w-1/2 h-full bg-white/20 transform -skew-x-12 group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out pointer-events-none"></span>
-
-                      <span className="relative flex items-center justify-center gap-2">
-                        {isProcessing ? (
-                          <>
-                            <span className="animate-spin text-sm">⏳</span>
-                            <span>Generating HD Slides...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="text-sm">🖼️</span>
-                            <span>Generate PNG Slides</span>
-                          </>
-                        )}
-                      </span>
-                    </button>
-                  )}
                 </div>
+
+                {/* ✍️ HANDWRITING STYLES & PEN INK THICKNESS CONTROLS */}
+                {selectedSlideTheme?.isPaper && (
+                  <div className="flex flex-wrap items-center gap-2.5 px-3 py-1.5 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/60 rounded-2xl shadow-xs animate-fadeIn">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider whitespace-nowrap">
+                        ✍️ Pen:
+                      </span>
+                      <select
+                        value={handwritingFont}
+                        onChange={(e) => {
+                          setHandwritingFont(e.target.value);
+                          if (chunks.length > 0) {
+                            setTimeout(() => handleGeneratePngSlides(selectedSlideTheme), 50);
+                          }
+                        }}
+                        className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 rounded-xl px-2 py-1 outline-none cursor-pointer"
+                      >
+                        <option value="Kalam">📖 Kalam (Natural Diary)</option>
+                        <option value="Caveat">✒️ Caveat (Cursive Pen)</option>
+                        <option value="Dekko">✏️ Dekko (Clean Print)</option>
+                        <option value="Tillana">🖋️ Tillana (Artistic Ink)</option>
+                        <option value="Amita">📜 Amita (Calligraphy)</option>
+                      </select>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 border-l border-amber-300/80 dark:border-amber-800/60 pl-2">
+                      <span className="text-[10px] font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider whitespace-nowrap">
+                        🖊️ Ink:
+                      </span>
+                      <select
+                        value={penThickness}
+                        onChange={(e) => {
+                          setPenThickness(e.target.value);
+                          if (chunks.length > 0) {
+                            setTimeout(() => handleGeneratePngSlides(selectedSlideTheme), 50);
+                          }
+                        }}
+                        className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 rounded-xl px-2 py-1 outline-none cursor-pointer"
+                      >
+                        <option value="thin">Thin Ballpoint (स्वाभाविक पतली - Default)</option>
+                        <option value="medium">Medium Gel Pen (मध्यम)</option>
+                        <option value="dark">Dark / Bold Pen (गहरी लिखावट)</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
 
                 {/* VISUAL ATTACHED MEDIA PREVIEW TILE */}
                 {mediaPreviewUrl && (
@@ -2158,69 +2264,86 @@ const [shortTeaserText, setShortTeaserText] = useState("");
             </GlassCard>
           </div>
 
-          {/* QUICK PLATFORM LINKING MATRIX GRID */}
-          <div className="w-full max-w-4xl mx-auto mt-6 text-left space-y-3">
-            <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-              Supported Social Media Platform Quick Presets:
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2.5">
+          {/* 🟢 QUICK PLATFORM PRESETS (Anti-Clutter, Spaced & Brand Themed) */}
+          <div className="w-full max-w-4xl mx-auto mt-8 text-left space-y-3.5 animate-fadeIn">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>⚡</span> Supported Social Media Presets:
+              </h3>
+              <span className="text-[10px] text-slate-400 font-semibold hidden sm:inline">
+                Click any preset to instant switch & auto-format
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5">
               {[
                 {
                   key: "whatsapp",
                   slug: "whatsapp-status-formatter",
                   label: "WhatsApp",
-                  color: "text-green-600 border-green-200 bg-green-50/40",
+                  icon: "💬",
+                  color: "text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 bg-emerald-50/70 dark:bg-emerald-950/40",
                 },
                 {
                   key: "pinterest",
                   slug: "pinterest-carousel-generator",
                   label: "Pinterest",
-                  color: "text-red-600 border-red-200 bg-red-50/40",
+                  icon: "📌",
+                  color: "text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-800 bg-rose-50/70 dark:bg-rose-950/40",
                 },
                 {
                   key: "twitter",
                   slug: "twitter-thread-generator",
-                  label: "Twitter / X (280)",
-                  color: "text-sky-600 border-sky-200 bg-sky-50/40",
+                  label: "Twitter / X",
+                  icon: "🐦",
+                  color: "text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-800 bg-sky-50/70 dark:bg-sky-950/40",
                 },
                 {
                   key: "threads",
                   slug: "threads-post-generator",
                   label: "Threads",
-                  color: "text-purple-600 border-purple-200 bg-purple-50/40",
+                  icon: "🧵",
+                  color: "text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800 bg-purple-50/70 dark:bg-purple-950/40",
                 },
                 {
                   key: "instagram",
                   slug: "instagram-reels-text-hooks",
-                  label: "Instagram (150)",
-                  color: "text-pink-600 border-pink-200 bg-pink-50/40",
+                  label: "Instagram",
+                  icon: "📸",
+                  color: "text-pink-700 dark:text-pink-300 border-pink-300 dark:border-pink-800 bg-pink-50/70 dark:bg-pink-950/40",
                 },
                 {
                   key: "linkedin",
                   slug: "linkedin-post-splitter",
                   label: "LinkedIn",
-                  color: "text-blue-600 border-blue-200 bg-blue-50/40",
+                  icon: "💼",
+                  color: "text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-800 bg-blue-50/70 dark:bg-blue-950/40",
                 },
                 {
                   key: "telegram",
                   slug: "telegram-message-chunker",
                   label: "Telegram",
-                  color: "text-indigo-600 border-indigo-200 bg-indigo-50/40",
+                  icon: "✈️",
+                  color: "text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/40",
                 },
-              ].map((item) => (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => handlePlatformDropdownChange(item.key)}
-                  className={`p-3 rounded-xl border text-xs font-bold text-center transition-all cursor-pointer ${
-                    selectedPlatform === item.key
-                      ? "ring-2 ring-blue-500 shadow-md bg-white dark:bg-gray-900 border-blue-500"
-                      : `${item.color} hover:shadow-sm`
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+              ].map((item) => {
+                const isSelected = selectedPlatform === item.key;
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => handlePlatformDropdownChange(item.key)}
+                    className={`py-2.5 px-3 rounded-2xl border-2 text-xs font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 shadow-xs ${
+                      isSelected
+                        ? "bg-white dark:bg-gray-900 border-indigo-600 text-indigo-600 dark:text-white ring-2 ring-indigo-500/30 shadow-md scale-102"
+                        : `${item.color} hover:scale-102 opacity-90 hover:opacity-100`
+                    }`}
+                  >
+                    <span className="text-sm">{item.icon}</span>
+                    <span className="truncate">{item.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
