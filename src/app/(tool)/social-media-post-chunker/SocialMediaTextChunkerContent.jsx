@@ -13,11 +13,11 @@ const PLATFORM_LIMITS = {
     desc: "Optimized 700-character chunks for clean WhatsApp status & Full HD slides.",
   },
   pinterest: {
-    name: "Pinterest Carousel (2:3)",
-    limit: 450, // 🟢 Best 2:3 Pinterest Pin density
+    name: "Pinterest Carousel (2:3 Retina HD)",
+    limit: 850, // 🟢 850 Chars fills 2:3 Ultra HD pin perfectly with minimal slide count
     icon: "📌",
     slug: "pinterest-carousel-generator",
-    desc: "Ultra-crisp 2:3 HD retina slides (450 chars) for zero-blur Pinterest carousels.",
+    desc: "Ultra-crisp 2:3 Retina HD (1600x2400) slides with zero compression blur for Pinterest carousels.",
   },
   twitter: {
     name: "Twitter / X Thread",
@@ -246,20 +246,18 @@ async function generatePngSlideBlob(
     const canvas = document.createElement("canvas");
     const isPaper = Boolean(theme?.isPaper);
     const isPinterest = platform === "pinterest";
-    const scaleFactor = 1.0;
 
-    // 🟢 UNIFORM FIXED SIZES: All slides get the exact same dimensions without bottom blank space
+    // 🟢 DYNAMIC DPI / RETINA SCALE: Pinterest gets 1.48x high-res scale (1600x2400) for zero blur
+    const scaleFactor = isPinterest ? 1.48 : 1.0;
+
     let canvasWidth = 1080;
     let canvasHeight = 1920;
 
-    if (isPaper) {
-      // 🟢 Compact Paper Fit (1080x1180): Exactly ~15-16 lines capacity. Cuts extra bottom space equally on ALL slides.
-      canvasWidth = 1080;
-      canvasHeight = 1180;
-    } else if (platform === "pinterest") {
-      canvasWidth = 1080;
-      canvasHeight = 1620;
-    } else if (["instagram", "twitter", "threads", "linkedin"].includes(platform)) {
+    if (isPinterest) {
+      // 🟢 2:3 Ultra-HD Retina Canvas (1600x2400) - Overcomes Pinterest compression algorithm
+      canvasWidth = 1600;
+      canvasHeight = 2400;
+    } else if (["instagram", "twitter", "threads", "linkedin"].includes(platform) && !isPaper) {
       canvasWidth = 1080;
       canvasHeight = 1350;
     }
@@ -278,10 +276,10 @@ async function generatePngSlideBlob(
     };
     const activeWeight = isPaper ? (weightMap[penThickness] || "400") : "600";
 
-    // ---------------- 1. BACKGROUND RENDERING ----------------
-    const startLineY = Math.round(185 * scaleFactor);
-    const lineGap = Math.round(58 * scaleFactor);
-    const endLineY = canvas.height - Math.round(85 * scaleFactor);
+    // ---------------- 1. BACKGROUND RENDERING (Ruled Lines Engine) ----------------
+    const startLineY = Math.round(180 * scaleFactor);
+    const lineGap = Math.round((isPinterest && isPaper ? 72 : isPaper ? 62 : 58) * scaleFactor); 
+    const endLineY = canvas.height - Math.round(95 * scaleFactor);
 
     if (isPaper) {
       if (theme.isOld) {
@@ -427,57 +425,73 @@ async function generatePngSlideBlob(
     const maxWidth = canvas.width - textPaddingLeft - Math.round(80 * scaleFactor);
     const words = cleanText ? cleanText.split(/\s+/) : [];
 
-    // 🟢 Optimal Typography Scaling
-    const fontSize = isPaper
-      ? Math.round(38 * scaleFactor)
-      : Math.round((platform === "pinterest" ? 44 : 42) * scaleFactor);
-
-    const currentLineHeight = isPaper && theme.ruled 
-      ? lineGap 
-      : fontSize + Math.round(22 * scaleFactor);
-
+    // 🟢 Auto-Fit Typography Engine (Bigger, natural 42px handwriting text)
     const fontStack = isPaper
       ? `"${handwritingFont}", "Kalam", cursive, sans-serif`
       : `system-ui, -apple-system, sans-serif`;
 
-    ctx.font = `${activeWeight} ${fontSize}px ${fontStack}`;
+    let fontSize = isPaper
+      ? Math.round(42 * scaleFactor) // 🟢 42px bold clear diary handwriting
+      : Math.round((platform === "pinterest" ? 44 : 42) * scaleFactor);
 
-    let lines = [];
-    let line = "";
+    let activeLineGap = lineGap;
+    let currentLineHeight = isPaper && theme.ruled 
+      ? activeLineGap 
+      : fontSize + Math.round(22 * scaleFactor);
 
-    for (let n = 0; n < words.length; n++) {
-      let word = words[n];
-      if (ctx.measureText(word).width > maxWidth) {
-        if (line.trim()) {
-          lines.push(line.trim());
-          line = "";
-        }
-        let subWord = "";
-        for (let c = 0; c < word.length; c++) {
-          if (ctx.measureText(subWord + word[c]).width > maxWidth) {
-            lines.push(subWord);
-            subWord = word[c];
-          } else {
-            subWord += word[c];
+    // Initial Line Wrap Calculation
+    const calculateLines = (fSize) => {
+      ctx.font = `${activeWeight} ${fSize}px ${fontStack}`;
+      let resLines = [];
+      let curLine = "";
+
+      for (let n = 0; n < words.length; n++) {
+        let word = words[n];
+        if (ctx.measureText(word).width > maxWidth) {
+          if (curLine.trim()) {
+            resLines.push(curLine.trim());
+            curLine = "";
           }
+          let subWord = "";
+          for (let c = 0; c < word.length; c++) {
+            if (ctx.measureText(subWord + word[c]).width > maxWidth) {
+              resLines.push(subWord);
+              subWord = word[c];
+            } else {
+              subWord += word[c];
+            }
+          }
+          if (subWord) curLine = subWord + " ";
+          continue;
         }
-        if (subWord) line = subWord + " ";
-        continue;
-      }
 
-      const testLine = line + word + " ";
-      if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-        lines.push(line.trim());
-        line = word + " ";
-      } else {
-        line = testLine;
+        const testLine = curLine + word + " ";
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+          resLines.push(curLine.trim());
+          curLine = word + " ";
+        } else {
+          curLine = testLine;
+        }
       }
-    }
-    if (line.trim()) lines.push(line.trim());
+      if (curLine.trim()) resLines.push(curLine.trim());
+      return resLines;
+    };
 
-    const maxAllowedLines = isPaper && theme.ruled
-      ? Math.floor((endLineY - startLineY) / lineGap)
+    let lines = calculateLines(fontSize);
+    let maxAllowedLines = isPaper && theme.ruled
+      ? Math.floor((endLineY - startLineY) / activeLineGap)
       : Math.floor((endLineY - Math.round(180 * scaleFactor)) / currentLineHeight);
+
+    // 🟢 Micro Dynamic Auto-Scale (Agar 2-4 extra lines merge hui hain, toh font 2-3px scale karke zero clipping karega)
+    if (lines.length > maxAllowedLines && fontSize > 32) {
+      fontSize = Math.max(32, fontSize - 3);
+      activeLineGap = Math.max(50, lineGap - 4);
+      currentLineHeight = isPaper && theme.ruled ? activeLineGap : fontSize + Math.round(18 * scaleFactor);
+      lines = calculateLines(fontSize);
+      maxAllowedLines = isPaper && theme.ruled
+        ? Math.floor((endLineY - startLineY) / activeLineGap)
+        : Math.floor((endLineY - Math.round(180 * scaleFactor)) / currentLineHeight);
+    }
 
     const printableLines = lines.slice(0, maxAllowedLines);
 
@@ -829,49 +843,50 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     let effectiveLimit = userLimit;
 
     if (viewMode === "png_slides") {
-      if (selectedSlideTheme?.isPaper) {
-        // 🟢 Paper Mode: Strict 420 chars cap to prevent overflow on ruled notebook lines
-        effectiveLimit = Math.min(userLimit, 420);
-      } else if (selectedPlatform === "pinterest") {
-        // 🟢 Pinterest: 450 chars max for 2:3 vertical pins
-        effectiveLimit = Math.min(userLimit, 450);
-      } else if (["instagram", "threads", "linkedin"].includes(selectedPlatform)) {
-        // 🟢 Feed 4:5 carousels: 500 chars max
-        effectiveLimit = Math.min(userLimit, 500);
+      if (selectedPlatform === "pinterest") {
+        // 🟢 Pinterest 2:3 Ultra-HD Pin: 850 Chars capacity minimizes total slides
+        effectiveLimit = 850;
+      } else if (selectedSlideTheme?.isPaper) {
+        // 🟢 Paper Mode (9:16 Full HD): 1150 Chars capacity fills all 24-26 lines completely
+        effectiveLimit = 1150;
       } else if (selectedPlatform === "twitter") {
         effectiveLimit = Math.min(userLimit, 280);
+      } else if (["instagram", "threads", "linkedin"].includes(selectedPlatform)) {
+        effectiveLimit = Math.min(userLimit, 500);
       } else {
-        // 🟢 Digital Full HD (WhatsApp / Telegram 9:16): Allows full 700 chars!
+        // 🟢 Digital 9:16 Full HD colors remain at 700 chars
         effectiveLimit = userLimit; 
       }
     }
 
-    const words = cleanInput.split(/\s+/);
+    // 🟢 Greedy Sentence & Word Splitter (Packs every slide fully from Slide 1)
+    const tokens = cleanInput.split(/\s+/);
     let currentChunk = "";
     let rawChunks = [];
 
-    words.forEach((word) => {
-      if ((currentChunk + " " + word).trim().length <= effectiveLimit) {
-        currentChunk += (currentChunk ? " " : "") + word;
+    tokens.forEach((token) => {
+      if ((currentChunk + " " + token).trim().length <= effectiveLimit) {
+        currentChunk += (currentChunk ? " " : "") + token;
       } else {
-        if (currentChunk) rawChunks.push(currentChunk);
-        currentChunk = word;
+        if (currentChunk.trim()) rawChunks.push(currentChunk.trim());
+        currentChunk = token;
       }
     });
-    if (currentChunk) rawChunks.push(currentChunk);
+    if (currentChunk.trim()) rawChunks.push(currentChunk.trim());
 
- // 2. Ultra-Tight 3% Spill & Second-Last Slide Auto-Merge Logic
+    // 🟢 SMART SPILL AUTO-ABSORB ENGINE: 
+    // Agar aakhiri slide par sirf 3-6 line ka chhota text (<= 400 chars) bacha ho,
+    // toh use nayi slide banane ke bajay pichli slide me hi merge kar le.
     if (rawChunks.length > 1) {
       const lastChunk = rawChunks[rawChunks.length - 1];
-      const previousChunk = rawChunks[rawChunks.length - 2];
+      const prevChunk = rawChunks[rawChunks.length - 2];
 
-      // Agar last slide ka content <= 100 chars (below 3%) hai 
-      // YA second-last slide me absorb ho sakta hai (up to 1180 chars)
-      if (
-        lastChunk.length <= 100 ||
-(previousChunk + " " + lastChunk).length <= 1400      ) {
-        const removedLast = rawChunks.pop();
-        rawChunks[rawChunks.length - 1] = (previousChunk + "\n\n" + removedLast).trim();
+      const isTailShort = lastChunk.length <= 400;
+      const canSafelyAbsorb = (prevChunk + " " + lastChunk).length <= (effectiveLimit * 1.25);
+
+      if (isTailShort || canSafelyAbsorb) {
+        const tail = rawChunks.pop();
+        rawChunks[rawChunks.length - 1] = `${prevChunk}\n\n${tail}`.trim();
       }
     }
 
