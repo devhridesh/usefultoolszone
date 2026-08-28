@@ -231,42 +231,57 @@ function normalizeUnicodeText(str = "") {
       String.fromCharCode(c.codePointAt(0) - 0x1d5ee + 97)
     );
 }
-
 async function generatePngSlideBlob(
   textChunk,
   slideNumber,
   totalSlides,
   theme = SLIDE_THEMES[0],
-  isPinterest = false,
+  platform = "whatsapp",
   handwritingFont = "Kalam",
-  penThickness = "thin" // Default: Realistic Thin Daily Ballpoint/Ink
+  penThickness = "thin"
 ) {
   await ensureHandwritingFonts(handwritingFont);
 
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
-    canvas.width = isPinterest ? 1600 : 1080;
-    canvas.height = isPinterest ? 2400 : 1920;
-    const ctx = canvas.getContext("2d");
-
-    const scaleFactor = isPinterest ? 1.48 : 1.0;
     const isPaper = Boolean(theme?.isPaper);
+    const isPinterest = platform === "pinterest";
+    const scaleFactor = 1.0;
+
+    // 🟢 UNIFORM FIXED SIZES: All slides get the exact same dimensions without bottom blank space
+    let canvasWidth = 1080;
+    let canvasHeight = 1920;
+
+    if (isPaper) {
+      // 🟢 Compact Paper Fit (1080x1180): Exactly ~15-16 lines capacity. Cuts extra bottom space equally on ALL slides.
+      canvasWidth = 1080;
+      canvasHeight = 1180;
+    } else if (platform === "pinterest") {
+      canvasWidth = 1080;
+      canvasHeight = 1620;
+    } else if (["instagram", "twitter", "threads", "linkedin"].includes(platform)) {
+      canvasWidth = 1080;
+      canvasHeight = 1350;
+    }
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    const ctx = canvas.getContext("2d");
 
     const bgColor = theme?.color || "#0F172A";
     const primaryText = theme?.textColor || "#FFFFFF";
 
-    // 🖊️ Pen Ink Thickness Weight Map (Default: 400 Thin for natural look)
     const weightMap = {
-      thin: "400",    // 🟢 Real daily pen (आम इंसान की लिखावट)
-      medium: "500",  // Gel pen feel
-      dark: "700",    // Dark marker/bold fountain pen
+      thin: "400",
+      medium: "500",
+      dark: "700",
     };
     const activeWeight = isPaper ? (weightMap[penThickness] || "400") : "600";
 
     // ---------------- 1. BACKGROUND RENDERING ----------------
-    const startLineY = Math.round(230 * scaleFactor);
-    const lineGap = Math.round(62 * scaleFactor);
-    const endLineY = canvas.height - Math.round(130 * scaleFactor);
+    const startLineY = Math.round(185 * scaleFactor);
+    const lineGap = Math.round(58 * scaleFactor);
+    const endLineY = canvas.height - Math.round(85 * scaleFactor);
 
     if (isPaper) {
       if (theme.isOld) {
@@ -336,11 +351,12 @@ async function generatePngSlideBlob(
         headerTop + badgeH * 0.6
       );
 
-      ctx.font = `400 ${Math.round(20 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+     // 🟢 Elegant Stationery Print Branding Watermark (No clickable link look)
+      ctx.font = `500 ${Math.round(15 * scaleFactor)}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = "right";
-      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.38)";
       ctx.fillText(
-        "useful tools zone / notes",
+        "useful tools zone / social media post chunker",
         canvas.width - Math.round(80 * scaleFactor),
         headerTop + badgeH * 0.6
       );
@@ -499,19 +515,20 @@ async function generatePngSlideBlob(
     }
 
     // ---------------- 4. CLEAN FOOTER ----------------
-    const borderY = canvas.height - Math.round(55 * scaleFactor);
+    const borderY = canvas.height - Math.round(38 * scaleFactor);
 
     if (isPaper) {
-      ctx.font = `${activeWeight} ${Math.round(24 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+      ctx.font = `${activeWeight} ${Math.round(22 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
       ctx.textAlign = "center";
       ctx.fillStyle = primaryText;
 
       if (totalSlides > 1 && slideNumber < totalSlides) {
-        ctx.fillText(`[ Turn page for part ${slideNumber + 1} ... ]`, canvas.width / 2, borderY);
+        // 🟢 Authentic Hindi Classic Novel / Diary Turn-Page Indicator
+        ctx.fillText(`~ क्रमशः अगले पन्ने पर (भाग ${slideNumber + 1}) 👉 ~`, canvas.width / 2, borderY);
       } else {
         ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
         ctx.font = `400 ${Math.round(20 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
-        ctx.fillText("~ End of notes | Useful Tools Zone ~", canvas.width / 2, borderY);
+        ctx.fillText("~ समाप्त | Useful Tools Zone ~", canvas.width / 2, borderY);
       }
     } else {
       const isDarkText =
@@ -812,19 +829,20 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       );
     }
 
-// 🟢 Platform-Aware Effective Limit (Zero Overflow on Paper Themes)
-    const platformCap = currentPlatformObj.limit;
+const platformCap = currentPlatformObj.limit;
     const userLimit = Math.min(Number(customLimit) || platformCap, platformCap);
 
     let effectiveLimit = userLimit;
     if (viewMode === "png_slides") {
       if (selectedPlatform === "pinterest") {
-        effectiveLimit = userLimit;
+        effectiveLimit = Math.min(userLimit, 350);
       } else if (selectedSlideTheme?.isPaper) {
-        // 🟢 Paper Mode Cap: Prevents lines from overflowing past notebook bottom
-        effectiveLimit = Math.min(userLimit, 400);
+        // 🟢 360 Chars: Perfectly balances text across the compact 2:3 diary page
+        effectiveLimit = Math.min(userLimit, 360);
+      } else if (["instagram", "twitter", "threads", "linkedin"].includes(selectedPlatform)) {
+        effectiveLimit = Math.min(userLimit, 450);
       } else {
-        const defaultPngLimit = isMobile ? 1020 : 660;
+        const defaultPngLimit = isMobile ? 850 : 600;
         effectiveLimit = Math.min(userLimit, defaultPngLimit);
       }
     }
@@ -1004,9 +1022,8 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     const slides = [];
     const totalSlidesCount = chunks.length;
-    const isPinterest = selectedPlatform === "pinterest";
 
-// 🟢 Fix: Ensure font is 100% loaded in memory BEFORE slide 1 begins
+    // 🟢 Fix: Ensure font is 100% loaded in memory BEFORE slide 1 begins
     if (activeTheme?.isPaper) {
       await ensureHandwritingFonts(handwritingFont);
       await new Promise(resolve => setTimeout(resolve, 250)); // Initial big wait
@@ -1014,8 +1031,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     for (let i = 0; i < chunks.length; i++) {
       if (activeTheme?.isPaper) {
-        // 🟢 50ms Recheck Logic: Force the thread to yield before drawing EACH slide
-        // This guarantees the canvas engine registers the font for every single image
+        // 🟢 50ms Recheck Logic
         await new Promise(resolve => setTimeout(resolve, 50)); 
       }
       
@@ -1024,7 +1040,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
         i + 1,
         totalSlidesCount,
         activeTheme,
-        isPinterest,
+        selectedPlatform,
         handwritingFont,
         penThickness
       );
@@ -1136,6 +1152,38 @@ const [shortTeaserText, setShortTeaserText] = useState("");
         link.click();
         document.body.removeChild(link);
       }, idx * 220);
+    });
+  };
+
+  // 🟢 1-Click Sequential Direct Downloader (Mobile & PC Both)
+  const handleDownloadAll = () => {
+    const cleanTopic = inputText.trim().split(/\s+/)[0]?.replace(/[^a-zA-Z0-9]/g, "") || "Post";
+    const dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const timeStamp = Math.floor(Date.now() / 1000).toString().slice(-4);
+    const baseName = `UTZ_${cleanTopic}_${dateStamp}_${timeStamp}`;
+
+    const filesToDownload = [];
+
+    if (mediaFile) {
+      const ext = mediaFile.name.split(".").pop() || "jpg";
+      filesToDownload.push({ blob: mediaFile, name: `${baseName}_Media.${ext}` });
+    }
+
+    pngSlides.forEach((slide) => {
+      filesToDownload.push({ blob: slide.blob, name: `${baseName}_Slide_${slide.index}.png` });
+    });
+
+    if (filesToDownload.length === 0) return;
+
+    filesToDownload.forEach((item, idx) => {
+      setTimeout(() => {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(item.blob);
+        link.download = item.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }, idx * 300); // 300ms delay ensures mobile browser queue saves every slide without skipping
     });
   };
 
@@ -1952,18 +2000,33 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                             </p>
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={handleShareAll}
-                            className="w-full sm:w-auto px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer shrink-0 flex items-center justify-center gap-2"
-                          >
-                            <span>📲</span>
-                            <span>
-                              {isMobile
-                                ? "Share All via App"
-                                : "Download All Slides (UTZ)"}
-                            </span>
-                          </button>
+                          <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto shrink-0">
+                            {/* 1. Share Button (Mobile Only) */}
+                            {isMobile && (
+                              <button
+                                type="button"
+                                onClick={handleShareAll}
+                                className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-indigo-500/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                              >
+                                <span>📲</span>
+                                <span>Share via App</span>
+                              </button>
+                            )}
+
+                            {/* 2. Direct Sequential Download Button (Mobile & PC Both) */}
+                            <button
+                              type="button"
+                              onClick={handleDownloadAll}
+                              className="w-full sm:w-auto px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                            >
+                              <span>📥</span>
+                              <span>
+                                {isMobile
+                                  ? "Download All (Serial)"
+                                  : "Download All Slides (UTZ)"}
+                              </span>
+                            </button>
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
