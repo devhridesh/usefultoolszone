@@ -12,6 +12,13 @@ const PLATFORM_LIMITS = {
     slug: "whatsapp-status-formatter",
     desc: "Optimized 700-character chunks for clean WhatsApp status & chat delivery.",
   },
+  pinterest: {
+    name: "Pinterest Carousel / Pin",
+    limit: 400,
+    icon: "📌",
+    slug: "pinterest-carousel-generator",
+    desc: "Ultra-crisp 2:3 HD retina slides (Max 400 chars) for zero-blur Pinterest carousels.",
+  },
   twitter: {
     name: "Twitter / X Thread",
     limit: 280,
@@ -52,6 +59,8 @@ const PLATFORM_LIMITS = {
 const SLUG_MAP = {
   whatsapp: "whatsapp",
   "whatsapp-status-formatter": "whatsapp",
+  pinterest: "pinterest",
+  "pinterest-carousel-generator": "pinterest",
   twitter: "twitter",
   "twitter-thread-generator": "twitter",
   threads: "threads",
@@ -74,218 +83,494 @@ const HOOK_PRESETS = [
 ];
 // WhatsApp Authentic Unique Status Colors (No Repeats)
 // Premium Aesthetic Status Colors with Auto Text Color Contrast
-// 🟢 15 Handcrafted High-Contrast Pro Aesthetic Colors (5 per page × 3 full pages)
+// 🟢 20 Handcrafted Themes (Page 1 = 5 Paper/Diary + Pages 2,3,4 = 15 Original Pro Colors)
 const SLIDE_THEMES = [
-  // --- PAGE 1: Executive & Luxury Dark Tones ---
+  // ==========================================
+  // --- PAGE 1 (1/4): Authentic Paper & Diary Journal Themes ---
+  // ==========================================
+  {
+    id: "old-ruled-diary",
+    name: "Old Ruled Diary",
+    color: "#F4ECD8",
+    textColor: "#1E3A8A", // Vintage Blue Ink
+    isPaper: true,
+    ruled: true,
+    isOld: true,
+    marginColor: "rgba(225, 29, 72, 0.45)",
+    lineColor: "rgba(30, 58, 138, 0.15)",
+  },
+  {
+    id: "new-ruled-notebook",
+    name: "New Ruled Notebook",
+    color: "#FCFCF9",
+    textColor: "#18181B", // Black Gel Ink
+    isPaper: true,
+    ruled: true,
+    isOld: false,
+    marginColor: "rgba(244, 63, 94, 0.4)",
+    lineColor: "rgba(71, 85, 105, 0.15)",
+  },
+  {
+    id: "vintage-parchment",
+    name: "Old Blank Parchment",
+    color: "#EFE3C3",
+    textColor: "#3B2219", // Sepia Ink
+    isPaper: true,
+    ruled: false,
+    isOld: true,
+  },
+  {
+    id: "fresh-blank-journal",
+    name: "New Blank Journal",
+    color: "#FAF8F5",
+    textColor: "#0F172A", // Midnight Black Ink
+    isPaper: true,
+    ruled: false,
+    isOld: false,
+  },
+  {
+    id: "vintage-yellow-pad",
+    name: "Old Legal Yellow Pad",
+    color: "#FEF9C3",
+    textColor: "#1E3A8A", // Fountain Blue Ink
+    isPaper: true,
+    ruled: true,
+    isOld: true,
+    marginColor: "rgba(239, 68, 68, 0.45)",
+    lineColor: "rgba(59, 130, 246, 0.15)",
+  },
+
+  // ==========================================
+  // --- PAGE 2 (2/4): Executive & Luxury Dark Tones ---
+  // ==========================================
   { id: "midnight-navy", name: "Midnight Navy", color: "#0F172A", textColor: "#FFFFFF" },
   { id: "deep-emerald", name: "Deep Emerald", color: "#064E3B", textColor: "#FFFFFF" },
   { id: "royal-sapphire", name: "Royal Sapphire", color: "#1E3A8A", textColor: "#FFFFFF" },
   { id: "rich-burgundy", name: "Rich Burgundy", color: "#4C0519", textColor: "#FFFFFF" },
   { id: "charcoal-matte", name: "Charcoal Matte", color: "#18181B", textColor: "#FFFFFF" },
 
-  // --- PAGE 2: Earthy, Coffee & Warm Sunset Tones ---
+  // ==========================================
+  // --- PAGE 3 (3/4): Earthy, Coffee & Warm Sunset Tones ---
+  // ==========================================
   { id: "coffee-espresso", name: "Coffee Espresso", color: "#2C1A14", textColor: "#FEF3C7" },
   { id: "warm-terracotta", name: "Warm Terracotta", color: "#9A3412", textColor: "#FFFFFF" },
   { id: "plum-violet", name: "Plum Violet", color: "#4A1D6D", textColor: "#FFFFFF" },
   { id: "slate-blue", name: "Slate Blue", color: "#1E293B", textColor: "#F8FAFC" },
   { id: "forest-green", name: "Forest Green", color: "#14532D", textColor: "#FFFFFF" },
 
-  // --- PAGE 3: Vibrant Modern & Editorial Tones ---
+  // ==========================================
+  // --- PAGE 4 (4/4): Vibrant Modern & Editorial Tones ---
+  // ==========================================
   { id: "ocean-teal", name: "Ocean Teal", color: "#0E7490", textColor: "#FFFFFF" },
   { id: "steel-indigo", name: "Steel Indigo", color: "#3730A3", textColor: "#FFFFFF" },
   { id: "crimson-velvet", name: "Crimson Velvet", color: "#831843", textColor: "#FFFFFF" },
   { id: "deep-cyan", name: "Deep Cyan", color: "#047857", textColor: "#FFFFFF" },
   { id: "midnight-purple", name: "Midnight Purple", color: "#3B0764", textColor: "#FFFFFF" },
 ];
-// Smart Auto-Fit PNG Slide Generator (Auto Scales Font & Adapts Text Color)
+
+
+// 🟢 BULLETPROOF FONT LOADER: Forces browser to paint the font before canvas draws
+async function ensureHandwritingFonts(fontName = "Kalam") {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
+  try {
+    if (!document.getElementById("utz-handwriting-fonts")) {
+      const link = document.createElement("link");
+      link.id = "utz-handwriting-fonts";
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Caveat:wght@400;500;700&family=Dekko&family=Kalam:wght@300;400;700&family=Tillana:wght@400;600&display=swap";
+      document.head.appendChild(link);
+    }
+
+    // Force strict DOM rendering to ensure canvas engine registers the glyphs
+    if (!document.getElementById(`font-tester-${fontName}`)) {
+      const tester = document.createElement("div");
+      tester.id = `font-tester-${fontName}`;
+      tester.style.fontFamily = `"${fontName}", cursive`;
+      tester.style.position = "absolute";
+      tester.style.opacity = "0";
+      tester.style.pointerEvents = "none";
+      tester.innerText = "Loading Test रुकिए";
+      document.body.appendChild(tester);
+    }
+
+    if (document.fonts && document.fonts.load) {
+      await document.fonts.load(`400 40px "${fontName}"`);
+      await document.fonts.load(`600 40px "${fontName}"`);
+      await document.fonts.load(`700 40px "${fontName}"`);
+      await document.fonts.ready;
+    }
+
+    // Wait for the browser's internal paint cycle (Double RequestAnimationFrame + Delay)
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    await new Promise((resolve) => setTimeout(resolve, 150)); 
+  } catch (e) {
+    console.error("Font Load Error:", e);
+  }
+}
+
+
+
+// 🟢 Helper: Convert mathematical unicode bold back to normal chars for handwriting fonts
+function normalizeUnicodeText(str = "") {
+  return str
+    .replace(/[\uD835][\uDC00-\uDC33]/g, (c) =>
+      String.fromCharCode(c.codePointAt(0) - 0x1d400 + 65)
+    )
+    .replace(/[\uD835][\uDC1A-\uDC33]/g, (c) =>
+      String.fromCharCode(c.codePointAt(0) - 0x1d41a + 97)
+    )
+    .replace(/[\uD835][\uDFCE-\uDFD7]/g, (c) =>
+      String.fromCharCode(c.codePointAt(0) - 0x1d7ce + 48)
+    )
+    .replace(/[\uD835][\uDDD4-\uDDFD]/g, (c) =>
+      String.fromCharCode(c.codePointAt(0) - 0x1d5d4 + 65)
+    )
+    .replace(/[\uD835][\uDDEE-\uDE07]/g, (c) =>
+      String.fromCharCode(c.codePointAt(0) - 0x1d5ee + 97)
+    );
+}
+
 async function generatePngSlideBlob(
   textChunk,
   slideNumber,
   totalSlides,
-  theme = SLIDE_THEMES[0]
+  theme = SLIDE_THEMES[0],
+  isPinterest = false,
+  handwritingFont = "Kalam",
+  penThickness = "thin" // Default: Realistic Thin Daily Ballpoint/Ink
 ) {
+  await ensureHandwritingFonts(handwritingFont);
+
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
-    canvas.width = 1080;
-    canvas.height = 1920;
+    canvas.width = isPinterest ? 1600 : 1080;
+    canvas.height = isPinterest ? 2400 : 1920;
     const ctx = canvas.getContext("2d");
+
+    const scaleFactor = isPinterest ? 1.48 : 1.0;
+    const isPaper = Boolean(theme?.isPaper);
 
     const bgColor = theme?.color || "#0F172A";
     const primaryText = theme?.textColor || "#FFFFFF";
-  // 🟢 Smart Contrast Logic:
-    const isDarkText = primaryText !== "#FFFFFF" && primaryText !== "#F8FAFC" && primaryText !== "#CCFBF1" && primaryText !== "#FEF3C7";
-    const boxBg = isDarkText ? "rgba(0, 0, 0, 0.06)" : "rgba(0, 0, 0, 0.25)";
-    const boxBorder = isDarkText ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.35)";
-    const frameBorder = isDarkText ? "rgba(0, 0, 0, 0.1)" : "rgba(255, 255, 255, 0.35)";
-    // 1. Background Solid Fill
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Geometric Frame Border
-    const frameMargin = 36;
-    const frameWidth = canvas.width - frameMargin * 2;
-    const frameHeight = canvas.height - frameMargin * 2;
+    // 🖊️ Pen Ink Thickness Weight Map (Default: 400 Thin for natural look)
+    const weightMap = {
+      thin: "400",    // 🟢 Real daily pen (आम इंसान की लिखावट)
+      medium: "500",  // Gel pen feel
+      dark: "700",    // Dark marker/bold fountain pen
+    };
+    const activeWeight = isPaper ? (weightMap[penThickness] || "400") : "600";
 
-    ctx.strokeStyle = frameBorder;
-    ctx.lineWidth = 14;
-    ctx.strokeRect(frameMargin, frameMargin, frameWidth, frameHeight);
+    // ---------------- 1. BACKGROUND RENDERING ----------------
+    const startLineY = Math.round(230 * scaleFactor);
+    const lineGap = Math.round(62 * scaleFactor);
+    const endLineY = canvas.height - Math.round(130 * scaleFactor);
 
-    // ---------------- TOP HEADER ROW ----------------
-    ctx.fillStyle = boxBg;
-    ctx.beginPath();
-    ctx.roundRect(75, 75, 210, 54, 16);
-    ctx.fill();
-    ctx.strokeStyle = boxBorder;
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    ctx.fillStyle = primaryText;
-    ctx.font = "bold 24px system-ui, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(`SLIDE ${slideNumber}/${totalSlides}`, 180, 110);
-
-    const wmWidth = 640;
-    const wmX = canvas.width - 75 - wmWidth;
-
-    ctx.fillStyle = boxBg;
-    ctx.beginPath();
-    ctx.roundRect(wmX, 75, wmWidth, 54, 16);
-    ctx.fill();
-    ctx.strokeStyle = boxBorder;
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    ctx.fillStyle = primaryText;
-    ctx.font = "bold 19px system-ui, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(
-      "chunked on www.usefultoolszone.com/social-media-post-chunker",
-      wmX + wmWidth / 2,
-      108
-    );
-
-    // ---------------- MAIN CONTENT AREA (Smart Auto-Fit Scaling) ----------------
-    let cleanText = (textChunk || "")
-      .replace(/\[\d+\/\d+\]/g, "")
-      .replace(/\u200B{10,}\n\.\.\.Read More/g, "")
-      .replace(/\.\.\.Read More/g, "")
-      .trim();
-
-    const maxWidth = canvas.width - 180;
-    const startY = 190;
-    const maxTextY = 1780;
-    const availableHeight = maxTextY - startY;
-    const words = cleanText ? cleanText.split(/\s+/) : [];
-
-    let fontSize = 42;
-    let lineHeight = fontSize + 20;
-    let lines = [];
-
-    for (let currentFont = 42; currentFont >= 30; currentFont -= 1) {
-      fontSize = currentFont;
-      lineHeight = fontSize + 16;
-      ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
-
-      lines = [];
-      let line = "";
-
-      for (let n = 0; n < words.length; n++) {
-        let word = words[n];
-        if (ctx.measureText(word).width > maxWidth) {
-          if (line.trim()) {
-            lines.push(line.trim());
-            line = "";
-          }
-          let subWord = "";
-          for (let c = 0; c < word.length; c++) {
-            if (ctx.measureText(subWord + word[c]).width > maxWidth) {
-              lines.push(subWord);
-              subWord = word[c];
-            } else {
-              subWord += word[c];
-            }
-          }
-          if (subWord) line = subWord + " ";
-          continue;
-        }
-
-        const testLine = line + word + " ";
-        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-          lines.push(line.trim());
-          line = word + " ";
-        } else {
-          line = testLine;
-        }
+    if (isPaper) {
+      if (theme.isOld) {
+        const grad = ctx.createRadialGradient(
+          canvas.width / 2,
+          canvas.height / 2,
+          canvas.width * 0.15,
+          canvas.width / 2,
+          canvas.height / 2,
+          canvas.height * 0.8
+        );
+        grad.addColorStop(0, "#FDF8E8");
+        grad.addColorStop(0.7, theme.color);
+        grad.addColorStop(1, "#E2CCA2");
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = bgColor;
       }
-      if (line.trim()) lines.push(line.trim());
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (lines.length * lineHeight <= availableHeight) break;
+      if (theme.ruled) {
+        ctx.strokeStyle = theme.lineColor || "rgba(30, 58, 138, 0.16)";
+        ctx.lineWidth = 1.6 * scaleFactor;
+
+        for (let y = startLineY; y <= endLineY; y += lineGap) {
+          ctx.beginPath();
+          ctx.moveTo(Math.round(40 * scaleFactor), y);
+          ctx.lineTo(canvas.width - Math.round(40 * scaleFactor), y);
+          ctx.stroke();
+        }
+
+        const marginX = Math.round(145 * scaleFactor);
+        ctx.strokeStyle = theme.marginColor || "rgba(225, 29, 72, 0.45)";
+        ctx.lineWidth = 2 * scaleFactor;
+        ctx.beginPath();
+        ctx.moveTo(marginX, 0);
+        ctx.lineTo(marginX, canvas.height);
+        ctx.stroke();
+      }
+    } else {
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const frameMargin = Math.round(36 * scaleFactor);
+      const isDarkText =
+        primaryText !== "#FFFFFF" &&
+        primaryText !== "#F8FAFC" &&
+        primaryText !== "#CCFBF1" &&
+        primaryText !== "#FEF3C7";
+
+      ctx.strokeStyle = isDarkText ? "rgba(0, 0, 0, 0.1)" : "rgba(255, 255, 255, 0.35)";
+      ctx.lineWidth = Math.round(14 * scaleFactor);
+      ctx.strokeRect(frameMargin, frameMargin, canvas.width - frameMargin * 2, canvas.height - frameMargin * 2);
     }
 
-    // 🔴 Render Dynamic Text Color
-    ctx.fillStyle = primaryText;
-    ctx.textAlign = "left";
-    ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
+    // ---------------- 2. TOP HEADER ROW ----------------
+    const headerTop = Math.round(75 * scaleFactor);
+    const badgeH = Math.round(54 * scaleFactor);
 
-    lines.forEach((l, idx) => {
-      const currentY = startY + idx * lineHeight + fontSize;
-      ctx.fillText(l.trim(), 90, currentY);
-    });
-
-    // ---------------- DECORATIVE EMBEDDED BOTTOM BORDER ----------------
-    const borderY = canvas.height - frameMargin;
-
-    if (totalSlides > 1 && slideNumber < totalSlides) {
-      const ctaW = 580;
-      const ctaX = (canvas.width - ctaW) / 2;
-
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(ctaX - 10, borderY - 26, ctaW + 20, 52);
-
-      // Bottom CTA Box color logic
-      ctx.fillStyle = isDarkText ? "rgba(255, 255, 255, 0.85)" : "rgba(0, 0, 0, 0.65)";
-      ctx.beginPath();
-      ctx.roundRect(ctaX, borderY - 26, ctaW, 52, 16);
-      ctx.fill();
-
-      ctx.strokeStyle = isDarkText ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.8)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
+    if (isPaper) {
       ctx.fillStyle = primaryText;
-      ctx.font = "bold 22px system-ui, sans-serif";
-      ctx.textAlign = "center";
+      ctx.font = `${activeWeight} ${Math.round(26 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+      ctx.textAlign = "left";
       ctx.fillText(
-        `👉 READ NEXT SLIDE FOR PART ${slideNumber + 1} 📲`,
-        canvas.width / 2,
-        borderY + 8
+        `Page ${slideNumber} of ${totalSlides}`,
+        Math.round(80 * scaleFactor),
+        headerTop + badgeH * 0.6
       );
-    } else {
-      const endText = "✦ USEFUL TOOLS ZONE ✦";
-      const tagW = 380;
-      const tagX = (canvas.width - tagW) / 2;
 
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(tagX - 10, borderY - 22, tagW + 20, 44);
+      ctx.font = `400 ${Math.round(20 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+      ctx.fillText(
+        "useful tools zone / notes",
+        canvas.width - Math.round(80 * scaleFactor),
+        headerTop + badgeH * 0.6
+      );
 
-      ctx.fillStyle = isDarkText ? "rgba(255, 255, 255, 0.85)" : "rgba(0, 0, 0, 0.68)";
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
+      ctx.lineWidth = 1 * scaleFactor;
       ctx.beginPath();
-      ctx.roundRect(tagX, borderY - 22, tagW, 44, 14);
-      ctx.fill();
+      ctx.moveTo(Math.round(60 * scaleFactor), headerTop + badgeH + 10);
+      ctx.lineTo(canvas.width - Math.round(60 * scaleFactor), headerTop + badgeH + 10);
+      ctx.stroke();
+    } else {
+      const isDarkText =
+        primaryText !== "#FFFFFF" &&
+        primaryText !== "#F8FAFC" &&
+        primaryText !== "#CCFBF1" &&
+        primaryText !== "#FEF3C7";
+      const boxBg = isDarkText ? "rgba(0, 0, 0, 0.06)" : "rgba(0, 0, 0, 0.25)";
+      const boxBorder = isDarkText ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.35)";
 
-      ctx.strokeStyle = isDarkText ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.75)";
+      const badgeW = Math.round(210 * scaleFactor);
+      const badgeX = Math.round(75 * scaleFactor);
+
+      ctx.fillStyle = boxBg;
+      ctx.beginPath();
+      ctx.roundRect(badgeX, headerTop, badgeW, badgeH, Math.round(16 * scaleFactor));
+      ctx.fill();
+      ctx.strokeStyle = boxBorder;
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
       ctx.fillStyle = primaryText;
-      if (!isDarkText) {
+      ctx.font = `bold ${Math.round(24 * scaleFactor)}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(`SLIDE ${slideNumber}/${totalSlides}`, badgeX + badgeW / 2, headerTop + badgeH * 0.65);
+
+      const wmWidth = Math.round(640 * scaleFactor);
+      const wmX = canvas.width - Math.round(75 * scaleFactor) - wmWidth;
+
+      ctx.fillStyle = boxBg;
+      ctx.beginPath();
+      ctx.roundRect(wmX, headerTop, wmWidth, badgeH, Math.round(16 * scaleFactor));
+      ctx.fill();
+      ctx.strokeStyle = boxBorder;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = primaryText;
+      ctx.font = `bold ${Math.round(19 * scaleFactor)}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "chunked on www.usefultoolszone.com/social-media-post-chunker",
+        wmX + wmWidth / 2,
+        headerTop + badgeH * 0.63
+      );
+    }
+
+// ---------------- 3. MAIN CONTENT (Keep Emojis & Apply Sketch Filter) ----------------
+    let cleanText = (textChunk || "")
+      .replace(/\[\d+\/\d+\]/g, "")
+      .replace(/\u200B{10,}\n\.\.\.Read More/g, "")
+      .replace(/\.\.\.Read More/g, "");
+
+    if (isPaper) {
+      // 🟢 1. Normalize unicode bold back to standard text
+      cleanText = normalizeUnicodeText(cleanText);
+      // 🟢 We do NOT strip emojis here. We keep their original shapes.
+    }
+    cleanText = cleanText.trim();
+
+    // ... [Note: Keep your existing maxWidth/lines loop code exactly as is here] ...
+    const textPaddingLeft = Math.round((isPaper && theme.ruled ? 175 : 90) * scaleFactor);
+    const maxWidth = canvas.width - textPaddingLeft - Math.round(80 * scaleFactor);
+    const words = cleanText ? cleanText.split(/\s+/) : [];
+
+    let fontSize = isPaper
+      ? Math.round((isPinterest ? 46 : 38) * scaleFactor)
+      : Math.round((isPinterest ? 56 : 40) * scaleFactor);
+
+    let currentLineHeight = isPaper && theme.ruled ? lineGap : fontSize + Math.round(18 * scaleFactor);
+
+    const fontStack = isPaper
+      ? `"${handwritingFont}", "Kalam", cursive, sans-serif`
+      : `system-ui, -apple-system, sans-serif`;
+
+    ctx.font = `${activeWeight} ${fontSize}px ${fontStack}`;
+
+    let lines = [];
+    let line = "";
+
+    for (let n = 0; n < words.length; n++) {
+      let word = words[n];
+      if (ctx.measureText(word).width > maxWidth) {
+        if (line.trim()) {
+          lines.push(line.trim());
+          line = "";
+        }
+        let subWord = "";
+        for (let c = 0; c < word.length; c++) {
+          if (ctx.measureText(subWord + word[c]).width > maxWidth) {
+            lines.push(subWord);
+            subWord = word[c];
+          } else {
+            subWord += word[c];
+          }
+        }
+        if (subWord) line = subWord + " ";
+        continue;
+      }
+
+      const testLine = line + word + " ";
+      if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+        lines.push(line.trim());
+        line = word + " ";
+      } else {
+        line = testLine;
+      }
+    }
+    if (line.trim()) lines.push(line.trim());
+
+    const maxAllowedLines = isPaper && theme.ruled
+      ? Math.floor((endLineY - startLineY) / lineGap)
+      : Math.floor((endLineY - Math.round(200 * scaleFactor)) / currentLineHeight);
+
+    const printableLines = lines.slice(0, maxAllowedLines);
+// 🔴 Draw Text exactly sitting ON the Blue Line (Baseline Snap)
+    ctx.fillStyle = primaryText;
+    ctx.textAlign = "left";
+    ctx.font = `${activeWeight} ${fontSize}px ${fontStack}`;
+
+    // 🟢 BRIGHT SKETCH PEN EFFECT: Makes emojis look like vibrant highlighters/markers!
+    if (isPaper) {
+      ctx.globalCompositeOperation = "multiply"; // Blends color into the paper
+      ctx.globalAlpha = 0.9; // Keeps it highly visible
+      // saturate(300%) makes colors pop out brilliantly compared to the dark typing ink.
+      // drop-shadow gives the slight ink-bleed edge effect of a marker.
+      ctx.filter = "saturate(300%) contrast(120%) drop-shadow(1px 1px 0px rgba(0,0,0,0.15))";
+    }
+
+    printableLines.forEach((l, idx) => {
+      let currentY;
+      if (isPaper && theme.ruled) {
+        currentY = startLineY + (idx + 1) * lineGap - Math.round(8 * scaleFactor);
+      } else {
+        currentY = Math.round(200 * scaleFactor) + idx * currentLineHeight + fontSize;
+      }
+      
+      // Draw Text and Emojis
+      ctx.fillText(l.trim(), textPaddingLeft, currentY);
+    });
+
+    // 🟢 Reset Canvas Filters before drawing the footer
+    if (isPaper) {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.filter = "none";
+      ctx.globalAlpha = 1.0;
+    }
+
+    // ---------------- 4. CLEAN FOOTER ----------------
+    const borderY = canvas.height - Math.round(55 * scaleFactor);
+
+    if (isPaper) {
+      ctx.font = `${activeWeight} ${Math.round(24 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillStyle = primaryText;
+
+      if (totalSlides > 1 && slideNumber < totalSlides) {
+        ctx.fillText(`[ Turn page for part ${slideNumber + 1} ... ]`, canvas.width / 2, borderY);
+      } else {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+        ctx.font = `400 ${Math.round(20 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+        ctx.fillText("~ End of notes | Useful Tools Zone ~", canvas.width / 2, borderY);
+      }
+    } else {
+      const isDarkText =
+        primaryText !== "#FFFFFF" &&
+        primaryText !== "#F8FAFC" &&
+        primaryText !== "#CCFBF1" &&
+        primaryText !== "#FEF3C7";
+      const frameMargin = Math.round(36 * scaleFactor);
+      const digitalBorderY = canvas.height - frameMargin;
+
+      if (totalSlides > 1 && slideNumber < totalSlides) {
+        const ctaW = Math.round(580 * scaleFactor);
+        const ctaH = Math.round(52 * scaleFactor);
+        const ctaX = (canvas.width - ctaW) / 2;
+
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(ctaX - 10, digitalBorderY - Math.round(26 * scaleFactor), ctaW + 20, ctaH);
+
+        ctx.fillStyle = isDarkText ? "rgba(255, 255, 255, 0.85)" : "rgba(0, 0, 0, 0.65)";
+        ctx.beginPath();
+        ctx.roundRect(ctaX, digitalBorderY - Math.round(26 * scaleFactor), ctaW, ctaH, Math.round(16 * scaleFactor));
+        ctx.fill();
+
+        ctx.strokeStyle = isDarkText ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.8)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = primaryText;
+        ctx.font = `bold ${Math.round(22 * scaleFactor)}px system-ui, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(`👉 READ NEXT SLIDE FOR PART ${slideNumber + 1} 📲`, canvas.width / 2, digitalBorderY + Math.round(8 * scaleFactor));
+      } else {
+        const endText = "✦ USEFUL TOOLS ZONE ✦";
+        const tagW = Math.round(380 * scaleFactor);
+        const tagH = Math.round(44 * scaleFactor);
+        const tagX = (canvas.width - tagW) / 2;
+
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(tagX - 10, digitalBorderY - Math.round(22 * scaleFactor), tagW + 20, tagH);
+
+        ctx.fillStyle = isDarkText ? "rgba(255, 255, 255, 0.85)" : "rgba(0, 0, 0, 0.68)";
+        ctx.beginPath();
+        ctx.roundRect(tagX, digitalBorderY - Math.round(22 * scaleFactor), tagW, tagH, Math.round(14 * scaleFactor));
+        ctx.fill();
+
+        ctx.strokeStyle = isDarkText ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.75)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = primaryText;
+        if (!isDarkText) {
           ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
           ctx.shadowBlur = 4;
+        }
+        ctx.font = `bold ${Math.round(18 * scaleFactor)}px system-ui, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(endText, canvas.width / 2, digitalBorderY + Math.round(6 * scaleFactor));
+        ctx.shadowBlur = 0;
       }
-      ctx.font = "bold 18px system-ui, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(endText, canvas.width / 2, borderY + 6);
-      ctx.shadowBlur = 0;
     }
 
     canvas.toBlob((blob) => {
@@ -330,10 +615,19 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
   const [chunkMode, setChunkMode] = useState("text-only");
   const [selectedPlatform, setSelectedPlatform] = useState("whatsapp");
   const [customLimit, setCustomLimit] = useState(700);
-  // High-CTR Feature Toggles
+
+  // 🟢 Theme & Handwriting States (Moved to top before useEffect)
+  const [themeIndex, setThemeIndex] = useState(0);
+  const [selectedSlideTheme, setSelectedSlideTheme] = useState(SLIDE_THEMES[0]);
+  const [handwritingFont, setHandwritingFont] = useState("Kalam");
+  const [penThickness, setPenThickness] = useState("thin");
+
+// High-CTR Feature Toggles
   const DEFAULT_HOOKS = [
     "🚨 STOP SCROLLING! READ THIS 👇",
+    "🚨 रुकिए! पहले इसे ध्यान से पढ़ें 👇",
     "💡 3 Harsh Truths Nobody Tells You About This:",
+    "💡 3 कड़वे सच जो कोई नहीं बताता:",
     "🔥 Save This Video Before It Gets Deleted!",
     "👀 If You Are Doing This, STOP Immediately:",
     "⚡ The Secret Strategy Revealed in 30 Seconds:",
@@ -466,16 +760,17 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     router.push(`/social-media-text-chunker/${targetSlug}${langQuery}`);
   };
 
-  // Unicode Bold Transformer Engine
+// Unicode Bold Transformer Engine
   const toUnicodeBold = (text) => {
+    // 🟢 PERMANENT FIX: If a Paper/Diary theme is active, completely skip Unicode bolding.
+    // This ensures handwriting fonts (Kalam, Caveat) render perfectly on Slide 1.
+    if (selectedSlideTheme?.isPaper) return text;
+
     return text.replace(/[A-Za-z0-9]/g, (char) => {
       const code = char.charCodeAt(0);
-      if (code >= 65 && code <= 90)
-        return String.fromCodePoint(0x1d400 + code - 65);
-      if (code >= 97 && code <= 122)
-        return String.fromCodePoint(0x1d41a + code - 97);
-      if (code >= 48 && code <= 57)
-        return String.fromCodePoint(0x1d7ce + code - 48);
+      if (code >= 65 && code <= 90) return String.fromCodePoint(0x1d400 + code - 65);
+      if (code >= 97 && code <= 122) return String.fromCodePoint(0x1d41a + code - 97);
+      if (code >= 48 && code <= 57) return String.fromCodePoint(0x1d7ce + code - 48);
       return char;
     });
   };
@@ -505,6 +800,8 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     cleanInput = cleanInput.replace(/⏸️\s*\(Hold screen to pause & read full text\)/g, "");
     cleanInput = cleanInput.replace(new RegExp(toUnicodeBold("(Hold screen to pause & read full text)"), "g"), "");
+    cleanInput = cleanInput.replace(/⏸️\s*\(Hold to read \/ स्क्रीन रोक कर पढ़ें\)/g, "");
+    cleanInput = cleanInput.replace(new RegExp(toUnicodeBold("(Hold to read / स्क्रीन रोक कर पढ़ें)")), "g");
     cleanInput = cleanInput.replace(/\u200B{10,}\n\.\.\.Read More/g, "");
     cleanInput = cleanInput.replace(/\[\d+\/\d+\]\n?/g, "");
     cleanInput = cleanInput.trim();
@@ -515,12 +812,22 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       );
     }
 
-    // 🟢 Desktop vs Mobile Separate PNG Limit Logic
-// 🟢 Mobile = 1050 Chars (~1100 Chars Total: 100% full height without cutting the hold line)
-    // Desktop = 660 Chars
-    const pngLimit = isMobile ? 1020 : 660;
-    const effectiveLimit = viewMode === "png_slides" ? pngLimit : (Number(customLimit) || 700);
+// 🟢 Platform-Aware Effective Limit (Zero Overflow on Paper Themes)
+    const platformCap = currentPlatformObj.limit;
+    const userLimit = Math.min(Number(customLimit) || platformCap, platformCap);
 
+    let effectiveLimit = userLimit;
+    if (viewMode === "png_slides") {
+      if (selectedPlatform === "pinterest") {
+        effectiveLimit = userLimit;
+      } else if (selectedSlideTheme?.isPaper) {
+        // 🟢 Paper Mode Cap: Prevents lines from overflowing past notebook bottom
+        effectiveLimit = Math.min(userLimit, 400);
+      } else {
+        const defaultPngLimit = isMobile ? 1020 : 660;
+        effectiveLimit = Math.min(userLimit, defaultPngLimit);
+      }
+    }
 
     const words = cleanInput.split(/\s+/);
     let currentChunk = "";
@@ -553,23 +860,42 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     const total = rawChunks.length;
 
-    // 3. Final Formatting (NO Hold Trigger on Last Slide!)
+// 3. Final Formatting (NO Hold Trigger on Last Slide!)
     const finalChunks = rawChunks.map((chunk, index) => {
       let result = chunk;
+      const isPaper = selectedSlideTheme?.isPaper;
 
       // Primary Attention Hook ONLY on Slide 1
       if (index === 0 && selectedHook && selectedHook !== "none") {
-        result = `${toUnicodeBold(selectedHook)}\n\n${result}`;
+        let activeHook = selectedHook;
+        
+        if (isPaper) {
+          // 🟢 Paper Mode: Pure Hindi Only (Removes all English Hooks)
+          if (activeHook.includes("STOP SCROLLING") || activeHook.includes("रुकिए!")) activeHook = "🚨 रुकिए! पहले इसे ध्यान से पढ़ें 👇";
+          else if (activeHook.includes("3 Harsh Truths") || activeHook.includes("कड़वे सच")) activeHook = "💡 3 कड़वे सच जो कोई नहीं बताता:";
+          else if (activeHook.includes("Save This") || activeHook.includes("डिलीट")) activeHook = "🔥 डिलीट होने से पहले इसे सेव कर लें!";
+          else if (activeHook.includes("STOP Immediately") || activeHook.includes("तुरंत रुकें")) activeHook = "👀 अगर आप यह कर रहे हैं, तो तुरंत रुकें:";
+          else if (activeHook.includes("Secret Strategy") || activeHook.includes("राज़")) activeHook = "⚡ 30 सेकंड में खुला राज़:";
+        } else {
+          // 📱 Digital Mode: Pure English Only
+          if (activeHook.includes("STOP SCROLLING") || activeHook.includes("रुकिए!")) activeHook = "🚨 STOP SCROLLING! READ THIS 👇";
+          else if (activeHook.includes("3 Harsh Truths") || activeHook.includes("कड़वे सच")) activeHook = "💡 3 Harsh Truths Nobody Tells You About This:";
+          else if (activeHook.includes("Save This") || activeHook.includes("डिलीट")) activeHook = "🔥 Save This Video Before It Gets Deleted!";
+          else if (activeHook.includes("STOP Immediately") || activeHook.includes("तुरंत रुकें")) activeHook = "👀 If You Are Doing This, STOP Immediately:";
+          else if (activeHook.includes("Secret Strategy") || activeHook.includes("राज़")) activeHook = "⚡ The Secret Strategy Revealed in 30 Seconds:";
+        }
+        
+        result = `${toUnicodeBold(activeHook)}\n\n${result}`;
       }
 
       // 🔴 Hold Trigger ONLY on Intermediate Slides (NOT on Last Slide!)
       if (enableHoldToRead && index < total - 1) {
-        result += `\n\n⏸️ ${toUnicodeBold("(Hold screen to pause & read full text)")}`;
-      }
-
-      // Slide Badge Prefix
-      if (total > 1) {
-        result = `[${index + 1}/${total}]\n${result}`;
+        // 🟢 Paper Mode gets Pure Hindi, Digital gets Pure English
+        const holdText = isPaper 
+          ? "⏸️ (स्क्रीन रोक कर पढ़ें)" 
+          : "⏸️ (Hold screen to pause & read full text)";
+        
+        result += `\n\n${toUnicodeBold(holdText)}`;
       }
 
       // Read More Trigger (WhatsApp only in Text Copy Mode on Last Slide)
@@ -599,6 +925,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     customHooks,
     viewMode,
     isMobile,
+    selectedSlideTheme,
   ]);
 
   // Helper logic to split text into array chunks
@@ -639,10 +966,8 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     setChunks(finalChunks);
   };
+ 
 
-  // Current Selected Theme State
-  const [themeIndex, setThemeIndex] = useState(0);
-  const [selectedSlideTheme, setSelectedSlideTheme] = useState(SLIDE_THEMES[0]);
 
   // WhatsApp Palette Click -> Cycle to Next Color & Auto-Regenerate
   const handleNextTheme = () => {
@@ -664,7 +989,6 @@ const [shortTeaserText, setShortTeaserText] = useState("");
       handleGeneratePngSlides(theme);
     }
   };
-
 // Generate PNG Slides Handler
   const handleGeneratePngSlides = async (targetTheme) => {
     if (chunks.length === 0 && !mediaFile) return;
@@ -680,13 +1004,29 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     const slides = [];
     const totalSlidesCount = chunks.length;
+    const isPinterest = selectedPlatform === "pinterest";
+
+// 🟢 Fix: Ensure font is 100% loaded in memory BEFORE slide 1 begins
+    if (activeTheme?.isPaper) {
+      await ensureHandwritingFonts(handwritingFont);
+      await new Promise(resolve => setTimeout(resolve, 250)); // Initial big wait
+    }
 
     for (let i = 0; i < chunks.length; i++) {
+      if (activeTheme?.isPaper) {
+        // 🟢 50ms Recheck Logic: Force the thread to yield before drawing EACH slide
+        // This guarantees the canvas engine registers the font for every single image
+        await new Promise(resolve => setTimeout(resolve, 50)); 
+      }
+      
       const res = await generatePngSlideBlob(
         chunks[i],
         i + 1,
         totalSlidesCount,
-        activeTheme
+        activeTheme,
+        isPinterest,
+        handwritingFont,
+        penThickness
       );
       slides.push({
         index: i + 1,
@@ -706,7 +1046,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 200);
-  }; // 👈 YAHAN SIRF EK HI '};' RAHEGA (Extra }; hata diya gaya hai)
+  };
 
   // 1-Click Color Swatch Click -> Auto Re-Generate Slides Live
   const handleThemeChange = (theme) => {
@@ -1059,15 +1399,23 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
                 <div>
                   <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1">
-                    Custom Character Limit Per Chunk
+                    Custom Character Limit (Max {currentPlatformObj.limit})
                   </label>
                   <input
                     type="number"
                     value={customLimit}
-                    onChange={(e) => setCustomLimit(e.target.value)}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      const maxAllowed = currentPlatformObj.limit;
+                      if (val > maxAllowed) {
+                        setCustomLimit(maxAllowed);
+                      } else {
+                        setCustomLimit(e.target.value);
+                      }
+                    }}
                     className="w-full px-3 py-2.5 bg-slate-50 dark:bg-gray-950 border border-slate-200 dark:border-gray-800 rounded-xl text-xs font-bold text-gray-900 dark:text-white outline-none focus:border-blue-500"
                     min="10"
-                    max="10000"
+                    max={currentPlatformObj.limit}
                   />
                 </div>
               </div>
@@ -1306,7 +1654,7 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                       </span>
                     </button>
 
-                    {/* STABLE 5-DOT PAGINATED SWATCH CONTAINER */}
+           {/* STABLE 5-DOT PAGINATED SWATCH CONTAINER */}
                     <div className="flex items-center gap-2 p-1.5 bg-white dark:bg-gray-950 rounded-2xl border border-slate-200 dark:border-gray-800 shadow-inner">
                       {(() => {
                         const pageSize = 5;
@@ -1314,12 +1662,12 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                           Math.floor(themeIndex / pageSize) * pageSize;
                         const currentWindow = SLIDE_THEMES.slice(
                           pageStart,
-                          pageStart + pageSize
+                          pageStart + pageSize,
                         );
 
                         return currentWindow.map((theme) => {
                           const realIdx = SLIDE_THEMES.findIndex(
-                            (t) => t.id === theme.id
+                            (t) => t.id === theme.id,
                           );
                           const isActive = selectedSlideTheme.id === theme.id;
                           return (
@@ -1327,16 +1675,19 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                               key={theme.id}
                               type="button"
                               onClick={() => handleSelectTheme(theme, realIdx)}
-                              className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative shrink-0 border border-black/10 dark:border-white/10 ${
+                              className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative shrink-0 border border-slate-300/80 dark:border-white/20 shadow-xs ${
                                 isActive
                                   ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-white dark:ring-offset-gray-950 scale-125 shadow-md z-10"
-                                  : "opacity-80 hover:opacity-100 hover:scale-110"
+                                  : "opacity-85 hover:opacity-100 hover:scale-110"
                               }`}
                               style={{ backgroundColor: theme.color }}
                               title={`${theme.name} (Click to select)`}
                             >
                               {isActive && (
-                                <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black drop-shadow-md text-white">
+                                <span
+                                  className="absolute inset-0 flex items-center justify-center text-[10px] font-black drop-shadow-md"
+                                  style={{ color: theme.textColor || "#ffffff" }}
+                                >
                                   ✓
                                 </span>
                               )}
@@ -1345,39 +1696,88 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                         });
                       })()}
 
-                      {/* Page Counter Badge */}
+                      {/* Page Counter Badge (Now dynamically counts 1/4, 2/4, 3/4, 4/4) */}
                       <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 px-1 select-none">
                         {Math.floor(themeIndex / 5) + 1}/
                         {Math.ceil(SLIDE_THEMES.length / 5)}
                       </span>
                     </div>
+
+                    {/* ✍️ HANDWRITING STYLES & PEN INK THICKNESS CONTROLS */}
+                    {selectedSlideTheme?.isPaper && (
+                      <div className="flex flex-wrap items-center gap-2.5 px-3 py-1.5 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/60 rounded-2xl shadow-xs animate-fadeIn">
+                        {/* 1. Handwriting Type */}
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider whitespace-nowrap">
+                            ✍️ Pen:
+                          </span>
+                          <select
+                            value={handwritingFont}
+                            onChange={(e) => {
+                              setHandwritingFont(e.target.value);
+                              if (chunks.length > 0) {
+                                setTimeout(() => handleGeneratePngSlides(selectedSlideTheme), 50);
+                              }
+                            }}
+                            className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 rounded-xl px-2 py-1 outline-none cursor-pointer"
+                          >
+                            <option value="Kalam">📖 Kalam (Natural Diary)</option>
+                            <option value="Caveat">✒️ Caveat (Cursive Pen)</option>
+                            <option value="Dekko">✏️ Dekko (Clean Print)</option>
+                            <option value="Tillana">🖋️ Tillana (Artistic Ink)</option>
+                            <option value="Amita">📜 Amita (Calligraphy)</option>
+                          </select>
+                        </div>
+
+                        {/* 2. Pen Ink Thickness (Thin Daily by default) */}
+                        <div className="flex items-center gap-1.5 border-l border-amber-300/80 dark:border-amber-800/60 pl-2">
+                          <span className="text-[10px] font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider whitespace-nowrap">
+                            🖊️ Ink:
+                          </span>
+                          <select
+                            value={penThickness}
+                            onChange={(e) => {
+                              setPenThickness(e.target.value);
+                              if (chunks.length > 0) {
+                                setTimeout(() => handleGeneratePngSlides(selectedSlideTheme), 50);
+                              }
+                            }}
+                            className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 rounded-xl px-2 py-1 outline-none cursor-pointer"
+                          >
+                            <option value="thin">Thin Ballpoint (स्वाभाविक पतली - Default)</option>
+                            <option value="medium">Medium Gel Pen (मध्यम)</option>
+                            <option value="dark">Dark / Bold Pen (गहरी लिखावट)</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-              {chunks.length > 0 && (
-  <button
-    type="button"
-    disabled={isProcessing}
-    onClick={() => handleGeneratePngSlides(selectedSlideTheme)}
-    className="relative group overflow-hidden px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/30 border-0 outline-none transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0 isolate"
-  >
-    {/* Background Shine Effect */}
-    <span className="absolute -inset-full top-0 block w-1/2 h-full bg-white/20 transform -skew-x-12 group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out pointer-events-none"></span>
+                  {chunks.length > 0 && (
+                    <button
+                      type="button"
+                      disabled={isProcessing}
+                      onClick={() => handleGeneratePngSlides(selectedSlideTheme)}
+                      className="relative group overflow-hidden px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white rounded-2xl text-xs font-black shadow-lg hover:shadow-indigo-500/30 border-0 outline-none transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-50 shrink-0 isolate"
+                    >
+                      {/* Background Shine Effect */}
+                      <span className="absolute -inset-full top-0 block w-1/2 h-full bg-white/20 transform -skew-x-12 group-hover:translate-x-[400%] transition-transform duration-1000 ease-in-out pointer-events-none"></span>
 
-    <span className="relative flex items-center justify-center gap-2">
-      {isProcessing ? (
-        <>
-          <span className="animate-spin text-sm">⏳</span>
-          <span>Generating HD Slides...</span>
-        </>
-      ) : (
-        <>
-          <span className="text-sm">🖼️</span>
-          <span>Generate PNG Slides</span>
-        </>
-      )}
-    </span>
-  </button>
-)}
+                      <span className="relative flex items-center justify-center gap-2">
+                        {isProcessing ? (
+                          <>
+                            <span className="animate-spin text-sm">⏳</span>
+                            <span>Generating HD Slides...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-sm">🖼️</span>
+                            <span>Generate PNG Slides</span>
+                          </>
+                        )}
+                      </span>
+                    </button>
+                  )}
                 </div>
 
                 {/* VISUAL ATTACHED MEDIA PREVIEW TILE */}
@@ -1687,13 +2087,19 @@ const [shortTeaserText, setShortTeaserText] = useState("");
             <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
               Supported Social Media Platform Quick Presets:
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2.5">
               {[
                 {
                   key: "whatsapp",
                   slug: "whatsapp-status-formatter",
                   label: "WhatsApp (700)",
                   color: "text-green-600 border-green-200 bg-green-50/40",
+                },
+                {
+                  key: "pinterest",
+                  slug: "pinterest-carousel-generator",
+                  label: "Pinterest (400)",
+                  color: "text-red-600 border-red-200 bg-red-50/40",
                 },
                 {
                   key: "twitter",
