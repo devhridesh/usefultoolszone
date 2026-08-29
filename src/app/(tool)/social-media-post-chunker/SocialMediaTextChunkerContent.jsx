@@ -326,34 +326,37 @@ async function generatePngSlideBlob(
       ctx.strokeRect(frameMargin, frameMargin, canvas.width - frameMargin * 2, canvas.height - frameMargin * 2);
     }
 
-// ---------------- 2. TOP HEADER ROW ----------------
+// ---------------- 2. TOP HEADER ROW (High-Visibility Branding) ----------------
     const headerTop = Math.round(75 * scaleFactor);
     const badgeH = Math.round(54 * scaleFactor);
 
     if (isPaper) {
+      // 🟢 Page Number Indicator
       ctx.fillStyle = primaryText;
-      ctx.font = `${activeWeight} ${Math.round(24 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
+      ctx.font = `700 ${Math.round(26 * scaleFactor)}px "${handwritingFont}", cursive, sans-serif`;
       ctx.textAlign = "left";
       ctx.fillText(
         `Page ${slideNumber} of ${totalSlides}`,
         Math.round(80 * scaleFactor),
-        headerTop + badgeH * 0.55
+        headerTop + badgeH * 0.58
       );
 
-      ctx.font = `500 ${Math.round(14 * scaleFactor)}px system-ui, -apple-system, sans-serif`;
+      // 🟢 Large, Sharp & Highly Visible Watermark
+      ctx.font = `600 ${Math.round(22 * scaleFactor)}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = "right";
-      ctx.fillStyle = "rgba(0, 0, 0, 0.38)";
+      ctx.fillStyle = "rgba(15, 23, 42, 0.70)"; // High-contrast readable slate tone
       ctx.fillText(
         "useful tools zone / social media post chunker",
         canvas.width - Math.round(80 * scaleFactor),
-        headerTop + badgeH * 0.55
+        headerTop + badgeH * 0.58
       );
 
-      ctx.strokeStyle = "rgba(0, 0, 0, 0.15)";
-      ctx.lineWidth = 1 * scaleFactor;
+      // Underline Divider
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.20)";
+      ctx.lineWidth = 1.5 * scaleFactor;
       ctx.beginPath();
-      ctx.moveTo(Math.round(60 * scaleFactor), headerTop + badgeH + 5);
-      ctx.lineTo(canvas.width - Math.round(60 * scaleFactor), headerTop + badgeH + 5);
+      ctx.moveTo(Math.round(60 * scaleFactor), headerTop + badgeH + 6);
+      ctx.lineTo(canvas.width - Math.round(60 * scaleFactor), headerTop + badgeH + 6);
       ctx.stroke();
     } else {
       const isDarkText =
@@ -361,8 +364,8 @@ async function generatePngSlideBlob(
         primaryText !== "#F8FAFC" &&
         primaryText !== "#CCFBF1" &&
         primaryText !== "#FEF3C7";
-      const boxBg = isDarkText ? "rgba(0, 0, 0, 0.06)" : "rgba(0, 0, 0, 0.25)";
-      const boxBorder = isDarkText ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.35)";
+      const boxBg = isDarkText ? "rgba(0, 0, 0, 0.08)" : "rgba(0, 0, 0, 0.28)";
+      const boxBorder = isDarkText ? "rgba(0, 0, 0, 0.16)" : "rgba(255, 255, 255, 0.45)";
 
       const badgeW = Math.round(210 * scaleFactor);
       const badgeX = Math.round(75 * scaleFactor);
@@ -380,7 +383,7 @@ async function generatePngSlideBlob(
       ctx.textAlign = "center";
       ctx.fillText(`SLIDE ${slideNumber}/${totalSlides}`, badgeX + badgeW / 2, headerTop + badgeH * 0.65);
 
-      const wmWidth = Math.round(640 * scaleFactor);
+      const wmWidth = Math.round(670 * scaleFactor);
       const wmX = canvas.width - Math.round(75 * scaleFactor) - wmWidth;
 
       ctx.fillStyle = boxBg;
@@ -392,7 +395,7 @@ async function generatePngSlideBlob(
       ctx.stroke();
 
       ctx.fillStyle = primaryText;
-      ctx.font = `bold ${Math.round(18 * scaleFactor)}px system-ui, sans-serif`;
+      ctx.font = `bold ${Math.round(20 * scaleFactor)}px system-ui, sans-serif`;
       ctx.textAlign = "center";
       ctx.fillText(
         "useful tools zone / social media post chunker",
