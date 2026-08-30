@@ -14,11 +14,11 @@ const PLATFORM_LIMITS = {
     desc: "Optimized 700-character chunks for clean WhatsApp status & Full HD slides.",
   },
   pinterest: {
-    name: "Pinterest Carousel (2:3 HD)",
-    limit: 650, // 🟢 Best 2:3 Pinterest density without blur
+    name: "Pinterest Carousel / Idea Slides",
+    limit: 700, // 🟢 Native 9:16 Full HD (1080x1920) crisp text
     icon: "📌",
     slug: "pinterest-carousel-generator",
-    desc: "Crystal-clear 2:3 HD slides (1200x1800) for zero-blur Pinterest carousels.",
+    desc: "Ultra-crisp 9:16 Full HD (1080x1920) slides for crystal-clear Pinterest carousels.",
   },
   twitter: {
     name: "Twitter / X Thread",
@@ -269,19 +269,14 @@ async function generatePngSlideBlob(
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
     const isPaper = Boolean(theme?.isPaper);
-    const isPinterest = platform === "pinterest";
 
-    // 🟢 Pinterest gets exact 1.11x proportional scaling for crisp 1200x1800 rendering
-    const scaleFactor = isPinterest ? 1.11 : 1.0;
+    // 🟢 1:1 Pixel Mapping for 100% razor-sharp fonts without scaling artifacts
+    const scaleFactor = 1.0;
 
     let canvasWidth = 1080;
     let canvasHeight = 1920;
 
-    if (isPinterest) {
-      // 🟢 Official Pinterest 2:3 HD Standard (1200x1800) - Never blurred, stays below 2100px limit
-      canvasWidth = 1200;
-      canvasHeight = 1800;
-    } else if (["instagram", "twitter", "threads", "linkedin"].includes(platform) && !isPaper) {
+    if (["instagram", "twitter", "threads", "linkedin"].includes(platform) && !isPaper) {
       canvasWidth = 1080;
       canvasHeight = 1350;
     }
@@ -289,6 +284,10 @@ async function generatePngSlideBlob(
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     const ctx = canvas.getContext("2d");
+
+    // 🟢 Enforce high-quality crisp rendering & smooth image filters
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     const bgColor = theme?.color || "#0F172A";
     const primaryText = theme?.textColor || "#FFFFFF";
@@ -876,8 +875,8 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     if (viewMode === "png_slides") {
       if (selectedPlatform === "pinterest") {
-        // 🟢 Pinterest 2:3 Golden Ratio (1200x1800): 650 Chars maintains large, bold, zero-blur text
-        effectiveLimit = 650;
+        // 🟢 Native 9:16 Full HD (1080x1920): Perfectly matches mobile player screen
+        effectiveLimit = 700;
       } else if (selectedSlideTheme?.isPaper) {
         // 🟢 Paper Mode (9:16 Full HD): 1150 Chars capacity fills all 24-26 lines completely
         effectiveLimit = 1150;
