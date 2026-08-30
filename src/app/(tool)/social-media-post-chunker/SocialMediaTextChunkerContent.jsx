@@ -169,70 +169,45 @@ const SLIDE_THEMES = [
   { id: "midnight-purple", name: "Midnight Purple", color: "#3B0764", textColor: "#FFFFFF" },
 ];
 
-// 🟢 100% BULLETPROOF DEVANAGARI & LATIN SUBSET FONT LOADER
+// 🟢 ZERO-HANG FAILSAFE FONT LOADER (Never Freezes on Mobile)
 const fontLoadCache = new Set();
 
 async function ensureHandwritingFonts(fontName = "Kalam") {
   if (typeof window === "undefined" || typeof document === "undefined") return;
+  if (fontLoadCache.has(fontName)) return;
 
-  const cacheKey = `${fontName}_devanagari_loaded`;
-  if (
-    fontLoadCache.has(cacheKey) &&
-    document.fonts &&
-    document.fonts.check(`40px "${fontName}"`, "रुकिए क 123")
-  ) {
-    return;
-  }
+  // 🛡️ Maximum 1200ms Safety Timeout (Never blocks generation process)
+  const safetyTimeout = new Promise((resolve) => setTimeout(resolve, 1200));
 
-  try {
-    // 1. Ensure CSS Link tag is in head and wait for CSS download
-    let link = document.getElementById("utz-handwriting-fonts");
-    if (!link) {
-      await new Promise((resolve) => {
-        const newLink = document.createElement("link");
-        newLink.id = "utz-handwriting-fonts";
-        newLink.rel = "stylesheet";
-        newLink.href =
+  const fontLoaderTask = async () => {
+    try {
+      // 1. Inject CSS if not present
+      if (!document.getElementById("utz-handwriting-fonts")) {
+        const link = document.createElement("link");
+        link.id = "utz-handwriting-fonts";
+        link.rel = "stylesheet";
+        link.href =
           "https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Caveat:wght@400;500;700&family=Dekko&family=Kalam:wght@300;400;700&family=Tillana:wght@400;600&display=swap";
-        newLink.onload = () => resolve();
-        newLink.onerror = () => resolve();
-        document.head.appendChild(newLink);
-      });
+        document.head.appendChild(link);
+      }
+
+      // 2. Safe non-hanging font loading
+      if (document.fonts && document.fonts.load) {
+        await Promise.allSettled([
+          document.fonts.load(`400 40px "${fontName}"`),
+          document.fonts.load(`700 40px "${fontName}"`),
+          document.fonts.ready,
+        ]);
+      }
+
+      fontLoadCache.add(fontName);
+    } catch (e) {
+      console.warn("Font load bypassed:", e);
     }
+  };
 
-    // 2. Hidden DOM element with Devanagari text forces browser to trigger font subset fetch
-    let tester = document.getElementById(`utz-font-tester-${fontName}`);
-    if (!tester) {
-      tester = document.createElement("span");
-      tester.id = `utz-font-tester-${fontName}`;
-      tester.style.position = "absolute";
-      tester.style.left = "-9999px";
-      tester.style.top = "-9999px";
-      tester.style.fontSize = "40px";
-      tester.style.fontFamily = `"${fontName}", cursive`;
-      tester.innerText = "रुकिए Kalam Test 123";
-      document.body.appendChild(tester);
-    }
-
-    // 3. 🎯 CRITICAL: Passing Hindi string ('रुकिए क') forces download of the Devanagari .woff2 file!
-    if (document.fonts && document.fonts.load) {
-      await Promise.all([
-        document.fonts.load(`400 40px "${fontName}"`, "रुकिए क"),
-        document.fonts.load(`600 40px "${fontName}"`, "रुकिए क"),
-        document.fonts.load(`700 40px "${fontName}"`, "रुकिए क"),
-        document.fonts.load(`400 40px "${fontName}"`, "Page 1 of"),
-      ]);
-      await document.fonts.ready;
-    }
-
-    // 4. Double frame buffer to ensure GPU canvas binds glyphs
-    await new Promise((resolve) => setTimeout(resolve, 60));
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-    fontLoadCache.add(cacheKey);
-  } catch (e) {
-    console.error("Font Load Error:", e);
-  }
+  // Race font loading with strict timeout
+  await Promise.race([fontLoaderTask(), safetyTimeout]);
 }
 
 
@@ -255,6 +230,7 @@ function normalizeUnicodeText(str = "") {
       String.fromCharCode(c.codePointAt(0) - 0x1d5ee + 97)
     );
 }
+
 async function generatePngSlideBlob(
   textChunk,
   slideNumber,
@@ -269,6 +245,7 @@ async function generatePngSlideBlob(
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
     const isPaper = Boolean(theme?.isPaper);
+    const isPinterest = platform === "pinterest"; // 🟢 Added missing isPinterest declaration
 
     // 🟢 1:1 Pixel Mapping for 100% razor-sharp fonts without scaling artifacts
     const scaleFactor = 1.0;
@@ -1074,55 +1051,60 @@ const [shortTeaserText, setShortTeaserText] = useState("");
     }
   };
 
-// 🟢 ULTRA-FAST PARALLEL PNG GENERATOR (Promise.all Engine - 10x Faster on Mobile)
+// 🟢 ULTRA-FAST PARALLEL PNG GENERATOR (With Guaranteed Safe Unlock)
   const handleGeneratePngSlides = async (targetTheme) => {
     if (chunks.length === 0 && !mediaFile) return;
     setIsProcessing(true);
 
-    const activeTheme =
-      targetTheme && typeof targetTheme === "object" && targetTheme.color
-        ? targetTheme
-        : selectedSlideTheme;
+    try {
+      const activeTheme =
+        targetTheme && typeof targetTheme === "object" && targetTheme.color
+          ? targetTheme
+          : selectedSlideTheme;
 
-    pngSlides.forEach((s) => URL.revokeObjectURL(s.url));
-    setPngSlides([]);
+      pngSlides.forEach((s) => URL.revokeObjectURL(s.url));
+      setPngSlides([]);
 
-    if (activeTheme?.isPaper) {
-      await ensureHandwritingFonts(handwritingFont);
-    }
-
-    const totalSlidesCount = chunks.length;
-
-    // ⚡ Parallel Async Generation: All slides process concurrently without blocking
-    const slidePromises = chunks.map(async (chunk, idx) => {
-      const res = await generatePngSlideBlob(
-        chunk,
-        idx + 1,
-        totalSlidesCount,
-        activeTheme,
-        selectedPlatform,
-        handwritingFont,
-        penThickness
-      );
-      return {
-        index: idx + 1,
-        text: chunk,
-        blob: res.blob,
-        url: res.url,
-      };
-    });
-
-    const slides = await Promise.all(slidePromises);
-
-    setPngSlides(slides);
-    setIsProcessing(false);
-
-    setTimeout(() => {
-      const resultsSection = document.getElementById("pngResultsArea");
-      if (resultsSection) {
-        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (activeTheme?.isPaper) {
+        await ensureHandwritingFonts(handwritingFont);
       }
-    }, 100);
+
+      const totalSlidesCount = chunks.length;
+
+      // ⚡ Parallel Async Generation: All slides process concurrently without blocking
+      const slidePromises = chunks.map(async (chunk, idx) => {
+        const res = await generatePngSlideBlob(
+          chunk,
+          idx + 1,
+          totalSlidesCount,
+          activeTheme,
+          selectedPlatform,
+          handwritingFont,
+          penThickness
+        );
+        return {
+          index: idx + 1,
+          text: chunk,
+          blob: res.blob,
+          url: res.url,
+        };
+      });
+
+      const slides = await Promise.all(slidePromises);
+      setPngSlides(slides);
+
+      setTimeout(() => {
+        const resultsSection = document.getElementById("pngResultsArea");
+        if (resultsSection) {
+          resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    } catch (error) {
+      console.error("Slide Generation Error:", error);
+    } finally {
+      // 🟢 GUARANTEED UNLOCK: Button hamesha normal state me wapas aayega
+      setIsProcessing(false);
+    }
   };
 
   // 1-Click Color Swatch Click -> Auto Re-Generate Slides Live
