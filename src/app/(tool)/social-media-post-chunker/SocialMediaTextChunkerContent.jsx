@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import GlassCard from "@/components/ui/GlassCard";
 
+
 const PLATFORM_LIMITS = {
   whatsapp: {
     name: "WhatsApp Status & Slides",
@@ -168,24 +169,35 @@ const SLIDE_THEMES = [
   { id: "midnight-purple", name: "Midnight Purple", color: "#3B0764", textColor: "#FFFFFF" },
 ];
 
-
-// 🟢 HIGH-SPEED FONT CACHE ENGINE (Zero Lag on Mobile)
+// 🟢 100% BULLETPROOF ZERO-FALLBACK FONT LOADER
 const fontLoadCache = new Set();
 
 async function ensureHandwritingFonts(fontName = "Kalam") {
   if (typeof window === "undefined" || typeof document === "undefined") return;
-  if (fontLoadCache.has(fontName)) return; // ⚡ Instant skip if already cached!
+  
+  // Agar font already memory me ready hai toh instant return
+  if (fontLoadCache.has(fontName) && document.fonts && document.fonts.check(`16px "${fontName}"`)) {
+    return;
+  }
 
   try {
-    if (!document.getElementById("utz-handwriting-fonts")) {
-      const link = document.createElement("link");
-      link.id = "utz-handwriting-fonts";
-      link.rel = "stylesheet";
-      link.href =
-        "https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Caveat:wght@400;500;700&family=Dekko&family=Kalam:wght@300;400;700&family=Tillana:wght@400;600&display=swap";
-      document.head.appendChild(link);
+    // 1. Ensure CSS Link tag is injected AND wait for network download (onload)
+    let link = document.getElementById("utz-handwriting-fonts");
+    if (!link) {
+      await new Promise((resolve) => {
+        const newLink = document.createElement("link");
+        newLink.id = "utz-handwriting-fonts";
+        newLink.rel = "stylesheet";
+        newLink.href =
+          "https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Caveat:wght@400;500;700&family=Dekko&family=Kalam:wght@300;400;700&family=Tillana:wght@400;600&display=swap";
+        
+        newLink.onload = () => resolve();
+        newLink.onerror = () => resolve();
+        document.head.appendChild(newLink);
+      });
     }
 
+    // 2. Explicitly force browser to parse and load glyphs into memory
     if (document.fonts && document.fonts.load) {
       await Promise.all([
         document.fonts.load(`400 40px "${fontName}"`),
@@ -194,6 +206,9 @@ async function ensureHandwritingFonts(fontName = "Kalam") {
       ]);
       await document.fonts.ready;
     }
+
+    // 3. Frame sync delay to guarantee Canvas GPU context binds the font
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
     fontLoadCache.add(fontName);
   } catch (e) {
@@ -606,6 +621,11 @@ export default function SocialMediaTextChunkerContent({ forcedSlug }) {
     setMediaType(file.type.startsWith("video/") ? "video" : "image");
     setMediaPreviewUrl(URL.createObjectURL(file));
   };
+
+useEffect(() => {
+  ensureHandwritingFonts("Kalam");
+}, []);
+  
 
   const router = useRouter();
   const searchParams = useSearchParams();
