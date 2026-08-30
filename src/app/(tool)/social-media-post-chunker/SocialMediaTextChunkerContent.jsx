@@ -169,19 +169,23 @@ const SLIDE_THEMES = [
   { id: "midnight-purple", name: "Midnight Purple", color: "#3B0764", textColor: "#FFFFFF" },
 ];
 
-// 🟢 100% BULLETPROOF ZERO-FALLBACK FONT LOADER
+// 🟢 100% BULLETPROOF DEVANAGARI & LATIN SUBSET FONT LOADER
 const fontLoadCache = new Set();
 
 async function ensureHandwritingFonts(fontName = "Kalam") {
   if (typeof window === "undefined" || typeof document === "undefined") return;
-  
-  // Agar font already memory me ready hai toh instant return
-  if (fontLoadCache.has(fontName) && document.fonts && document.fonts.check(`16px "${fontName}"`)) {
+
+  const cacheKey = `${fontName}_devanagari_loaded`;
+  if (
+    fontLoadCache.has(cacheKey) &&
+    document.fonts &&
+    document.fonts.check(`40px "${fontName}"`, "रुकिए क 123")
+  ) {
     return;
   }
 
   try {
-    // 1. Ensure CSS Link tag is injected AND wait for network download (onload)
+    // 1. Ensure CSS Link tag is in head and wait for CSS download
     let link = document.getElementById("utz-handwriting-fonts");
     if (!link) {
       await new Promise((resolve) => {
@@ -190,32 +194,46 @@ async function ensureHandwritingFonts(fontName = "Kalam") {
         newLink.rel = "stylesheet";
         newLink.href =
           "https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Caveat:wght@400;500;700&family=Dekko&family=Kalam:wght@300;400;700&family=Tillana:wght@400;600&display=swap";
-        
         newLink.onload = () => resolve();
         newLink.onerror = () => resolve();
         document.head.appendChild(newLink);
       });
     }
 
-    // 2. Explicitly force browser to parse and load glyphs into memory
+    // 2. Hidden DOM element with Devanagari text forces browser to trigger font subset fetch
+    let tester = document.getElementById(`utz-font-tester-${fontName}`);
+    if (!tester) {
+      tester = document.createElement("span");
+      tester.id = `utz-font-tester-${fontName}`;
+      tester.style.position = "absolute";
+      tester.style.left = "-9999px";
+      tester.style.top = "-9999px";
+      tester.style.fontSize = "40px";
+      tester.style.fontFamily = `"${fontName}", cursive`;
+      tester.innerText = "रुकिए Kalam Test 123";
+      document.body.appendChild(tester);
+    }
+
+    // 3. 🎯 CRITICAL: Passing Hindi string ('रुकिए क') forces download of the Devanagari .woff2 file!
     if (document.fonts && document.fonts.load) {
       await Promise.all([
-        document.fonts.load(`400 40px "${fontName}"`),
-        document.fonts.load(`600 40px "${fontName}"`),
-        document.fonts.load(`700 40px "${fontName}"`),
+        document.fonts.load(`400 40px "${fontName}"`, "रुकिए क"),
+        document.fonts.load(`600 40px "${fontName}"`, "रुकिए क"),
+        document.fonts.load(`700 40px "${fontName}"`, "रुकिए क"),
+        document.fonts.load(`400 40px "${fontName}"`, "Page 1 of"),
       ]);
       await document.fonts.ready;
     }
 
-    // 3. Frame sync delay to guarantee Canvas GPU context binds the font
+    // 4. Double frame buffer to ensure GPU canvas binds glyphs
+    await new Promise((resolve) => setTimeout(resolve, 60));
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-    fontLoadCache.add(fontName);
+    fontLoadCache.add(cacheKey);
   } catch (e) {
     console.error("Font Load Error:", e);
   }
 }
-
 
 
 // 🟢 Helper: Convert mathematical unicode bold back to normal chars for handwriting fonts
