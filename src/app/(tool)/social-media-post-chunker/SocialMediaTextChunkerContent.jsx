@@ -14,11 +14,11 @@ const PLATFORM_LIMITS = {
     desc: "Optimized 700-character chunks for clean WhatsApp status & Full HD slides.",
   },
   pinterest: {
-    name: "Pinterest Carousel (2:3 Retina HD)",
-    limit: 850, // 🟢 850 Chars fills 2:3 Ultra HD pin perfectly with minimal slide count
+    name: "Pinterest Carousel (2:3 HD)",
+    limit: 650, // 🟢 Best 2:3 Pinterest density without blur
     icon: "📌",
     slug: "pinterest-carousel-generator",
-    desc: "Ultra-crisp 2:3 Retina HD (1600x2400) slides with zero compression blur for Pinterest carousels.",
+    desc: "Crystal-clear 2:3 HD slides (1200x1800) for zero-blur Pinterest carousels.",
   },
   twitter: {
     name: "Twitter / X Thread",
@@ -271,16 +271,16 @@ async function generatePngSlideBlob(
     const isPaper = Boolean(theme?.isPaper);
     const isPinterest = platform === "pinterest";
 
-    // 🟢 DYNAMIC DPI / RETINA SCALE: Pinterest gets 1.48x high-res scale (1600x2400) for zero blur
-    const scaleFactor = isPinterest ? 1.48 : 1.0;
+    // 🟢 Pinterest gets exact 1.11x proportional scaling for crisp 1200x1800 rendering
+    const scaleFactor = isPinterest ? 1.11 : 1.0;
 
     let canvasWidth = 1080;
     let canvasHeight = 1920;
 
     if (isPinterest) {
-      // 🟢 2:3 Ultra-HD Retina Canvas (1600x2400) - Overcomes Pinterest compression algorithm
-      canvasWidth = 1600;
-      canvasHeight = 2400;
+      // 🟢 Official Pinterest 2:3 HD Standard (1200x1800) - Never blurred, stays below 2100px limit
+      canvasWidth = 1200;
+      canvasHeight = 1800;
     } else if (["instagram", "twitter", "threads", "linkedin"].includes(platform) && !isPaper) {
       canvasWidth = 1080;
       canvasHeight = 1350;
@@ -876,8 +876,8 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     if (viewMode === "png_slides") {
       if (selectedPlatform === "pinterest") {
-        // 🟢 Pinterest 2:3 Ultra-HD Pin: 850 Chars capacity minimizes total slides
-        effectiveLimit = 850;
+        // 🟢 Pinterest 2:3 Golden Ratio (1200x1800): 650 Chars maintains large, bold, zero-blur text
+        effectiveLimit = 650;
       } else if (selectedSlideTheme?.isPaper) {
         // 🟢 Paper Mode (9:16 Full HD): 1150 Chars capacity fills all 24-26 lines completely
         effectiveLimit = 1150;
