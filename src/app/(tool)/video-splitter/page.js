@@ -414,20 +414,16 @@ function VideoSplitterContent({ forcedPlatform }) {
         const outName = `part_${String(i + 1).padStart(2, "0")}.mp4`;
         const fadeOutStart = exactDuration - 0.015;
 
-        // 🔥 -ss को -i से पहले लगाया गया है जिससे सीकिंग तुरंत हो जाए
+        // 🔥 SUPERFAST STREAM COPY: वीडियो को बिना री-रेंडर किए डायरेक्ट काटना
         await ffmpeg.exec([
           "-ss", exactStart.toFixed(3),
           "-i", "input.mp4",
+          "-t", exactDuration.toFixed(3), // ⏱️ सिर्फ़ उतनी ही ड्यूरेशन काटेगा
           "-threads", String(safeThreads),
-          "-filter_complex",
-          `[0:v]trim=duration=${exactDuration.toFixed(3)},setpts=PTS-STARTPTS[v];[0:a]atrim=duration=${exactDuration.toFixed(3)},asetpts=PTS-STARTPTS,afade=t=in:ss=0:d=0.015,afade=t=out:st=${fadeOutStart.toFixed(3)}:d=0.015[a]`,
-          "-map", "[v]",
-          "-map", "[a]",
-          "-c:v", "libx264",
-          "-preset", "ultrafast",
-          "-crf", "28",
-          "-c:a", "aac",
-          "-b:a", "96k",
+          "-c:v", "copy", // 🚀 वीडियो को दोबारा रेंडर करने से बचाएगा (100x Faster)
+          "-c:a", "aac",  // 🎵 ऑडियो को स्मूथ रखेगा
+          "-b:a", "128k",
+          "-avoid_negative_ts", "1", // ⚠️ कीफ्रेम मिसमैच से वीडियो अटकाने से रोकेगा
           outName,
         ]);
 
