@@ -412,7 +412,6 @@ function VideoSplitterContent({ forcedPlatform }) {
         if (exactDuration < 0.5) continue;
 
         const outName = `part_${String(i + 1).padStart(2, "0")}.mp4`;
-        const fadeOutStart = exactDuration - 0.015;
 
         // 🔥 SUPERFAST STREAM COPY: वीडियो को बिना री-रेंडर किए डायरेक्ट काटना
         await ffmpeg.exec([
