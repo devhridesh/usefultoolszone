@@ -38,7 +38,6 @@ export default function SmartYoutubeCardContent() {
       setError("Invalid YouTube URL. Supports watch, shorts, and youtu.be links.");
       return;
     }
-
     setLoading(true);
     try {
       const res = await fetch(
@@ -62,10 +61,6 @@ export default function SmartYoutubeCardContent() {
       setLoading(false);
     }
   };
-
-
-
-  
 const generatedShareLink = videoData
   ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-expander?v=${videoData.id}`
   : "";
