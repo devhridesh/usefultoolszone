@@ -89,7 +89,6 @@ const generatedShareLink = videoData
       handleCopyLink();
     }
   };
-
   // अगर कोई यूजर सीधे ?v= लिंक पर PC से आया हो और रीडायरेक्ट न हुआ हो
   if (queryVideoId) {
     return (
@@ -109,7 +108,6 @@ const generatedShareLink = videoData
       </div>
     );
   }
-
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-start bg-slate-50/60 dark:bg-[#060609] pt-24 pb-12 px-4">
       <div className="w-full max-w-4xl mx-auto my-2 py-4 bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 text-center min-h-[90px] shadow-sm rounded-2xl select-none flex flex-col items-center justify-center">
