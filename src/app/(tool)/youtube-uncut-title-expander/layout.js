@@ -10,14 +10,12 @@ export const metadata = {
     "youtube direct link opener",
   ],
   alternates: {
-    canonical: "https://usefultoolszone.com/smart-youtube-card-opener",
-  },
+canonical: "https://usefultoolszone.com/youtube-uncut-title-expander",  },
   openGraph: {
     title: "Smart YouTube Card & App Opener | Useful Tools Zone",
     description:
       "Display 100% full unclipped video titles and open videos directly inside YouTube App.",
-    url: "https://usefultoolszone.com/smart-youtube-card-opener",
-    siteName: "Useful Tools Zone",
+url: "https://usefultoolszone.com/youtube-uncut-title-expander",    siteName: "Useful Tools Zone",
     type: "website",
   },
 };

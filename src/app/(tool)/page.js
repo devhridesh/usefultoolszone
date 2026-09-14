@@ -162,15 +162,15 @@ export default async function MasterHomepage({ searchParams }) {
       categories: ["pro", "video"],
     },
 
-    {
-  title: "Smart YouTube Card & App Opener",
+{
+  title: "YouTube Uncut Title Expander",
   description:
-    "World's 1st smart link tool to show 100% full unclipped video titles and open YouTube links directly in the native mobile app.",
-  link: "/smart-youtube-card-opener",
-  badge: "⚡ WORLD'S 1ST SMART OPENER",
+    "Tired of WhatsApp Status cutting off video titles with '...'? Expand 100% unclipped headlines in high-impact preview cards with instant 0ms direct opening in the official YouTube app.",
+   link: "/youtube-uncut-title-expander",
+  badge: "⚡ 100% UNCUT TITLES + 0ms APP LAUNCH",
   badgeColor:
     "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200/60 dark:border-red-800/40",
-  btnText: "Launch Smart Opener →",
+  btnText: "Expand Status Title →",
   icon: "▶️",
   categories: ["pro", "video"],
 },

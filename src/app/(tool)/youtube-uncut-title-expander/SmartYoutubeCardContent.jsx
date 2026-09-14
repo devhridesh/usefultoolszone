@@ -63,9 +63,9 @@ export default function SmartYoutubeCardContent() {
     }
   };
 
-  const generatedShareLink = videoData
-    ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/smart-youtube-card-opener?v=${videoData.id}`
-    : "";
+const generatedShareLink = videoData
+  ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-expander?v=${videoData.id}`
+  : "";
 
   const handleCopyLink = () => {
     if (!generatedShareLink) return;
@@ -128,7 +128,7 @@ export default function SmartYoutubeCardContent() {
         <main className="w-full flex flex-col items-center justify-start space-y-6">
           <div className="text-center space-y-2 max-w-2xl mx-auto animate-fadeIn">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400 border border-red-200/60 dark:border-red-800/40 shadow-sm mb-1 select-none">
-              <span>⚡</span> 0ms INSTANT YOUTUBE APP OPENER
+              <span>⚡</span>WORLD'S 1ST 0ms INSTANT YOUTUBE APP OPENER
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               Smart YouTube Link <br />
