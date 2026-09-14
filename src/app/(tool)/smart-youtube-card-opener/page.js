@@ -9,8 +9,8 @@ export async function generateMetadata({ searchParams }) {
 
   if (!vid) {
     return {
-      title: "Smart YouTube Card & App Opener | Useful Tools Zone",
-      description: "Open YouTube links directly in mobile app with 100% full titles.",
+      title: "Smart YouTube Card & Direct App Opener | Useful Tools Zone",
+      description: "Generate full-title preview cards and open YouTube links directly in app.",
     };
   }
 
@@ -23,7 +23,7 @@ export async function generateMetadata({ searchParams }) {
 
     return {
       title: fullTitle,
-      description: `🔴 ${data.author_name || "YouTube"} • Tap to open directly in YouTube App`,
+      description: `🔴 ${data.author_name || "YouTube"} • Tap to watch directly in YouTube App`,
       openGraph: {
         title: fullTitle,
         description: `▶ Tap to open full video directly inside YouTube native app`,
@@ -44,16 +44,47 @@ export async function generateMetadata({ searchParams }) {
   }
 }
 
-export default function Page() {
+export default async function Page({ searchParams }) {
+  const params = await searchParams;
+  const vid = params?.v;
+
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#060609] text-slate-400 text-xs font-bold animate-pulse">
-          Loading Smart Card Engine...
-        </div>
-      }
-    >
-      <SmartYoutubeCardContent />
-    </Suspense>
+    <>
+      {/* मिली-सेकंड इंस्टेंट रीडायरेक्ट: React लोड होने से पहले ही सीधे YouTube App खोलेगा */}
+      {vid && (
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var v = "${vid}";
+                var ua = navigator.userAgent || "";
+                var isAndroid = /android/i.test(ua);
+                var isIOS = /iPad|iPhone|iPod/.test(ua);
+                
+                if (isAndroid) {
+                  window.location.replace("intent://www.youtube.com/watch?v=" + v + "#Intent;package=com.google.android.youtube;scheme=https;end");
+                } else if (isIOS) {
+                  window.location.replace("vnd.youtube://watch?v=" + v);
+                  setTimeout(function() {
+                    window.location.replace("https://www.youtube.com/watch?v=" + v);
+                  }, 300);
+                } else {
+                  window.location.replace("https://www.youtube.com/watch?v=" + v);
+                }
+              })();
+            `,
+          }}
+        />
+      )}
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#060609] text-slate-400 text-xs font-bold animate-pulse">
+            Opening YouTube App...
+          </div>
+        }
+      >
+        <SmartYoutubeCardContent />
+      </Suspense>
+    </>
   );
 }
