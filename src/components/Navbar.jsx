@@ -19,6 +19,7 @@ import ThemeSwitcher from "./ui/ThemeSwitcher.jsx";
  * ⚡ PRO LEVEL UTILITIES
  * Multi-step, high-impact workflow tools and advanced generators.
  */
+
 const proLevelTools = [
   {
     id: "social-text-chunker",
@@ -27,6 +28,14 @@ const proLevelTools = [
     icon: "✍️",
     desc: "Split long posts & scripts into viral, platform-ready chunks with high-CTR attention hooks.",
     badge: "PRO",
+  },
+  {
+    id: "youtube-uncut-title-expander",
+    name: "YouTube Uncut Title Expander",
+    link: "/smart-youtube-card-opener",
+    icon: "▶️",
+    desc: "Expand 100% full unclipped titles on WhatsApp Status with 0ms direct app launch.",
+    badge: "NEW",
   },
 ];
 
