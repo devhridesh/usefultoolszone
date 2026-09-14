@@ -16,7 +16,6 @@ export default function SmartYoutubeCardContent() {
   const [autoOpen, setAutoOpen] = useState(false);
   const [countdown, setCountdown] = useState(3);
 
-  // YouTube URL से 11 अंकों की Video ID निकालना
   const extractVideoId = (inputUrl) => {
     if (!inputUrl) return null;
     const cleanUrl = inputUrl.trim();
@@ -27,7 +26,6 @@ export default function SmartYoutubeCardContent() {
     return match && match[1].length === 11 ? match[1] : null;
   };
 
-  // Video Data Fetch करना
   const fetchVideoInfo = async (vid) => {
     setLoading(true);
     setError("");
@@ -55,7 +53,6 @@ export default function SmartYoutubeCardContent() {
     }
   };
 
-  // अगर URL में ?v=VIDEO_ID पास हुआ हो तो तुरंत लोड करें
   useEffect(() => {
     if (queryVideoId) {
       const vid = extractVideoId(queryVideoId);
@@ -66,11 +63,10 @@ export default function SmartYoutubeCardContent() {
     }
   }, [queryVideoId]);
 
-  // जब इनपुट से सबमिट करें
   const handleGenerate = (e) => {
     e?.preventDefault();
     if (!url.trim()) {
-      setError("Please enter a YouTube video link.");
+      setError("Please paste a valid YouTube video link.");
       return;
     }
     const vid = extractVideoId(url);
@@ -81,7 +77,7 @@ export default function SmartYoutubeCardContent() {
     fetchVideoInfo(vid);
   };
 
-  // डायरेक्ट ऐप ओपनर लॉजिक (Android Intent + iOS Scheme + Web Fallback)
+  // डायरेक्ट ऐप ओपनर (Android Intent + iOS Scheme + Web Fallback)
   const handleOpenInApp = () => {
     if (!videoData?.id) return;
     const vid = videoData.id;
@@ -100,7 +96,6 @@ export default function SmartYoutubeCardContent() {
     }
   };
 
-  // ऑटो-ओपन टाइमर (जब कोई शेयर्ड लिंक खोले)
   useEffect(() => {
     if (autoOpen && videoData && countdown > 0) {
       const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
@@ -110,7 +105,6 @@ export default function SmartYoutubeCardContent() {
     }
   }, [autoOpen, videoData, countdown]);
 
-  // स्मार्ट शेयर लिंक कॉपी करना
   const generatedShareLink = videoData
     ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/smart-youtube-card-opener?v=${videoData.id}`
     : "";
@@ -122,7 +116,6 @@ export default function SmartYoutubeCardContent() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // मोबाइल डायरेक्ट शेयर (Web Share API)
   const handleNativeShare = async () => {
     if (typeof navigator !== "undefined" && navigator.canShare && videoData) {
       try {
@@ -156,21 +149,21 @@ export default function SmartYoutubeCardContent() {
           </span>
         </div>
 
-        {/* Center Main Content */}
+        {/* Center Main Module */}
         <main className="w-full flex flex-col items-center justify-start space-y-6">
           {/* Header Section */}
           <div className="text-center space-y-2 max-w-2xl mx-auto animate-fadeIn">
-            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50/80 text-blue-600 dark:bg-blue-950/40 dark:border-blue-800/60 dark:text-blue-400 text-[11px] font-black uppercase tracking-wider shadow-sm mb-1 select-none">
-              <span>⚡</span> 100% UNTRUNCATED CARD & DIRECT APP OPENER
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400 border border-red-200/60 dark:border-red-800/40 shadow-sm mb-1 select-none">
+              <span>⚡</span> WORLD&apos;S 1ST SMART LINK &amp; UNTRUNCATED CARD
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               Smart YouTube Card <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 font-extrabold">
-                Full Title Preview & App Opener
+                Full Title Preview &amp; App Opener
               </span>
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium max-w-lg mx-auto leading-relaxed">
-              Eliminate truncated &apos;...&apos; titles on WhatsApp and Instagram. Generate complete preview cards that launch directly inside the official YouTube App.
+              Show 100% full titles without truncation on WhatsApp Status and Instagram Bio. Routes viewers straight to the official YouTube app.
             </p>
           </div>
 
@@ -182,7 +175,7 @@ export default function SmartYoutubeCardContent() {
               <form onSubmit={handleGenerate} className="flex flex-col sm:flex-row gap-3 items-center w-full">
                 <input
                   type="text"
-                  placeholder="Paste YouTube Link (e.g. https://youtu.be/aTTwBdphW64)"
+                  placeholder="Paste YouTube Link (e.g., https://youtu.be/aTTwBdphW64)"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   className="w-full px-4 py-3.5 bg-slate-50 dark:bg-gray-950 border-2 border-slate-200 dark:border-gray-800 focus:border-blue-500 rounded-xl text-xs sm:text-sm font-bold text-gray-900 dark:text-white outline-none transition-all"
@@ -192,18 +185,17 @@ export default function SmartYoutubeCardContent() {
                   disabled={loading}
                   className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:brightness-110 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-indigo-500/25 transition-all active:scale-[0.98] whitespace-nowrap disabled:opacity-50 cursor-pointer"
                 >
-                  {loading ? "Loading..." : "Generate Card"}
+                  {loading ? "Extracting..." : "Generate Card"}
                 </button>
               </form>
 
-              {/* Error Alert */}
               {error && (
                 <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs font-bold text-amber-600 dark:text-amber-400">
                   {error}
                 </div>
               )}
 
-              {/* LIVE CARD PREVIEW CONTAINER */}
+              {/* LIVE CARD PREVIEW */}
               {videoData && (
                 <div className="space-y-6 animate-fadeIn pt-2">
                   <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-2">
@@ -211,11 +203,10 @@ export default function SmartYoutubeCardContent() {
                       Live Full-Title Card Preview
                     </span>
                     <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800/40">
-                      100% Full Title Visible
+                      Zero Title Cuts
                     </span>
                   </div>
 
-                  {/* AUTO-OPEN BANNER (When accessed via direct shared link) */}
                   {autoOpen && (
                     <div className="p-3 bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 rounded-xl flex items-center justify-between text-xs text-indigo-900 dark:text-indigo-200">
                       <span>
@@ -226,15 +217,17 @@ export default function SmartYoutubeCardContent() {
                         onClick={() => setAutoOpen(false)}
                         className="text-[10px] font-bold underline cursor-pointer text-indigo-600 dark:text-indigo-400"
                       >
-                        Cancel Auto-Open
+                        Cancel
                       </button>
                     </div>
                   )}
 
-                  {/* THE FULL CARD (No Title Cuts) */}
-                  <div className="max-w-md mx-auto bg-white dark:bg-[#111116] border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all">
-                    {/* Thumbnail with 16:9 ratio and play badge */}
-                    <div className="relative aspect-video w-full bg-black overflow-hidden group cursor-pointer" onClick={handleOpenInApp}>
+                  {/* Complete Full-Title Card Container */}
+                  <div className="max-w-md mx-auto bg-white dark:bg-[#111116] border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-xl">
+                    <div
+                      className="relative aspect-video w-full bg-black overflow-hidden group cursor-pointer"
+                      onClick={handleOpenInApp}
+                    >
                       <img
                         src={videoData.thumbnail}
                         alt={videoData.title}
@@ -243,7 +236,7 @@ export default function SmartYoutubeCardContent() {
                           e.target.src = `https://img.youtube.com/vi/${videoData.id}/hqdefault.jpg`;
                         }}
                       />
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-all flex items-center justify-center">
                         <div className="w-14 h-14 rounded-full bg-red-600/90 text-white flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform">
                           ▶
                         </div>
@@ -253,8 +246,8 @@ export default function SmartYoutubeCardContent() {
                       </div>
                     </div>
 
-                    {/* Card Content: Title is NEVER Truncated */}
                     <div className="p-4 sm:p-5 space-y-3 text-left">
+                      {/* 100% Full Title - No Truncation */}
                       <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white leading-snug break-words">
                         {videoData.title}
                       </h2>
@@ -268,7 +261,6 @@ export default function SmartYoutubeCardContent() {
                         </span>
                       </div>
 
-                      {/* Open in YouTube App Button */}
                       <div className="pt-2">
                         <button
                           type="button"
@@ -282,10 +274,10 @@ export default function SmartYoutubeCardContent() {
                     </div>
                   </div>
 
-                  {/* ACTION CONTROLS & SHARING */}
+                  {/* Shareable Link Box */}
                   <div className="p-4 bg-slate-50 dark:bg-gray-900/60 rounded-2xl border border-slate-200 dark:border-gray-800 space-y-3">
                     <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                      Shareable Smart Link (Opens direct app & full title)
+                      Shareable Smart Link
                     </span>
 
                     <div className="flex flex-col sm:flex-row gap-2">
@@ -310,34 +302,30 @@ export default function SmartYoutubeCardContent() {
                         Share via App
                       </button>
                     </div>
-
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                      💡 <strong>Tip:</strong> Share this link on WhatsApp Status, Instagram Bio, or Telegram. When users tap it on Android or iOS, it bypasses the in-app browser and opens directly inside the YouTube App!
-                    </p>
                   </div>
                 </div>
               )}
             </GlassCard>
           </div>
 
-          {/* pSEO Info & FAQ Section */}
+          {/* pSEO Info & FAQ */}
           <section className="w-full bg-white dark:bg-[#0c0c12] rounded-2xl p-6 sm:p-10 text-xs text-left text-slate-600 dark:text-gray-400 border border-slate-200/60 dark:border-white/5 shadow-sm space-y-8 mt-12">
             <article className="space-y-3">
               <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
-                Why Standard Social Media Previews Truncate YouTube Titles
+                Why Standard WhatsApp Status Cuts YouTube Video Titles
               </h2>
               <p className="leading-relaxed">
-                Platforms like WhatsApp, Instagram, and Telegram enforce strict character caps on link preview cards, often cutting important titles short with &quot;...&quot; ellipsis. Furthermore, clicking on standard links opens them in a limited in-app webview where users are frequently logged out, reducing subscriber conversion and watch time.
+                Social media platforms enforce strict character truncation limits on link preview cards, cutting off critical headlines with &quot;...&quot; ellipsis. Furthermore, clicking on standard links opens them inside limited webviews where users are logged out.
               </p>
               <p className="leading-relaxed">
-                Our <strong>Smart YouTube Card & App Opener</strong> solves both problems: it displays the 100% full title cleanly and uses deep-linking protocols to route viewers directly into the official YouTube native app.
+                Our <strong>Smart YouTube Card &amp; App Opener</strong> displays the 100% full title cleanly and uses native deep-linking protocols to route viewers directly into the official YouTube application.
               </p>
             </article>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-slate-50 dark:bg-black/40 border border-slate-100 dark:border-white/5 rounded-xl">
                 <h3 className="font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-1">
-                  100% Free & Serverless
+                  100% Free &amp; Serverless
                 </h3>
                 <p className="text-[11px] leading-relaxed">
                   Fetches data using official open web protocols. Zero database tracking, no subscriptions, and instant client-side execution.
@@ -352,34 +340,9 @@ export default function SmartYoutubeCardContent() {
                 </p>
               </div>
             </div>
-
-            {/* FAQ Accordion */}
-            <div className="border-t border-slate-100 dark:border-white/5 pt-6 space-y-3">
-              <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wide">
-                Frequently Asked Questions
-              </h3>
-              <details className="group border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-black/20 rounded-xl p-4 cursor-pointer">
-                <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-xs select-none">
-                  <span>How does direct app opening help YouTube creators?</span>
-                  <span className="text-blue-500 transition group-open:rotate-180">▼</span>
-                </summary>
-                <p className="mt-2.5 leading-relaxed text-[11px]">
-                  When users open links in native apps instead of in-app browsers, they are already signed into their Google accounts, enabling instant likes, comments, and channel subscriptions with zero friction.
-                </p>
-              </details>
-              <details className="group border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-black/20 rounded-xl p-4 cursor-pointer">
-                <summary className="flex items-center justify-between font-bold text-slate-900 dark:text-white text-xs select-none">
-                  <span>Does this support YouTube Shorts?</span>
-                  <span className="text-blue-500 transition group-open:rotate-180">▼</span>
-                </summary>
-                <p className="mt-2.5 leading-relaxed text-[11px]">
-                  Yes. You can paste standard watch links, mobile youtu.be shortlinks, or YouTube Shorts links. The engine extracts the correct video ID automatically.
-                </p>
-              </details>
-            </div>
           </section>
 
-          {/* Bottom Leaderboard Ad Space */}
+          {/* Bottom Leaderboard Ad */}
           <div className="w-full min-h-[90px] bg-white dark:bg-[#0c0c12] border border-dashed border-slate-200 dark:border-white/5 rounded-xl flex flex-col items-center justify-center text-slate-400 text-[10px] font-bold p-2 text-center shadow-sm mt-6">
             <span className="uppercase tracking-widest text-slate-400 mb-1">
               [ BOTTOM LEADERBOARD AD SPACE ]
@@ -394,24 +357,6 @@ export default function SmartYoutubeCardContent() {
           </span>
         </div>
       </div>
-
-      {/* Schema Structured Data for Google Bot */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            name: "Smart YouTube Card & App Opener",
-            url: "https://usefultoolszone.com/smart-youtube-card-opener",
-            operatingSystem: "All",
-            applicationCategory: "MultimediaApplication",
-            description:
-              "Generate full-title preview cards and direct YouTube app-opener links.",
-            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-          }),
-        }}
-      />
     </div>
   );
 }
