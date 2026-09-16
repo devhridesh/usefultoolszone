@@ -42,7 +42,7 @@ export async function generateMetadata({ searchParams }) {
     };
   }
 
-  // जब लिंक में ?v=VIDEO_ID मौजूद हो (WhatsApp / Social Card Preview)
+// जब लिंक में ?v=VIDEO_ID मौजूद हो (WhatsApp / Social Card Preview)
   try {
     const res = await fetch(
       `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${vid}`
@@ -50,8 +50,23 @@ export async function generateMetadata({ searchParams }) {
     const data = await res.json();
     const fullTitle = data.title || "Watch Video in YouTube App";
     const channelName = data.author_name || "YouTube";
-
     const previewDesc = `🔴 ${channelName} • via UsefulToolsZone • Tap to watch in App`;
+
+    // 🚀 Dynamic Thumbnail Fallback Logic (Fixing Blur Issue)
+    // 1st Priority: Try fetching MaxRes HD Thumbnail (1280x720) without black bars
+    let finalImageUrl = `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`;
+    
+    try {
+      // Check if MaxRes actually exists (especially important for Shorts or old videos)
+      const imageCheck = await fetch(finalImageUrl, { method: 'HEAD' });
+      if (!imageCheck.ok) {
+        // Fallback to HQ default if MaxRes is 404
+        finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+      }
+    } catch (err) {
+      // Network error during check, safe fallback
+      finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+    }
 
     return {
       title: fullTitle,
@@ -67,9 +82,9 @@ export async function generateMetadata({ searchParams }) {
         type: "video.other",
         images: [
           {
-            url: `https://img.youtube.com/vi/${vid}/hqdefault.jpg`,
-            width: 1200,
-            height: 630,
+            url: finalImageUrl,
+            width: 1280, // Set to true 16:9 aspect ratio width
+            height: 720, // Set to true 16:9 aspect ratio height
             alt: fullTitle,
           },
         ],
@@ -78,7 +93,7 @@ export async function generateMetadata({ searchParams }) {
         card: "summary_large_image",
         title: fullTitle,
         description: previewDesc,
-        images: [`https://img.youtube.com/vi/${vid}/hqdefault.jpg`],
+        images: [finalImageUrl],
       },
     };
   } catch (e) {

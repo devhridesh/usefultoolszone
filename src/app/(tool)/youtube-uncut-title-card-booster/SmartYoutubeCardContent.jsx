@@ -228,7 +228,7 @@ const generatedShareLink = videoData
                 Quick Tutorial
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                How to Use YouTube Uncut Title Expander
+                How to Use YouTube Uncut Title &amp; Card Booster
               </h2>
             </div>
 
@@ -295,7 +295,7 @@ const generatedShareLink = videoData
             {/* Feature Comparison Matrix */}
             <div className="space-y-3">
               <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
-                Standard YouTube Links vs. YouTube Uncut Title Expander
+                Standard YouTube Links vs. YouTube Uncut Title &amp; Card Booster
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-left text-[11px]">
@@ -365,7 +365,7 @@ const generatedShareLink = videoData
                     Is this service completely free to use?
                   </h4>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Yes, YouTube Uncut Title Expander is 100% free with no account creation, subscriptions, or usage limits required.
+                    Yes, YouTube Uncut Title &amp; Card Booster is 100% free with no account creation, subscriptions, or usage limits required.
                   </p>
                 </div>
 
