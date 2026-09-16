@@ -1214,7 +1214,7 @@ if (viewMode === "png_slides") {
     });
   };
 
-  // 🟢 1-Click Sequential Direct Downloader (Mobile & PC Both)
+  // 🟢 1-Click Sequential Direct Downloader (Fixed 1, 2, 3, 4 Chronological Display)
   const handleDownloadAll = () => {
     const cleanTopic = inputText.trim().split(/\s+/)[0]?.replace(/[^a-zA-Z0-9]/g, "") || "Post";
     const dateStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
@@ -1234,7 +1234,10 @@ if (viewMode === "png_slides") {
 
     if (filesToDownload.length === 0) return;
 
-    filesToDownload.forEach((item, idx) => {
+    // 🟢 Reverse queue triggers Slide 4 -> 3 -> 2 -> 1, so Slide 1 finishes last and stays at the TOP
+    const downloadQueue = [...filesToDownload].reverse();
+
+    downloadQueue.forEach((item, idx) => {
       setTimeout(() => {
         const link = document.createElement("a");
         link.href = URL.createObjectURL(item.blob);
@@ -1242,7 +1245,7 @@ if (viewMode === "png_slides") {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      }, idx * 300); // 300ms delay ensures mobile browser queue saves every slide without skipping
+      }, idx * 350); // 350ms buffer ensures zero-skip order retention
     });
   };
 
