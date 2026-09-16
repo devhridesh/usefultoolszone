@@ -13,6 +13,8 @@ export default function SmartYoutubeCardContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  // 🎯 नया स्टेट: Shorts के लिए मोड स्विच
+  const [shortsMode, setShortsMode] = useState("full");
 
   const extractVideoId = (inputUrl) => {
     if (!inputUrl) return null;
@@ -63,11 +65,10 @@ export default function SmartYoutubeCardContent() {
     }
   };
 
-// 🎯 Shorts होने पर &type=short जोड़ें ताकि ओरिजिनल HD क्वालिटी बनी रहे
-const isShortInput = url.includes("/shorts/");
-const generatedShareLink = videoData
-  ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-card-booster?v=${videoData.id}${isShortInput ? "&type=short" : ""}`
-  : "";
+const isShortVideo = url.includes("/shorts/");
+  const generatedShareLink = videoData
+    ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-card-booster?v=${videoData.id}${isShortVideo ? `&mode=${shortsMode}` : ""}`
+    : "";
 
   const handleCopyLink = () => {
     if (!generatedShareLink) return;
@@ -190,6 +191,50 @@ const generatedShareLink = videoData
                         Zero Title Cuts
                       </span>
                     </div>
+
+                    {/* 🎛️ SHORTS SMART PRESET SELECTOR */}
+                    {isShortVideo && (
+                      <div className="p-3 bg-white dark:bg-black/50 border border-slate-200 dark:border-white/10 rounded-xl space-y-2">
+                        <span className="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider block">
+                          Select Shorts Card Style:
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setShortsMode("full")}
+                            className={`p-2.5 rounded-lg border text-left transition-all ${
+                              shortsMode === "full"
+                                ? "border-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 shadow-xs"
+                                : "border-slate-200 dark:border-white/10 hover:bg-slate-50 text-slate-600 dark:text-slate-400"
+                            }`}
+                          >
+                            <p className="text-xs font-bold flex items-center gap-1.5">
+                              <span>🛡️</span> Full Frame (Zero Cut)
+                            </p>
+                            <p className="text-[10px] opacity-80 mt-0.5">
+                              पूरा चेहरा व टाइटल दिखेगा (माथा/टेक्स्ट नहीं कटेगा)
+                            </p>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setShortsMode("sharp")}
+                            className={`p-2.5 rounded-lg border text-left transition-all ${
+                              shortsMode === "sharp"
+                                ? "border-emerald-600 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 shadow-xs"
+                                : "border-slate-200 dark:border-white/10 hover:bg-slate-50 text-slate-600 dark:text-slate-400"
+                            }`}
+                          >
+                            <p className="text-xs font-bold flex items-center gap-1.5">
+                              <span>⚡</span> Edge-to-Edge (Zero Blur)
+                            </p>
+                            <p className="text-[10px] opacity-80 mt-0.5">
+                              100% क्रिस्प ओरिजिनल क्रॉप (साइड ब्लर नहीं रहेगा)
+                            </p>
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="flex flex-col sm:flex-row gap-2">
                       <input

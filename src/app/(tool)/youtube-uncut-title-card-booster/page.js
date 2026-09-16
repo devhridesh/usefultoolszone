@@ -6,9 +6,9 @@ import SmartYoutubeCardContent from "./SmartYoutubeCardContent";
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams;
   const vid = params?.v;
-  const isShort = params?.type === "short";
+  const mode = params?.mode; // "full" | "sharp"
 
-  // 1. साधारण विज़िटर
+  // 1. सामान्य विज़िटर
   if (!vid) {
     return {
       title: "YouTube Uncut Title & Card Booster | Useful Tools Zone",
@@ -17,11 +17,19 @@ export async function generateMetadata({ searchParams }) {
       alternates: {
         canonical: "https://usefultoolszone.com/youtube-uncut-title-card-booster",
       },
+      openGraph: {
+        title: "YouTube Uncut Title & Card Booster | Useful Tools Zone",
+        description:
+          "Stop WhatsApp Status from truncating video titles with '...'. Boost your social preview cards with 100% uncut headlines and instant 0ms app launch.",
+        url: "https://usefultoolszone.com/youtube-uncut-title-card-booster",
+        siteName: "Useful Tools Zone",
+        type: "website",
+      },
     };
   }
 
-  // 2. अगर Shorts है, तो सीधे YouTube का ओरिजिनल कार्ड URL पॉइंट करें
-  if (isShort) {
+  // 2. जब मोड 'sharp' हो: YouTube का नेटिव कार्ड डायरेक्ट पास करें
+  if (mode === "sharp") {
     return {
       title: "Watch Short in YouTube App",
       description: "Tap to launch video directly inside the official YouTube mobile app.",
@@ -34,7 +42,7 @@ export async function generateMetadata({ searchParams }) {
     };
   }
 
-  // 3. रेगुलर वीडियो: 16:9 MaxRes HD कार्ड इंजन (छोटे कार्ड को बड़ा बनाने के लिए)
+  // 3. 'full' मोड या सामान्य 16:9 वीडियो: अनकट टाइटल + फुल फ्रेम
   let fullTitle = "Watch Video in YouTube App";
   let channelName = "YouTube Creator";
 
@@ -52,8 +60,8 @@ export async function generateMetadata({ searchParams }) {
 
   let finalImageUrl = `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`;
   try {
-    const hdCheck = await fetch(finalImageUrl, { method: "HEAD" });
-    if (!hdCheck.ok) {
+    const checkRes = await fetch(finalImageUrl, { method: "HEAD" });
+    if (!checkRes.ok) {
       finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
     }
   } catch (e) {
@@ -77,8 +85,6 @@ export async function generateMetadata({ searchParams }) {
       images: [
         {
           url: finalImageUrl,
-          width: 1280,
-          height: 720,
           alt: fullTitle,
         },
       ],
@@ -95,12 +101,11 @@ export async function generateMetadata({ searchParams }) {
 export default async function Page({ searchParams }) {
   const params = await searchParams;
   const vid = params?.v;
-  const isShort = params?.type === "short";
+  const mode = params?.mode;
 
-  // 🚀 CRAWLER BYPASS FOR SHORTS:
-  // जब WhatsApp बॉट Shorts का लिंक पढ़ेगा, तो उसे सीधे ओरिजिनल YouTube Shorts पर भेज दिया जाएगा
-  // ताकि बिना किसी ब्लर के ओरिजिनल 100% HD कार्ड लोड हो, जबकि स्टेटस में हमारा ही लिंक दिखेगा!
-  if (vid && isShort) {
+  // 🚀 CRAWLER BYPASS FOR SHARP SHORTS:
+  // अगर यूज़र ने 'sharp' चुना है, तो WhatsApp बॉट ओरिजिनल YouTube शॉर्ट्स का कार्ड फेच करेगा
+  if (vid && mode === "sharp") {
     const headerList = await headers();
     const userAgent = headerList.get("user-agent") || "";
     const isBot = /WhatsApp|facebookexternalhit|Twitterbot|TelegramBot/i.test(userAgent);
