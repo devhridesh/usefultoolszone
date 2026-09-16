@@ -57,6 +57,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'best-sci-fi-novels'
   ];
 
+  // ⚡ YouTube Social Card Booster pSEO Target Platforms Array
+  const socialCardPlatforms = [
+    'whatsapp', 'instagram', 'facebook', 'telegram', 'x'
+  ];
+
   // 🌐 Helper Function: Full Multi-Language Alternate URLs (Google SEO Safe)
   const createAlternates = (path: string) => ({
     languages: {
@@ -124,6 +129,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: createAlternates(`book-grid-generator/${slug}`),
   }));
 
+  // 🔄 Component 7: YouTube Social Card Booster pSEO Platforms Loop
+  const socialCardRoutes = socialCardPlatforms.map((platform) => ({
+    url: `${baseUrl}youtube-uncut-title-card-booster/${platform}`,
+    lastModified: new Date(),
+    priority: 0.9,
+    alternates: createAlternates(`youtube-uncut-title-card-booster/${platform}`),
+  }));
+
   // 🚀 CORE STATIC MARKETING CHANNELS COMPILATION
   return [
     {
@@ -169,6 +182,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       priority: 0.95,
       alternates: createAlternates('book-grid-generator'),
+    },
+    {
+      url: `${baseUrl}youtube-uncut-title-card-booster`,
+      lastModified: new Date(),
+      priority: 0.95,
+      alternates: createAlternates('youtube-uncut-title-card-booster'),
     },
 
     // 🌟 YOUTUBE TOOLS
@@ -230,5 +249,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...chunkerRoutes,
     ...imageRoutes,
     ...bookGridRoutes,
+    ...socialCardRoutes,
   ];
 }
