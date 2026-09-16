@@ -35,11 +35,18 @@ const PLATFORM_LIMITS = {
     desc: "Split long posts into 500-character Meta Threads slides cleanly.",
   },
   instagram: {
-    name: "Instagram Slides / Reels",
-    limit: 450,
+    name: "Instagram Carousel (4:5 Portrait)",
+    limit: 750, // 🟢 4:5 ratio me text ko aakhiri line tak bharega (kam slides)
     icon: "📸",
     slug: "instagram-reels-text-hooks",
-    desc: "450-character bite-sized chunks for high-CTR carousel slides & reels overlays.",
+    desc: "Native 4:5 Portrait (1080x1350) slides for zero-crop Instagram mobile carousels.",
+  },
+  instagram_square: {
+    name: "Instagram Post (1:1 Square)",
+    limit: 550, // 🟢 1:1 square ratio me niche tak full text pack karega
+    icon: "⏹️",
+    slug: "instagram-square-post",
+    desc: "Classic 1:1 Square (1080x1080) slides perfectly fitted for Instagram feed posts.",
   },
   linkedin: {
     name: "LinkedIn Document Carousel",
@@ -73,6 +80,8 @@ const SLUG_MAP = {
   telegram: "telegram",
   "telegram-message-chunker": "telegram",
   "read-more-text-generator": "whatsapp",
+  instagram_square: "instagram_square",
+  "instagram-square-post": "instagram_square",
 };
 
 const HOOK_PRESETS = [
@@ -249,13 +258,16 @@ async function generatePngSlideBlob(
 
     // 🟢 1:1 Pixel Mapping for 100% razor-sharp fonts without scaling artifacts
     const scaleFactor = 1.0;
-
-    let canvasWidth = 1080;
+let canvasWidth = 1080;
     let canvasHeight = 1920;
 
-    if (["instagram", "twitter", "threads", "linkedin"].includes(platform) && !isPaper) {
+    // 🟢 Instagram Mobile Presets (Paper aur Solid dono me exact ratio - Zero Crop)
+    if (platform === "instagram_square") {
       canvasWidth = 1080;
-      canvasHeight = 1350;
+      canvasHeight = 1080; // 1:1 Square
+    } else if (platform === "instagram" || (["twitter", "threads", "linkedin"].includes(platform) && !isPaper)) {
+      canvasWidth = 1080;
+      canvasHeight = 1350; // 4:5 Portrait
     }
 
     canvas.width = canvasWidth;
@@ -334,7 +346,6 @@ async function generatePngSlideBlob(
       ctx.lineWidth = Math.round(14 * scaleFactor);
       ctx.strokeRect(frameMargin, frameMargin, canvas.width - frameMargin * 2, canvas.height - frameMargin * 2);
     }
-
 // ---------------- 2. TOP HEADER ROW (High-Visibility Branding) ----------------
     const headerTop = Math.round(75 * scaleFactor);
     const badgeH = Math.round(54 * scaleFactor);
@@ -351,9 +362,9 @@ async function generatePngSlideBlob(
       );
 
       // 🟢 Large, Sharp & Highly Visible Watermark
-      ctx.font = `600 ${Math.round(22 * scaleFactor)}px system-ui, -apple-system, sans-serif`;
+      ctx.font = `600 ${Math.round(20 * scaleFactor)}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = "right";
-      ctx.fillStyle = "rgba(15, 23, 42, 0.70)"; // High-contrast readable slate tone
+      ctx.fillStyle = "rgba(15, 23, 42, 0.70)";
       ctx.fillText(
         "useful tools zone / social media post chunker",
         canvas.width - Math.round(80 * scaleFactor),
@@ -392,25 +403,28 @@ async function generatePngSlideBlob(
       ctx.textAlign = "center";
       ctx.fillText(`SLIDE ${slideNumber}/${totalSlides}`, badgeX + badgeW / 2, headerTop + badgeH * 0.65);
 
-      const wmWidth = Math.round(670 * scaleFactor);
-      const wmX = canvas.width - Math.round(75 * scaleFactor) - wmWidth;
+      // 🟢 Solid Theme Watermark (Instagram par hide rahega)
+      if (platform !== "instagram") {
+        const wmWidth = Math.round(670 * scaleFactor);
+        const wmX = canvas.width - Math.round(75 * scaleFactor) - wmWidth;
 
-      ctx.fillStyle = boxBg;
-      ctx.beginPath();
-      ctx.roundRect(wmX, headerTop, wmWidth, badgeH, Math.round(16 * scaleFactor));
-      ctx.fill();
-      ctx.strokeStyle = boxBorder;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
+        ctx.fillStyle = boxBg;
+        ctx.beginPath();
+        ctx.roundRect(wmX, headerTop, wmWidth, badgeH, Math.round(16 * scaleFactor));
+        ctx.fill();
+        ctx.strokeStyle = boxBorder;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
 
-      ctx.fillStyle = primaryText;
-      ctx.font = `bold ${Math.round(20 * scaleFactor)}px system-ui, sans-serif`;
-      ctx.textAlign = "center";
-      ctx.fillText(
-        "useful tools zone / social media post chunker",
-        wmX + wmWidth / 2,
-        headerTop + badgeH * 0.63
-      );
+        ctx.fillStyle = primaryText;
+        ctx.font = `bold ${Math.round(20 * scaleFactor)}px system-ui, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "useful tools zone / social media post chunker",
+          wmX + wmWidth / 2,
+          headerTop + badgeH * 0.63
+        );
+      }
     }
 
     // ---------------- 3. MAIN CONTENT (Platform-Aware Sizing & Spacing) ----------------
@@ -850,19 +864,21 @@ const [shortTeaserText, setShortTeaserText] = useState("");
 
     let effectiveLimit = userLimit;
 
-    if (viewMode === "png_slides") {
-      if (selectedPlatform === "pinterest") {
-        // 🟢 Native 9:16 Full HD (1080x1920): Perfectly matches mobile player screen
+if (viewMode === "png_slides") {
+      // 🟢 Instagram 4:5 aur 1:1 ko priority par rakhein taaki text niche tak bhare aur slides kam banein
+      if (selectedPlatform === "instagram_square") {
+        effectiveLimit = 550; // 1:1 Square full height capacity
+      } else if (selectedPlatform === "instagram") {
+        effectiveLimit = 750; // 4:5 Portrait full height capacity (Fills 16-17 lines completely)
+      } else if (selectedPlatform === "pinterest") {
         effectiveLimit = 700;
       } else if (selectedSlideTheme?.isPaper) {
-        // 🟢 Paper Mode (9:16 Full HD): 1150 Chars capacity fills all 24-26 lines completely
         effectiveLimit = 1150;
       } else if (selectedPlatform === "twitter") {
         effectiveLimit = Math.min(userLimit, 280);
-      } else if (["instagram", "threads", "linkedin"].includes(selectedPlatform)) {
+      } else if (["threads", "linkedin"].includes(selectedPlatform)) {
         effectiveLimit = Math.min(userLimit, 500);
       } else {
-        // 🟢 Digital 9:16 Full HD colors remain at 700 chars
         effectiveLimit = userLimit; 
       }
     }
@@ -2330,9 +2346,16 @@ const [shortTeaserText, setShortTeaserText] = useState("");
                 {
                   key: "instagram",
                   slug: "instagram-reels-text-hooks",
-                  label: "Instagram",
+                  label: "Insta 4:5",
                   icon: "📸",
                   color: "text-pink-700 dark:text-pink-300 border-pink-300 dark:border-pink-800 bg-pink-50/70 dark:bg-pink-950/40",
+                },
+                {
+                  key: "instagram_square",
+                  slug: "instagram-square-post",
+                  label: "Insta 1:1",
+                  icon: "⏹️",
+                  color: "text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-300 dark:border-fuchsia-800 bg-fuchsia-50/70 dark:bg-fuchsia-950/40",
                 },
                 {
                   key: "linkedin",
