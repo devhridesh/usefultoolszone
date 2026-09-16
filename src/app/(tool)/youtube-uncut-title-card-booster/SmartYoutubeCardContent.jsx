@@ -63,8 +63,8 @@ export default function SmartYoutubeCardContent() {
     }
   };
 
-  const generatedShareLink = videoData
-    ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-expander?v=${videoData.id}`
+const generatedShareLink = videoData
+    ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-card-booster?v=${videoData.id}`
     : "";
 
   const handleCopyLink = () => {
@@ -79,7 +79,7 @@ export default function SmartYoutubeCardContent() {
       try {
         await navigator.share({
           title: videoData.title,
-          text: `${videoData.title}\n\n▶ Watch directly in YouTube App:\n`,
+          text: `${videoData.title}\n\n⚡ Boosted by UsefulToolsZone\n▶ Watch directly in YouTube App:\n`,
           url: generatedShareLink,
         });
       } catch (err) {
@@ -141,7 +141,7 @@ export default function SmartYoutubeCardContent() {
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
               YouTube Uncut Title <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 font-extrabold">
-                Expander &amp; App Opener
+                &amp; Card Booster
               </span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium max-w-lg mx-auto leading-relaxed">

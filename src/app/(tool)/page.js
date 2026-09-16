@@ -163,17 +163,17 @@ export default async function MasterHomepage({ searchParams }) {
     },
 
 {
-  title: "YouTube Uncut Title Expander",
-  description:
-    "Tired of WhatsApp Status cutting off video titles with '...'? Expand 100% unclipped headlines in high-impact preview cards with instant 0ms direct opening in the official YouTube app.",
-   link: "/youtube-uncut-title-expander",
-  badge: "⚡ 100% UNCUT TITLES + 0ms APP LAUNCH",
-  badgeColor:
-    "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200/60 dark:border-red-800/40",
-  btnText: "Expand Status Title →",
-  icon: "▶️",
-  categories: ["pro", "video"],
-},
+    title: "YouTube Uncut Title & Card Booster",
+    description:
+      "Stop WhatsApp Status from truncating video titles with '...'. Boost your social preview cards with 100% uncut headlines and instant 0ms direct launch in the YouTube app.",
+    link: "/youtube-uncut-title-card-booster",
+    badge: "⚡ WORLD'S 1ST ZERO-TRUNCATION YOUTUBE APP OPENER",
+    badgeColor:
+      "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200/60 dark:border-red-800/40",
+    btnText: "Boost Status Card →",
+    icon: "▶️",
+    categories: ["pro", "video"],
+  },
   ];
 
   return (
@@ -272,7 +272,124 @@ export default async function MasterHomepage({ searchParams }) {
             </a>
           </div>
 
-          {/* 🔘 TRUSTED TAB FILTER BAR */}
+          {/* 🔥 COMPACT EXCLUSIVE TOOL SPOTLIGHT (SIDE-BY-SIDE MINI PREVIEW) */}
+          <div className="w-full max-w-3xl mx-auto my-2 px-1">
+            <div className="relative group p-[2px] rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/20 transition-all duration-300">
+              <div className="relative bg-white dark:bg-[#0c0c12] rounded-[22px] p-4 sm:p-5 flex flex-col gap-3.5 overflow-hidden">
+                {/* Brand Radial Ambient Glow */}
+                <div className="absolute -right-16 -top-16 w-44 h-44 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Top Row: Tag + Heading + Action Button */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 z-10">
+                  <div className="space-y-1 text-left">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/70 dark:border-indigo-800/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 animate-ping" />
+                      <span className="text-[9px] font-black tracking-wider text-indigo-700 dark:text-indigo-300 uppercase">
+                        🔥 EXCLUSIVE CREATOR UTILITY
+                      </span>
+                    </div>
+                    <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                      YouTube Uncut Title &amp; Card Booster
+                    </h2>
+                  </div>
+
+                  <Link
+                    href="/youtube-uncut-title-card-booster"
+                    className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:brightness-110 text-white font-bold text-xs shadow-sm transition-transform active:scale-95 whitespace-nowrap self-stretch sm:self-auto text-center"
+                  >
+                    <span>Expand Card</span>
+                    <span>→</span>
+                  </Link>
+                </div>
+
+                {/* 📱 100% MOBILE RESPONSIVE COMPARISON GRID (UTZ BRAND GRADIENT THEMED) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 z-10 pt-1 w-full">
+                  
+                  {/* 1. BEFORE: Standard Small Strip (Perfect Balance & Vertical Alignment) */}
+                  <div className="p-3.5 rounded-2xl bg-slate-100/75 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-3 h-full transition-all">
+                    {/* Header */}
+                    <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider">
+                      <span className="text-rose-500/90 dark:text-rose-400 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                        Standard Link
+                      </span>
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-300 border border-rose-200/60 dark:border-rose-900/40 font-bold">
+                        Cramped &amp; Cut
+                      </span>
+                    </div>
+
+                    {/* Middle: Realistic Floated WhatsApp Strip */}
+                    <div className="my-auto py-1">
+                      <div className="bg-white dark:bg-[#14141e] border border-slate-200/90 dark:border-white/10 rounded-xl p-2.5 flex items-center gap-3 shadow-xs">
+                        <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center text-xs text-slate-400 border border-slate-200/60 dark:border-white/5">
+                          ▶
+                        </div>
+                        <div className="min-w-0 flex-1 text-left">
+                          <p className="text-xs font-bold text-slate-600 dark:text-slate-300 truncate leading-snug">
+                            How to Expand Your YouTube Link Card with...
+                          </p>
+                          <p className="text-[10px] text-slate-400 truncate mt-0.5 font-medium">
+                            🔴 Creator • youtu.be
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer Warning */}
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium text-left flex items-center gap-1.5">
+                      <span className="text-amber-500">⚠️</span> Cuts off headline + opens in slow WebView
+                    </span>
+                  </div>
+
+                  {/* 2. AFTER: Boosted Expanded Card (UTZ Signature Indigo/Violet Soft Glow) */}
+                  <div className="p-3.5 rounded-2xl bg-gradient-to-b from-indigo-50/80 via-blue-50/40 to-white dark:from-indigo-950/40 dark:via-[#0e0e18] dark:to-[#0c0c12] border-2 border-indigo-400/60 dark:border-indigo-600/50 flex flex-col justify-between gap-3 shadow-md shadow-indigo-500/10 transition-all">
+                    <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider">
+                      <span className="text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        ✓ Boosted Card
+                      </span>
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-indigo-100/80 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-bold">
+                        0ms App Launch
+                      </span>
+                    </div>
+
+                    {/* Raised Card Element with Contrast */}
+                    <div className="bg-white dark:bg-[#14141e] border border-indigo-100 dark:border-indigo-900/40 rounded-xl overflow-hidden shadow-sm">
+                      {/* Slim UTZ Gradient Thumbnail */}
+                      <div className="relative w-full h-16 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center">
+                        <span className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white text-[10px] shadow-sm">
+                          ▶
+                        </span>
+                        <span className="absolute bottom-1.5 right-2 text-[8px] font-black bg-black/75 text-white px-1.5 py-0.5 rounded">
+                          HD 1080P
+                        </span>
+                      </div>
+                      {/* Uncut Title Body */}
+                      <div className="p-2.5 space-y-1 text-left">
+                        <p className="text-xs font-black text-slate-900 dark:text-white leading-snug line-clamp-2">
+                          How to Expand Your YouTube Link Card with Uncut Title &amp; 0ms App Launch
+                        </p>
+                        <div className="flex items-center justify-between pt-0.5 text-[10px]">
+                          <span className="text-indigo-600 dark:text-indigo-400 font-bold truncate">
+                            🔴 Useful Tools Zone
+                          </span>
+                          <span className="text-slate-400 font-mono text-[9px] shrink-0">
+                            usefultoolszone.com
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-black text-left flex items-center gap-1">
+                      <span>⚡</span> 100% Full Title + Instant Mobile App
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
 
           {/* 🔘 TRUSTED TAB FILTER BAR */}
           <div className="w-full border-b border-slate-200 dark:border-white/5 pb-3">

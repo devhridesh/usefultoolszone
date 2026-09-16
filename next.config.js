@@ -43,6 +43,30 @@ const nextConfig = {
         destination: '/video-compressor/:slug*',
         permanent: true,
       },
+
+      // -------------------------------------------------------------
+      // Tool 3: YouTube Uncut Title & Card Booster Migrations
+      // -------------------------------------------------------------
+      {
+        source: '/smart-youtube-card-opener',
+        destination: '/youtube-uncut-title-card-booster',
+        permanent: true,
+      },
+      {
+        source: '/smart-youtube-card-opener/:slug*',
+        destination: '/youtube-uncut-title-card-booster/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/youtube-uncut-title-expander',
+        destination: '/youtube-uncut-title-card-booster',
+        permanent: true,
+      },
+      {
+        source: '/youtube-uncut-title-expander/:slug*',
+        destination: '/youtube-uncut-title-card-booster/:slug*',
+        permanent: true,
+      },
     ];
   },
 
@@ -84,21 +108,14 @@ module.exports = withSentryConfig(module.exports, {
   widenClientFileUpload: true,
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-  // side errors will fail.
   tunnelRoute: "/monitoring",
 
   webpack: {
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
+    // Enables automatic instrumentation of Vercel Cron Monitors.
     automaticVercelMonitors: true,
 
     // Tree-shaking options for reducing bundle size
     treeshake: {
-      // Automatically tree-shake Sentry logger statements to reduce bundle size
       removeDebugLogging: true,
     },
   },

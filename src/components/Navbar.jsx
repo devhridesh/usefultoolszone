@@ -30,11 +30,11 @@ const proLevelTools = [
     badge: "PRO",
   },
   {
-    id: "youtube-uncut-title-expander",
-    name: "YouTube Uncut Title Expander",
-    link: "/smart-youtube-card-opener",
+    id: "youtube-uncut-title-card-booster",
+    name: "YouTube Uncut Title & Card Booster",
+    link: "/youtube-uncut-title-card-booster",
     icon: "▶️",
-    desc: "Expand 100% full unclipped titles on WhatsApp Status with 0ms direct app launch.",
+    desc: "Boost WhatsApp Status cards with 100% uncut full titles and 0ms direct app launch.",
     badge: "NEW",
   },
 ];
