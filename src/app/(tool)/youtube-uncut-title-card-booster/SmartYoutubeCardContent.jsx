@@ -63,9 +63,11 @@ export default function SmartYoutubeCardContent() {
     }
   };
 
+// 🎯 Shorts होने पर &type=short जोड़ें ताकि ओरिजिनल HD क्वालिटी बनी रहे
+const isShortInput = url.includes("/shorts/");
 const generatedShareLink = videoData
-    ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-card-booster?v=${videoData.id}`
-    : "";
+  ? `${typeof window !== "undefined" ? window.location.origin : "https://usefultoolszone.com"}/youtube-uncut-title-card-booster?v=${videoData.id}${isShortInput ? "&type=short" : ""}`
+  : "";
 
   const handleCopyLink = () => {
     if (!generatedShareLink) return;

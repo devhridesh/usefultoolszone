@@ -1,11 +1,14 @@
 import { Suspense } from "react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import SmartYoutubeCardContent from "./SmartYoutubeCardContent";
 
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams;
   const vid = params?.v;
+  const isShort = params?.type === "short";
 
-  // 1. जब कोई यूज़र सामान्य तौर पर टूल पर आता है
+  // 1. साधारण विज़िटर
   if (!vid) {
     return {
       title: "YouTube Uncut Title & Card Booster | Useful Tools Zone",
@@ -14,22 +17,27 @@ export async function generateMetadata({ searchParams }) {
       alternates: {
         canonical: "https://usefultoolszone.com/youtube-uncut-title-card-booster",
       },
+    };
+  }
+
+  // 2. अगर Shorts है, तो सीधे YouTube का ओरिजिनल कार्ड URL पॉइंट करें
+  if (isShort) {
+    return {
+      title: "Watch Short in YouTube App",
+      description: "Tap to launch video directly inside the official YouTube mobile app.",
+      alternates: {
+        canonical: `https://www.youtube.com/shorts/${vid}`,
+      },
       openGraph: {
-        title: "YouTube Uncut Title & Card Booster | Useful Tools Zone",
-        description:
-          "Stop WhatsApp Status from truncating video titles with '...'. Boost your social preview cards with 100% uncut headlines and instant 0ms app launch.",
-        url: "https://usefultoolszone.com/youtube-uncut-title-card-booster",
-        siteName: "Useful Tools Zone",
-        type: "website",
+        url: `https://www.youtube.com/shorts/${vid}`,
       },
     };
   }
 
-  // 2. जब शेयर्ड लिंक खोला जाए (?v=VIDEO_ID)
+  // 3. रेगुलर वीडियो: 16:9 MaxRes HD कार्ड इंजन (छोटे कार्ड को बड़ा बनाने के लिए)
   let fullTitle = "Watch Video in YouTube App";
   let channelName = "YouTube Creator";
 
-  // टाइटल और चैनल का नाम फ़ेच करें
   try {
     const oembedRes = await fetch(
       `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${vid}&format=json`,
@@ -42,58 +50,14 @@ export async function generateMetadata({ searchParams }) {
     }
   } catch (e) {}
 
-  // 🚀 DYNAMIC ENGINE: Shorts vs Regular Video Detector
-  let isShort = false;
+  let finalImageUrl = `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`;
   try {
-    const checkShort = await fetch(`https://www.youtube.com/shorts/${vid}`, {
-      method: "HEAD",
-      redirect: "manual",
-      signal: AbortSignal.timeout(1500),
-    });
-    // Shorts होने पर YouTube 200 देता है, साधारण वीडियो पर 303/302 रीडायरेक्ट करता है
-    if (checkShort.status === 200) {
-      isShort = true;
-    }
-  } catch (e) {
-    isShort = false;
-  }
-
-  let finalImageUrl = "";
-  let imageConfig = [];
-
-  if (isShort) {
-    // 🎯 SHORTS MODE: maxresdefault का घटिया ब्लर बायपास करें।
-    // hqdefault में असली ओरिजिनल लिंक की तरह क्लीन सॉलिड ब्लैक बॉर्डर रहता है।
-    finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
-    imageConfig = [
-      {
-        url: finalImageUrl,
-        alt: fullTitle,
-      },
-    ];
-  } else {
-    // 🎯 REGULAR VIDEO MODE: 16:9 True HD 1080p/720p (कोई ब्लैक बार्स नहीं)
-    finalImageUrl = `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`;
-    try {
-      const hdCheck = await fetch(finalImageUrl, {
-        method: "HEAD",
-        signal: AbortSignal.timeout(1500),
-      });
-      if (!hdCheck.ok) {
-        finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
-      }
-    } catch (e) {
+    const hdCheck = await fetch(finalImageUrl, { method: "HEAD" });
+    if (!hdCheck.ok) {
       finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
     }
-
-    imageConfig = [
-      {
-        url: finalImageUrl,
-        width: 1280,
-        height: 720,
-        alt: fullTitle,
-      },
-    ];
+  } catch (e) {
+    finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
   }
 
   const previewDesc = `🔴 ${channelName} • via UsefulToolsZone • Tap to watch in App`;
@@ -110,7 +74,14 @@ export async function generateMetadata({ searchParams }) {
       url: `https://usefultoolszone.com/youtube-uncut-title-card-booster?v=${vid}`,
       siteName: "Useful Tools Zone",
       type: "video.other",
-      images: imageConfig,
+      images: [
+        {
+          url: finalImageUrl,
+          width: 1280,
+          height: 720,
+          alt: fullTitle,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
@@ -122,7 +93,23 @@ export async function generateMetadata({ searchParams }) {
 }
 
 export default async function Page({ searchParams }) {
-  await searchParams;
+  const params = await searchParams;
+  const vid = params?.v;
+  const isShort = params?.type === "short";
+
+  // 🚀 CRAWLER BYPASS FOR SHORTS:
+  // जब WhatsApp बॉट Shorts का लिंक पढ़ेगा, तो उसे सीधे ओरिजिनल YouTube Shorts पर भेज दिया जाएगा
+  // ताकि बिना किसी ब्लर के ओरिजिनल 100% HD कार्ड लोड हो, जबकि स्टेटस में हमारा ही लिंक दिखेगा!
+  if (vid && isShort) {
+    const headerList = await headers();
+    const userAgent = headerList.get("user-agent") || "";
+    const isBot = /WhatsApp|facebookexternalhit|Twitterbot|TelegramBot/i.test(userAgent);
+
+    if (isBot) {
+      redirect(`https://www.youtube.com/shorts/${vid}`);
+    }
+  }
+
   return (
     <Suspense fallback={<div className="min-h-screen bg-slate-50 dark:bg-[#060609]" />}>
       <SmartYoutubeCardContent />
