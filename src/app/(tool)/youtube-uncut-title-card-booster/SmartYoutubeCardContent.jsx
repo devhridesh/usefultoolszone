@@ -212,7 +212,7 @@ const isShortVideo = url.includes("/shorts/");
                               <span>🛡️</span> Full Frame (Zero Cut)
                             </p>
                             <p className="text-[10px] opacity-80 mt-0.5">
-                              पूरा चेहरा व टाइटल दिखेगा (माथा/टेक्स्ट नहीं कटेगा)
+                              Displays complete frame without clipping face or headlines
                             </p>
                           </button>
 
@@ -229,7 +229,7 @@ const isShortVideo = url.includes("/shorts/");
                               <span>⚡</span> Edge-to-Edge (Zero Blur)
                             </p>
                             <p className="text-[10px] opacity-80 mt-0.5">
-                              100% क्रिस्प ओरिजिनल क्रॉप (साइड ब्लर नहीं रहेगा)
+                              100% crisp native crop without blurred side wings
                             </p>
                           </button>
                         </div>
