@@ -41,68 +41,87 @@ export async function generateMetadata({ searchParams }) {
       },
     };
   }
+// जब लिंक में ?v=VIDEO_ID हो (WhatsApp / Social Media Card Preview)
+  let fullTitle = "Watch Video in YouTube App";
+  let channelName = "YouTube Creator";
+  let finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
 
-// जब लिंक में ?v=VIDEO_ID मौजूद हो (WhatsApp / Social Card Preview)
   try {
-    const res = await fetch(
-      `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${vid}`
-    );
-    const data = await res.json();
-    const fullTitle = data.title || "Watch Video in YouTube App";
-    const channelName = data.author_name || "YouTube";
-    const previewDesc = `🔴 ${channelName} • via UsefulToolsZone • Tap to watch in App`;
+    // 🎯 1. Direct YouTube Scraper: Fetches the EXACT unblurred, cropped 16:9 thumbnail YouTube generates
+    const ytRes = await fetch(`https://www.youtube.com/shorts/${vid}`, {
+      headers: {
+        "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+        "Accept-Language": "en-US,en;q=0.9",
+      },
+      next: { revalidate: 3600 },
+    });
 
-    // 🚀 Dynamic Thumbnail Fallback Logic (Fixing Blur Issue)
-    // 1st Priority: Try fetching MaxRes HD Thumbnail (1280x720) without black bars
-    let finalImageUrl = `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`;
-    
-    try {
-      // Check if MaxRes actually exists (especially important for Shorts or old videos)
-      const imageCheck = await fetch(finalImageUrl, { method: 'HEAD' });
-      if (!imageCheck.ok) {
-        // Fallback to HQ default if MaxRes is 404
-        finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+    if (ytRes.ok) {
+      const html = await ytRes.text();
+
+      // Extract real og:image (has the official clean 16:9 crop for Shorts, no blurred wings)
+      const imgMatch =
+        html.match(/<meta\s+(?:property|name)=["']og:image["']\s+content=["']([^"']+)["']/i) ||
+        html.match(/<meta\s+content=["']([^"']+)["']\s+(?:property|name)=["']og:image["']/i);
+      
+      if (imgMatch && imgMatch[1]) {
+        finalImageUrl = imgMatch[1].replace(/&amp;/g, "&");
       }
-    } catch (err) {
-      // Network error during check, safe fallback
-      finalImageUrl = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
-    }
 
-    return {
+      // Extract full official title
+      const titleMatch =
+        html.match(/<meta\s+(?:property|name)=["']og:title["']\s+content=["']([^"']+)["']/i) ||
+        html.match(/<meta\s+content=["']([^"']+)["']\s+(?:property|name)=["']og:title["']/i);
+      
+      if (titleMatch && titleMatch[1]) {
+        fullTitle = titleMatch[1]
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&amp;/g, "&");
+      }
+    } else {
+      throw new Error("Direct scrape fallback");
+    }
+  } catch (err) {
+    // Fallback if YouTube blocks request
+    try {
+      const res = await fetch(
+        `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${vid}`
+      );
+      const data = await res.json();
+      if (data.title) fullTitle = data.title;
+      if (data.author_name) channelName = data.author_name;
+    } catch {}
+  }
+
+  const previewDesc = `🔴 ${channelName} • via UsefulToolsZone • Tap to watch in App`;
+
+  return {
+    title: fullTitle,
+    description: previewDesc,
+    alternates: {
+      canonical: `https://usefultoolszone.com/youtube-uncut-title-card-booster?v=${vid}`,
+    },
+    openGraph: {
       title: fullTitle,
       description: previewDesc,
-      alternates: {
-        canonical: `https://usefultoolszone.com/youtube-uncut-title-card-booster?v=${vid}`,
-      },
-      openGraph: {
-        title: fullTitle,
-        description: previewDesc,
-        url: `https://usefultoolszone.com/youtube-uncut-title-card-booster?v=${vid}`,
-        siteName: "Useful Tools Zone",
-        type: "video.other",
-        images: [
-          {
-            url: finalImageUrl,
-            width: 1280, // Set to true 16:9 aspect ratio width
-            height: 720, // Set to true 16:9 aspect ratio height
-            alt: fullTitle,
-          },
-        ],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: fullTitle,
-        description: previewDesc,
-        images: [finalImageUrl],
-      },
-    };
-  } catch (e) {
-    return {
-      title: "Watch in YouTube App | Useful Tools Zone",
-      description: "Tap to launch video directly inside the official YouTube mobile app.",
-    };
-  }
-}
+      url: `https://usefultoolszone.com/youtube-uncut-title-card-booster?v=${vid}`,
+      siteName: "Useful Tools Zone",
+      type: "video.other",
+      images: [
+        {
+          url: finalImageUrl,
+          alt: fullTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description: previewDesc,
+      images: [finalImageUrl],
+    },
+  };
 
 export default async function Page({ searchParams }) {
   const params = await searchParams;
