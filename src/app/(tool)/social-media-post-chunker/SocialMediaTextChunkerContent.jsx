@@ -196,7 +196,7 @@ async function ensureHandwritingFonts(fontName = "Kalam") {
         link.id = "utz-handwriting-fonts";
         link.rel = "stylesheet";
         link.href =
-          "https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Caveat:wght@400;500;700&family=Dekko&family=Kalam:wght@300;400;700&family=Tillana:wght@400;600&display=swap";
+          "https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Caveat:wght@400;500;700&family=Dekko&family=Kalam:wght@300;400;700&family=Patrick+Hand&family=Tillana:wght@400;600&display=swap";
         document.head.appendChild(link);
       }
 
@@ -519,8 +519,8 @@ let canvasWidth = 1080;
 
     if (isPaper) {
       ctx.globalCompositeOperation = "multiply";
-      ctx.globalAlpha = 0.9;
-      ctx.filter = "saturate(300%) contrast(120%) drop-shadow(1px 1px 0px rgba(0,0,0,0.15))";
+      ctx.globalAlpha = 0.95;
+      ctx.filter = "contrast(105%)";
     }
 
     printableLines.forEach((l, idx) => {
@@ -668,16 +668,29 @@ useEffect(() => {
   const [handwritingFont, setHandwritingFont] = useState("Kalam");
   const [penThickness, setPenThickness] = useState("thin");
 
-// High-CTR Feature Toggles
-  const DEFAULT_HOOKS = [
+  // 🟢 FULL 7 ENGLISH HOOK PRESETS
+  const ENGLISH_HOOKS = [
     "🚨 STOP SCROLLING! READ THIS 👇",
-    "🚨 रुकिए! पहले इसे ध्यान से पढ़ें 👇",
     "💡 3 Harsh Truths Nobody Tells You About This:",
-    "💡 3 कड़वे सच जो कोई नहीं बताता:",
     "🔥 Save This Video Before It Gets Deleted!",
     "👀 If You Are Doing This, STOP Immediately:",
     "⚡ The Secret Strategy Revealed in 30 Seconds:",
+    "🎯 Read This Carefully Before Moving On:",
+    "📌 Important Life Lesson You Must Know:",
   ];
+
+  // 🟢 FULL 7 HINDI HOOK PRESETS
+  const HINDI_HOOKS = [
+    "🚨 रुकिए! पहले इसे ध्यान से पढ़ें 👇",
+    "💡 3 कड़वे सच जो कोई नहीं बताता:",
+    "🔥 डिलीट होने से पहले इसे सेव कर लें!",
+    "👀 अगर आप यह कर रहे हैं, तो तुरंत रुकें:",
+    "⚡ 30 सेकंड में खुला राज़:",
+    "🎯 आगे बढ़ने से पहले इसे ध्यान से पढ़ें:",
+    "📌 जीवन का यह ज़रूरी सबक ज़रूर जानें:",
+  ];
+
+  const DEFAULT_HOOKS = [...ENGLISH_HOOKS, ...HINDI_HOOKS];
 
   const [enableBoldKeywords, setEnableBoldKeywords] = useState(false);
   const [selectedHook, setSelectedHook] = useState(DEFAULT_HOOKS[0]);
@@ -921,33 +934,15 @@ if (viewMode === "png_slides") {
       let result = chunk;
       const isPaper = selectedSlideTheme?.isPaper;
 
-      // Primary Attention Hook ONLY on Slide 1
+      // Primary Attention Hook ONLY on Slide 1 (User ka chuna hua exact hook hi lagega)
       if (index === 0 && selectedHook && selectedHook !== "none") {
-        let activeHook = selectedHook;
-        
-        if (isPaper) {
-          // 🟢 Paper Mode: Pure Hindi Only (Removes all English Hooks)
-          if (activeHook.includes("STOP SCROLLING") || activeHook.includes("रुकिए!")) activeHook = "🚨 रुकिए! पहले इसे ध्यान से पढ़ें 👇";
-          else if (activeHook.includes("3 Harsh Truths") || activeHook.includes("कड़वे सच")) activeHook = "💡 3 कड़वे सच जो कोई नहीं बताता:";
-          else if (activeHook.includes("Save This") || activeHook.includes("डिलीट")) activeHook = "🔥 डिलीट होने से पहले इसे सेव कर लें!";
-          else if (activeHook.includes("STOP Immediately") || activeHook.includes("तुरंत रुकें")) activeHook = "👀 अगर आप यह कर रहे हैं, तो तुरंत रुकें:";
-          else if (activeHook.includes("Secret Strategy") || activeHook.includes("राज़")) activeHook = "⚡ 30 सेकंड में खुला राज़:";
-        } else {
-          // 📱 Digital Mode: Pure English Only
-          if (activeHook.includes("STOP SCROLLING") || activeHook.includes("रुकिए!")) activeHook = "🚨 STOP SCROLLING! READ THIS 👇";
-          else if (activeHook.includes("3 Harsh Truths") || activeHook.includes("कड़वे सच")) activeHook = "💡 3 Harsh Truths Nobody Tells You About This:";
-          else if (activeHook.includes("Save This") || activeHook.includes("डिलीट")) activeHook = "🔥 Save This Video Before It Gets Deleted!";
-          else if (activeHook.includes("STOP Immediately") || activeHook.includes("तुरंत रुकें")) activeHook = "👀 If You Are Doing This, STOP Immediately:";
-          else if (activeHook.includes("Secret Strategy") || activeHook.includes("राज़")) activeHook = "⚡ The Secret Strategy Revealed in 30 Seconds:";
-        }
-        
-        result = `${toUnicodeBold(activeHook)}\n\n${result}`;
+        result = `${toUnicodeBold(selectedHook)}\n\n${result}`;
       }
 
-      // 🔴 Hold Trigger ONLY on Intermediate Slides (NOT on Last Slide!)
+      // 🔴 Hold Trigger ONLY on Intermediate Slides (Text bhasha ke anusaar auto-detect)
       if (enableHoldToRead && index < total - 1) {
-        // 🟢 Paper Mode gets Pure Hindi, Digital gets Pure English
-        const holdText = isPaper 
+        const isHindiText = /[\u0900-\u097F]/.test(chunk);
+        const holdText = isHindiText 
           ? "⏸️ (स्क्रीन रोक कर पढ़ें)" 
           : "⏸️ (Hold screen to pause & read full text)";
         
@@ -1676,10 +1671,19 @@ if (viewMode === "png_slides") {
                       </optgroup>
                     )}
 
-                    {/* Standard Default Presets */}
-                    <optgroup label="🔥 Default Attention Hooks">
-                      {DEFAULT_HOOKS.map((hook, idx) => (
-                        <option key={`default-${idx}`} value={hook}>
+                    {/* 🇬🇧 English Hooks (7 Presets) */}
+                    <optgroup label="🇬🇧 English Attention Hooks (7 Presets)">
+                      {ENGLISH_HOOKS.map((hook, idx) => (
+                        <option key={`en-${idx}`} value={hook}>
+                          {hook}
+                        </option>
+                      ))}
+                    </optgroup>
+
+                    {/* 🇮🇳 Hindi Hooks (7 Presets) */}
+                    <optgroup label="🇮🇳 Hindi Attention Hooks (7 Presets)">
+                      {HINDI_HOOKS.map((hook, idx) => (
+                        <option key={`hi-${idx}`} value={hook}>
                           {hook}
                         </option>
                       ))}
@@ -1958,9 +1962,10 @@ if (viewMode === "png_slides") {
                         }}
                         className="bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 rounded-xl px-2 py-1 outline-none cursor-pointer"
                       >
-                        <option value="Kalam">📖 Kalam (Natural Diary)</option>
+                        <option value="Patrick Hand">✍️ Patrick Hand (Clean Readable English)</option>
+                        <option value="Kalam">📖 Kalam (Hindi & English Diary)</option>
+                        <option value="Dekko">✏️ Dekko (Neat Print)</option>
                         <option value="Caveat">✒️ Caveat (Cursive Pen)</option>
-                        <option value="Dekko">✏️ Dekko (Clean Print)</option>
                         <option value="Tillana">🖋️ Tillana (Artistic Ink)</option>
                         <option value="Amita">📜 Amita (Calligraphy)</option>
                       </select>
